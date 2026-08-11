@@ -14,6 +14,7 @@
   let warrant: WarrantInput = {};
   let scale = 1;
   let selectedPlaceId = '';
+  let witnessTextComplete = true;
   let showOptions = false;
   const categories: TraitCategory[] = ['sex', 'hair', 'hobby', 'feature', 'vehicle'];
 
@@ -83,6 +84,7 @@
 
   const visit = (placeId: string) => {
     selectedPlaceId = placeId;
+    witnessTextComplete = false;
     actions.investigate(placeId);
   };
 
@@ -100,7 +102,7 @@
   const keyboard = (event: KeyboardEvent) => {
     if (!gameplayScreens.includes($uiState.screen)) return;
     if (event.key === 'F11') { event.preventDefault(); void fullscreen(); }
-    if ($uiState.screen !== 'city') return;
+    if ($uiState.screen === 'traveling' || ($uiState.screen === 'witness' && !witnessTextComplete)) return;
     const key = event.key.toLowerCase();
     if (key === '1' || key === 's') actions.go('places');
     if (key === '2' || key === 'd') actions.go('travel');
@@ -108,14 +110,8 @@
     if (key === '4' || key === 'f') actions.dossier(0);
   };
 
-  const actionDisabled = (target: 'places' | 'travel' | 'warrant' | 'dossiers'): boolean => {
-    const screen = $uiState.screen;
-    if (screen === 'city') return false;
-    if (screen === 'places') return target !== 'places';
-    if (screen === 'travel') return target !== 'travel';
-    if (screen === 'warrant') return target !== 'warrant';
-    if (screen === 'dossiers') return target !== 'dossiers';
-    return true;
+  const actionDisabled = (): boolean => {
+    return $uiState.screen === 'traveling' || ($uiState.screen === 'witness' && !witnessTextComplete);
   };
 
   onMount(() => {
@@ -256,7 +252,7 @@
                 <h2>{placeById(selectedPlaceId)?.name ?? 'DEPOIMENTO'}</h2>
                 <div class="witness-row">
                   <img class="witness" src={asset(witness?.assetId ?? 'agency-clerk-portrait')} alt={witness?.name ?? 'Testemunha'} />
-                  <div class="speech"><b class="witness-name">{witness?.name ?? 'TESTEMUNHA'}</b><TypewriterText text={eventText()} speed={10} /></div>
+                  <div class="speech"><b class="witness-name">{witness?.name ?? 'TESTEMUNHA'}</b><TypewriterText text={eventText()} speed={10} oncomplete={() => { witnessTextComplete = true; }} /></div>
                 </div>
                 <PixelButton label="OUTRO LOCAL" onactivate={() => actions.go('places')} />
               {:else if $uiState.screen === 'travel'}
@@ -306,10 +302,10 @@
               {/if}
             </section>
             <nav class="action-bar" aria-label="Ações de investigação">
-              <button disabled={actionDisabled('places')} class:active={$uiState.screen === 'places'} on:click={() => actions.go('places')}><img class="pixel-icon" src={asset('icon-see')} alt="" />VER<small>[S/1]</small></button>
-              <button disabled={actionDisabled('travel')} class:active={$uiState.screen === 'travel'} on:click={() => actions.go('travel')}><img class="pixel-icon" src={asset('icon-depart')} alt="" />PARTIR<small>[D/2]</small></button>
-              <button disabled={actionDisabled('warrant')} class:active={$uiState.screen === 'warrant'} on:click={() => actions.go('warrant')}><img class="pixel-icon" src={asset('icon-search')} alt="" />BUSCAR<small>[R/3]</small></button>
-              <button disabled={actionDisabled('dossiers')} class:active={$uiState.screen === 'dossiers'} on:click={() => actions.dossier(0)}><img class="pixel-icon" src={asset('icon-files')} alt="" />FICHAS<small>[F/4]</small></button>
+              <button disabled={actionDisabled()} class:active={$uiState.screen === 'places'} on:click={() => actions.go('places')}><img class="pixel-icon" src={asset('icon-see')} alt="" />VER<small>[S/1]</small></button>
+              <button disabled={actionDisabled()} class:active={$uiState.screen === 'travel'} on:click={() => actions.go('travel')}><img class="pixel-icon" src={asset('icon-depart')} alt="" />PARTIR<small>[D/2]</small></button>
+              <button disabled={actionDisabled()} class:active={$uiState.screen === 'warrant'} on:click={() => actions.go('warrant')}><img class="pixel-icon" src={asset('icon-search')} alt="" />BUSCAR<small>[R/3]</small></button>
+              <button disabled={actionDisabled()} class:active={$uiState.screen === 'dossiers'} on:click={() => actions.dossier(0)}><img class="pixel-icon" src={asset('icon-files')} alt="" />FICHAS<small>[F/4]</small></button>
             </nav>
           </div>
         </section>
