@@ -2,6 +2,7 @@
   import { onDestroy } from 'svelte';
   export let text: string;
   export let speed = 14;
+  export let oncomplete: () => void = () => undefined;
   let shown = '';
   let done = false;
   let timer: number | undefined;
@@ -16,6 +17,7 @@
       if (index >= text.length) {
         done = true;
         if (timer) window.clearInterval(timer);
+        oncomplete();
       }
     }, speed);
   };
@@ -25,6 +27,7 @@
       if (timer) window.clearInterval(timer);
       shown = text;
       done = true;
+      oncomplete();
     }
   };
   onDestroy(() => { if (timer) window.clearInterval(timer); });
