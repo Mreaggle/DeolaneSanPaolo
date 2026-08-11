@@ -167,7 +167,7 @@ When a valid later soundtrack event requests another canonical track:
 
 ```text
 current track
-→ stop / very short crossfade
+→ stop immediately
 → new track
 ```
 
@@ -207,12 +207,14 @@ A track is stopped only by:
 Default replacement:
 
 ```text
-old track fade-out: 80–150 ms
+old track: hard stop
 new track start: immediately
-new track fade-in: 0–80 ms
+transition: 0 ms by default
 ```
 
-This is intentionally short.
+This project uses immediate replacement so a newly triggered gameplay situation is
+audible at once. A caller may opt into a transition of at most 30 ms only when it
+cannot delay or obscure the semantic cue.
 
 Do not use long cinematic crossfades.
 
@@ -501,7 +503,7 @@ export type MusicCueId =
 | 10 | `SUSPICIOUS_HENCHMAN` | `10_suspicious_henchman.mp3` | `HENCHMAN_APPEARED` | 6 |
 | 11 | `CULPRIT_VERY_CLOSE` | `11_culprit_very_close.mp3` | `CULPRIT_PROXIMITY_HIGH` | 6 |
 | 12 | `TIME_ALMOST_EXPIRED` | `12_time_almost_expired.mp3` | `TIME_WARNING_TRIGGERED` | 7 |
-| 13 | `CRIME_COMPUTER_CALCULATING` | `13_crime_computer_calculating.mp3` | `WARRANT_COMPUTE_STARTED` | 3 |
+| 13 | `CRIME_COMPUTER_CALCULATING` | `13_crime_computer_calculating.mp3` | `WARRANT_COMPUTER_OPENED` | 3 |
 | 14 | `WARRANT_ISSUED` | `14_warrant_issued.mp3` | `WARRANT_ISSUED` | 7 |
 | 15 | `WARRANT_INCONCLUSIVE` | `15_warrant_inconclusive.mp3` | `WARRANT_INCONCLUSIVE` | 4 |
 | 16 | `FINAL_CITY` | `16_final_city.mp3` | `FINAL_CITY_REACHED` | 8 |
@@ -691,13 +693,16 @@ Do not resume the previous track.
 
 ---
 
-## 26. Warrant compute
+## 26. Warrant computer
 
 ```text
-WARRANT_COMPUTE_STARTED
+player clicks P.C. / opens the warrant computer
+↓
+WARRANT_COMPUTER_OPENED
 → track 13
 ```
 
+Changing filters and clicking `COMPUTAR MANDADO` do not request track 13 again.
 Because the generated track may be a complete song:
 
 **do not stop it just because the computation animation finishes.**
@@ -962,7 +967,7 @@ It owns:
 - music volume;
 - mute state;
 - track replacement;
-- short fades;
+- immediate hard cuts (with an optional transition no longer than 30 ms);
 - browser audio unlocking;
 - duplicate-event suppression.
 
@@ -1050,7 +1055,6 @@ Opening:
 
 - dossiers;
 - options;
-- warrant input before compute;
 - case notes;
 - menus;
 
@@ -1061,6 +1065,9 @@ Unless the modal itself triggers a canonical soundtrack event:
 ```text
 music continues underneath
 ```
+
+The P.C. is the explicit exception: opening the warrant computer produces
+`WARRANT_COMPUTER_OPENED` and immediately requests track 13.
 
 ---
 
@@ -1371,7 +1378,7 @@ track A playing
 ```text
 track A playing
 → event requests B
-→ A stops/fades
+→ A stops immediately
 → B begins
 ```
 
@@ -1401,7 +1408,7 @@ wrong trail reveal → 9
 henchman → 10 instead of 8
 high proximity → 11
 time warning → 12 once
-warrant compute → 13
+P.C. / warrant computer opened → 13
 issued → 14
 inconclusive → 15
 final city → 16 once

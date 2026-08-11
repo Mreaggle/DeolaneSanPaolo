@@ -16,6 +16,7 @@ export interface City {
   coordinates: { x: number; y: number };
   allowedPlaceIds: readonly string[];
   artworkAssetId: string;
+  brief: string;
   facts: readonly ClueFact[];
 }
 

@@ -40,6 +40,39 @@ const rows: readonly CityRow[] = [
   ['oslo', 'Oslo', 'Noruega', 'europe', .51, .18, 'Trocaram dinheiro por coroas norueguesas.', 'Perguntaram por fiordes e navios viquingues.', 'Queriam ver esculturas no parque Vigeland.']
 ];
 
+const briefs: Readonly<Record<string, string>> = {
+  'mexico-city': 'Grande metrópole de planalto, reúne universidades, manufatura, serviços e uma vida cultural marcada por mercados, artes populares e culinária regional.',
+  london: 'Centro internacional de finanças, imprensa e artes cênicas, combina bairros históricos com tecnologia, moda e uma extensa economia de serviços.',
+  moscow: 'Metrópole continental de forte tradição literária e musical, concentra pesquisa, engenharia, administração e grandes instituições culturais.',
+  istanbul: 'A herança bizantina e otomana convive com comércio marítimo, oficinas têxteis, gastronomia e uma movimentada produção cultural contemporânea.',
+  baghdad: 'Capital de antiga tradição intelectual, mantém papel central na administração, no comércio, nas universidades, na literatura e nas artes do país.',
+  tokyo: 'Uma das maiores economias urbanas do mundo, articula tecnologia, finanças, mídia, design e costumes comunitários em ritmo intenso.',
+  'port-moresby': 'Capital tropical voltada à administração e ao comércio portuário, com serviços ligados a mineração, pesca e à diversidade cultural do país.',
+  'new-delhi': 'Centro político planejado que reúne administração, diplomacia, artesanato, serviços modernos e uma culinária formada por muitas regiões indianas.',
+  'buenos-aires': 'A capital portenha combina editoras, teatro, design, indústria alimentícia e uma vida urbana conhecida por livrarias e cafés movimentados.',
+  sydney: 'Cidade costeira de economia diversificada, destaca-se em universidades, audiovisual, tecnologia, turismo e serviços profissionais.',
+  'san-marino': 'Pequeno Estado europeu cuja economia mistura turismo, filatelia, cerâmica, bancos e manufaturas de escala familiar.',
+  singapore: 'Centro comercial e logístico de alta densidade, reúne finanças, indústria eletrônica, pesquisa e uma cultura culinária de muitas comunidades.',
+  rome: 'Capital administrativa e cultural com presença marcante de cinema, moda, gastronomia, universidades e ofícios preservados por gerações.',
+  reykjavik: 'Cidade compacta onde pesca, energia renovável, tecnologia e turismo convivem com uma ativa produção de música e literatura.',
+  beijing: 'Grande centro político e acadêmico, reúne pesquisa, tecnologia, manufatura avançada e tradições de ópera, caligrafia e culinária do norte.',
+  montreal: 'Polo de indústrias criativas, jogos digitais, pesquisa aeroespacial e festivais, com bairros que preservam identidades culturais variadas.',
+  lima: 'Capital costeira de forte vocação comercial, reúne têxteis, produção editorial, serviços e uma cozinha urbana formada por muitas influências.',
+  'new-york': 'Metrópole global de finanças, mídia, teatro, tecnologia e comércio, formada por bairros de comunidades vindas de muitas partes do mundo.',
+  paris: 'Centro de moda, design, pesquisa, gastronomia e artes, com intensa atividade editorial e uma extensa rede de pequenos comércios.',
+  colombo: 'Capital comercial com economia apoiada em serviços, transporte portuário, têxteis e mercados que refletem a diversidade cultural da ilha.',
+  budapest: 'Polo regional de engenharia, indústria farmacêutica, cinema e serviços, conhecido também por cafés e uma longa tradição musical.',
+  kathmandu: 'Centro administrativo e artesanal onde turismo, comércio, festivais religiosos e oficinas familiares sustentam grande parte da vida urbana.',
+  bangkok: 'Metrópole de logística, serviços, manufatura leve e entretenimento, com bairros comerciais que funcionam do amanhecer até tarde da noite.',
+  cairo: 'Maior centro urbano do mundo árabe, concentra cinema, televisão, comércio, universidades, indústria têxtil e uma intensa vida de bairro.',
+  athens: 'Capital de economia apoiada em administração, navegação, turismo, alimentos e serviços, com produção cultural ativa durante todo o ano.',
+  'rio-de-janeiro': 'Cidade de forte economia criativa, reúne audiovisual, música, turismo, serviços e centros de pesquisa em uma paisagem urbana diversa.',
+  kigali: 'Capital organizada e em rápida transformação, investe em tecnologia, serviços, processamento de café e pequenos negócios regionais.',
+  bamako: 'Centro administrativo e comercial com mercados de tecidos, oficinas, produção artesanal e uma cena musical de grande influência regional.',
+  moroni: 'Capital insular cuja atividade combina pesca, agricultura tropical, comércio regional, serviços públicos e pequenos negócios familiares.',
+  oslo: 'Centro de energia, navegação, tecnologia marítima e design, com políticas urbanas voltadas à pesquisa e à qualidade dos espaços públicos.'
+};
+
 export const cities: readonly City[] = rows.map((row, index) => {
   const [id, name, country, region, x, y, ...facts] = row;
   const rotated = [...allPlaces.slice(index % allPlaces.length), ...allPlaces.slice(0, index % allPlaces.length)];
@@ -47,6 +80,7 @@ export const cities: readonly City[] = rows.map((row, index) => {
     id, name, country, region, coordinates: { x, y },
     allowedPlaceIds: rotated.slice(0, 8),
     artworkAssetId: `city-${id}`,
+    brief: briefs[id]!,
     facts: facts.map((text, factIndex) => ({
       id: `${id}-fact-${factIndex + 1}`,
       text,
@@ -57,4 +91,3 @@ export const cities: readonly City[] = rows.map((row, index) => {
 });
 
 export const cityIds = cities.map((city) => city.id);
-

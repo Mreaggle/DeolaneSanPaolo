@@ -377,6 +377,9 @@ interface City {
 
   artworkAssetId: AssetId;
 
+  /** Cultural and economic orientation text; never reused as a clue. */
+  briefKey: I18nKey;
+
   postcardDescriptionKeys: I18nKey[];
 
   flags?: string[];

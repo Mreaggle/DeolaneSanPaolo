@@ -16,6 +16,10 @@ const enterFirstCase = async (page: import('@playwright/test').Page, url = './')
   await page.getByRole('button', { name: 'INICIAR INVESTIGAÇÃO' }).click();
 };
 
+const expectAudioCue = async (page: import('@playwright/test').Page, cue: string) => {
+  await expect(page.locator('.game-stage')).toHaveAttribute('data-audio-cue', cue);
+};
+
 test('abre o prólogo e entra no primeiro caso', async ({ page }, testInfo) => {
   await page.goto('./');
   await expect(page.getByRole('heading', { name: /DEOLANE/ })).toBeVisible();
@@ -23,7 +27,8 @@ test('abre o prólogo e entra no primeiro caso', async ({ page }, testInfo) => {
   await expect(page.getByRole('navigation', { name: 'Ações de investigação' })).toBeVisible();
   await expect(page.getByText('AGÊNCIA FEDERAL', { exact: true })).toBeVisible();
   await expect(page.locator('.scene > img')).toBeVisible();
-  await expect(page.locator('.city-curiosities li')).toHaveCount(2);
+  await expect(page.locator('.city-brief')).toBeVisible();
+  await expect(page.locator('.city-brief li')).toHaveCount(0);
   await page.screenshot({ path: `test-results/gameplay-${testInfo.project.name}.png` });
 });
 
@@ -45,7 +50,26 @@ test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ 
   await expect(page.getByRole('button', { name: /VER/ })).toBeEnabled();
   await page.getByRole('button', { name: /P\.C/ }).click();
   await expect(page.getByText('COMPUTADOR DE MANDADOS')).toBeVisible();
+  await expectAudioCue(page, 'CRIME_COMPUTER_CALCULATING');
+  const panelBox = await page.locator('.info-panel').boundingBox();
+  const computerBox = await page.locator('.warrant-machine').boundingBox();
+  const firstFilterBox = await page.locator('.warrant-grid select').first().boundingBox();
+  expect(panelBox).not.toBeNull();
+  expect(computerBox).not.toBeNull();
+  expect(firstFilterBox).not.toBeNull();
+  expect(Math.abs(computerBox!.x - panelBox!.x)).toBeLessThanOrEqual(1);
+  expect(Math.abs(computerBox!.y - panelBox!.y)).toBeLessThanOrEqual(1);
+  expect(Math.abs(computerBox!.width - panelBox!.width)).toBeLessThanOrEqual(1);
+  expect(Math.abs(computerBox!.height - panelBox!.height)).toBeLessThanOrEqual(1);
+  expect(firstFilterBox!.x).toBeGreaterThan(computerBox!.x);
+  expect(firstFilterBox!.y).toBeGreaterThan(computerBox!.y);
+  expect(firstFilterBox!.x + firstFilterBox!.width).toBeLessThan(computerBox!.x + computerBox!.width);
+  expect(firstFilterBox!.y + firstFilterBox!.height).toBeLessThan(computerBox!.y + computerBox!.height);
   await expect(page.getByRole('button', { name: /P\.C/ }).locator('img')).toHaveAttribute('src', /icon-pc\.png/);
+  await page.locator('.warrant-grid select').first().selectOption({ index: 1 });
+  await expectAudioCue(page, 'CRIME_COMPUTER_CALCULATING');
+  await page.getByRole('button', { name: 'COMPUTAR MANDADO' }).click();
+  await expectAudioCue(page, 'WARRANT_INCONCLUSIVE');
   await expect(page.getByRole('button', { name: /VER/ })).toBeEnabled();
   await expect(page.getByRole('button', { name: /PARTIR/ })).toBeEnabled();
   await expect(page.getByRole('button', { name: /BUSCAR/ })).toBeEnabled();
@@ -58,7 +82,7 @@ test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ 
   expect(mapFit).toBe('fill');
   await page.locator('.destination-list button').first().click();
   await expect(page.getByText('EM TRÂNSITO')).toBeVisible();
-  await expect(page.locator('.city-curiosities li')).toHaveCount(2, { timeout: 5_000 });
+  await expect(page.locator('.city-brief')).toBeVisible({ timeout: 5_000 });
 });
 
 test('marca local visitado e permite reler a mesma pista sem custo', async ({ page }) => {
@@ -117,24 +141,38 @@ test('percorre um caso funcional e mantém as novas animações legíveis', asyn
   await enterFirstCase(page, `./?caseSeed=${seed}`);
 
   await page.getByRole('button', { name: /P\.C/ }).click();
+  await expectAudioCue(page, 'CRIME_COMPUTER_CALCULATING');
   for (const category of categories) {
     await page.getByLabel(traitLabels[category]).selectOption(culprit.traits[category]);
   }
+  await expectAudioCue(page, 'CRIME_COMPUTER_CALCULATING');
   await page.getByRole('button', { name: 'COMPUTAR MANDADO' }).click();
   await expect.poll(async () => page.evaluate(() => JSON.parse(localStorage.getItem('deolane-san-paolo.save') ?? '{}').activeCase?.runtime?.activeWarrantSuspectId)).toBe(culprit.id);
   await expect(page.getByText(new RegExp(`MANDADO EMITIDO PARA ${culprit.name.toUpperCase()}`))).toBeVisible();
+  await expectAudioCue(page, 'WARRANT_ISSUED');
 
   for (let index = 1; index < definition.route.length; index += 1) {
     const city = content.cities.find((candidate) => candidate.id === definition.route[index])!;
     await page.getByRole('button', { name: /PARTIR/ }).click();
     await page.locator('.destination-list button').filter({ hasText: city.name }).click();
     await expect(page.getByText('EM TRÂNSITO')).toBeVisible();
+    await expectAudioCue(page, 'AIRPLANE_TRAVEL');
     await page.waitForTimeout(1_150);
     await expect(page.getByText('EM TRÂNSITO')).toBeVisible();
-    await expect(page.locator('.city-curiosities')).toBeVisible({ timeout: 5_000 });
+    await expect(page.locator('.city-brief')).toBeVisible({ timeout: 5_000 });
     if (index === definition.route.length - 2) {
+      await expectAudioCue(page, 'SUSPICIOUS_HENCHMAN');
       await expect(page.locator('.henchman-crossing')).toBeVisible();
       await expect(page.getByText(/CAPANGA DA T\.C\.C\./)).toBeVisible();
+      await page.getByRole('button', { name: /BUSCAR/ }).click();
+      await page.locator('.place-list button').first().click();
+      await expectAudioCue(page, 'CULPRIT_VERY_CLOSE');
+      await page.locator('.speech .typewriter').click();
+      await page.getByRole('button', { name: 'OUTRO LOCAL' }).click();
+    } else if (index === definition.route.length - 1) {
+      await expectAudioCue(page, 'FINAL_CITY');
+    } else {
+      await expectAudioCue(page, 'HOT_TRAIL');
     }
   }
 
@@ -142,6 +180,25 @@ test('percorre um caso funcional e mantém as novas animações legíveis', asyn
   await page.getByRole('button', { name: /BUSCAR/ }).click();
   await page.locator('.place-list button').filter({ hasText: hideout.name }).click();
   await expect(page.locator('.result-animation')).toBeVisible();
+  await expectAudioCue(page, 'CRIMINAL_REVEALED');
   await expect(page.getByRole('button', { name: 'AGUARDE A SEQUÊNCIA...' })).toBeDisabled();
   await expect(page.getByRole('button', { name: 'RELATÓRIO À SEDE' })).toBeEnabled({ timeout: 5_000 });
+  await expectAudioCue(page, 'CASE_CLOSED');
+});
+
+test('troca imediatamente a viagem por pista fria ao chegar a uma cidade errada', async ({ page }) => {
+  const seed = 'cold-trail-audio';
+  const definition = generateCase(createProfile('Detetive Bia'), seed, content);
+  const start = definition.route[0]!;
+  const correct = definition.route[1]!;
+  const wrong = definition.cities[start]!.travelCandidates.find((cityId) => cityId !== correct)!;
+  const wrongCity = content.cities.find((city) => city.id === wrong)!;
+
+  await enterFirstCase(page, `./?caseSeed=${seed}`);
+  await page.getByRole('button', { name: /PARTIR/ }).click();
+  await page.locator('.destination-list button').filter({ hasText: wrongCity.name }).click();
+  await expectAudioCue(page, 'AIRPLANE_TRAVEL');
+  await expect(page.locator('.city-brief')).toBeVisible({ timeout: 5_000 });
+  await expect(page.getByText(/Pista fria/)).toBeVisible();
+  await expectAudioCue(page, 'COLD_TRAIL');
 });
