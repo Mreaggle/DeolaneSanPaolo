@@ -1,0 +1,14 @@
+{
+  "assetId": "rank-ace-detective-badge",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "a6aba4684268692b33ee44ae6d59e05594a4cd6f1c60e9d48b9de068f752d172",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/magglass.png",
+    "references/carmen_sandiego_DOS/www/detective_raw.png"
+  ],
+  "generatedAt": "2026-08-11T03:59:31.985Z",
+  "originalOutputSha256": "a3dea0294ed253dcce2abf82e99044983ff4be840308451a12877303f9a7ef5a",
+  "finalOutputSha256": "1ccf5ead691d3969c89ec656b9a9147e843c88732ca4cb8775e4a7a1bfe119f9",
+  "postprocessVersion": 1
+}

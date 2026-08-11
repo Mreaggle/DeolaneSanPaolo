@@ -1,0 +1,14 @@
+{
+  "assetId": "suspect-cleitinho-matador-dossier",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "7d6da0f12d3f06a92360c65ecde78fd240613b6058b190e87b17f50e5ca465c4",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/profiles/carmen_sandiego.png",
+    "references/carmen_sandiego_DOS/www/profiles/len_red_bulk.png"
+  ],
+  "generatedAt": "2026-08-11T04:56:05.331Z",
+  "originalOutputSha256": "a848a7966db2d11a3677456a0493aec8c6f720c48a01fb4bf0a245a06b9328f9",
+  "finalOutputSha256": "126020d0e9785ad7480dc751de3e6abb5363eaaf157d13a241feed436eb24de4",
+  "postprocessVersion": 1
+}

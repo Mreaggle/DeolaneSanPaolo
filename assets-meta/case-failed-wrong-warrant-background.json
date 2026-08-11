@@ -1,0 +1,14 @@
+{
+  "assetId": "case-failed-wrong-warrant-background",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "213998a9ce5e0ffb2b6d6548618f6e1964cea22475722b3e55f5caad2922797a",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png"
+  ],
+  "generatedAt": "2026-08-11T03:51:19.443Z",
+  "originalOutputSha256": "970ab7bd0c442c87f089ba621bb9d9491dd8c1cc258beb45fa49d909a64f62f7",
+  "finalOutputSha256": "3a63d1343524a3db54013dbdd8ac1fc66e571c56be611160266e9c2626ec9e9f",
+  "postprocessVersion": 1
+}

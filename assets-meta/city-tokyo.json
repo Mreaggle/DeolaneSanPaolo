@@ -1,0 +1,14 @@
+{
+  "assetId": "city-tokyo",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "7f6abd874ef19df134fd69de6c825af2a6388ea396ba9e97f125a874048460de",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:11:13.741Z",
+  "originalOutputSha256": "6708e640415260a31043868b594dd6892c66c15eb43299a981c5cdf039d9c727",
+  "finalOutputSha256": "bf4d4daa1064c936875e2dc540944760fe5c8651e4c56d7e0cc207279e0f3b7b",
+  "postprocessVersion": 1
+}

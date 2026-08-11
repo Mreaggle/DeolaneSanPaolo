@@ -1,0 +1,14 @@
+{
+  "assetId": "suspect-deolane-san-paolo-encounter",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "34bfb9d75eaeee715eff83623d8170abdf1ba62dcdc4e149f1655efa00fc279e",
+  "referenceAssets": [
+    ".cache/generated-assets/suspect-deolane-san-paolo-dossier.png",
+    "references/carmen_sandiego_DOS/www/profiles/carmen_sandiego.png"
+  ],
+  "generatedAt": "2026-08-11T05:02:52.655Z",
+  "originalOutputSha256": "831a45c0761ae0e5635e29ec389f3ebe6fbb74e9671e83091e5c12241f3ccd0d",
+  "finalOutputSha256": "61bb8094d3519eaf066b145eafd4d684914327d041f29d5ac03fa3ca2a287b18",
+  "postprocessVersion": 1
+}

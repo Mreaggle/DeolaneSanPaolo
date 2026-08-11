@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-sports-club-coach",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "959bc49eab793ae22418649b5bc5ec3481fa10de02ae3fe718f77f1aa9c023b4",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:49:32.998Z",
+  "originalOutputSha256": "1fca4b3005d2a1784c13346fa218c850277300c5ef49ed358b12cd8c67c2f946",
+  "finalOutputSha256": "40a1c2171aa6ae8b7bedb6e87111f3d01e96c12b6d1926bd2e7d866888d6e88f",
+  "postprocessVersion": 1
+}

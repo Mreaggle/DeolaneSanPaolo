@@ -1,0 +1,14 @@
+{
+  "assetId": "suspect-paulo-escolar-dossier",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "4e925504ddd98fff96a5c7ccb300391c82edf86ebdecd4a1d5ad8e56f5c5980d",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/profiles/carmen_sandiego.png",
+    "references/carmen_sandiego_DOS/www/profiles/len_red_bulk.png"
+  ],
+  "generatedAt": "2026-08-11T04:55:02.932Z",
+  "originalOutputSha256": "7626b33665e3ed273a92393020b6d95e038667c724a9da27b6bb4ebe4d21a5f3",
+  "finalOutputSha256": "dafb1f90b543e9edf89e78ad1511cbd95203ce79a02280e6d464d3e93aa134e5",
+  "postprocessVersion": 1
+}

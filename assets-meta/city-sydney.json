@@ -1,0 +1,14 @@
+{
+  "assetId": "city-sydney",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "04387460d9f3505faf96e7f6b9790986bd6fd1807c1546c7bc994d8c3839923d",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:13:46.839Z",
+  "originalOutputSha256": "e867ce0e43c82ff8ae2b2330b17d593578d656967cbac46e0eaf4f0327ed681f",
+  "finalOutputSha256": "28117c84d510ad5f741c96466578b066d22e7aee9a261f294624c7bd631878cb",
+  "postprocessVersion": 1
+}

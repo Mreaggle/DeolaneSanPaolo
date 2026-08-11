@@ -1,0 +1,14 @@
+{
+  "assetId": "city-lima",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "da1e92290d59696b932a89aaa0eed53e8a98ea4279a24414430a9ab820db54b4",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:18:00.782Z",
+  "originalOutputSha256": "fb07f2c1f47aee132f16f22fd000a44ac287fe3aafc29018dfec3b494434c0a8",
+  "finalOutputSha256": "e4f574f020cb0596f2208c656f9e1eb48a912dcdd11f27460ca3b36e001cf4c5",
+  "postprocessVersion": 1
+}

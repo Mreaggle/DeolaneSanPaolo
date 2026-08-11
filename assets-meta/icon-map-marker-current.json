@@ -1,0 +1,14 @@
+{
+  "assetId": "icon-map-marker-current",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "f6dcdb4b85a8762d01b6bdaab8793ebaea28be209f01a712b117da1e042a6695",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/magglass.png",
+    "references/carmen_sandiego_DOS/www/detective_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:03:26.912Z",
+  "originalOutputSha256": "50f4c2a038314e5f7cf3e662d2fd082c931a3a65191d206b5d84dd58b98d43e1",
+  "finalOutputSha256": "8cbd8136ba0e27379a6bda04292d83595595c45d6cebd2980d42e53b40d50c53",
+  "postprocessVersion": 1
+}

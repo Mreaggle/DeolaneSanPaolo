@@ -1,0 +1,14 @@
+{
+  "assetId": "city-montreal",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "2e65b1c6c2ba9bf27dc7865e66ea9190a1e0036c1977c93cb78c484758f30edc",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:17:26.831Z",
+  "originalOutputSha256": "4e874adb29fd5cca3b752eb7e221e6ee59e220c08ad45fafb51dddfb0f139e95",
+  "finalOutputSha256": "a00c5c178b2b81cb7f23a974a0e90253ff10a3e4f0ec8e5777c021adeeb7c552",
+  "postprocessVersion": 1
+}

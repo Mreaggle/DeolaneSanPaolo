@@ -1,0 +1,14 @@
+{
+  "assetId": "case-failed-no-warrant-background",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "16a467db19f3a4975edbe822058f16a4a989da0334736c3b94624a17503dc62e",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png"
+  ],
+  "generatedAt": "2026-08-11T03:50:36.041Z",
+  "originalOutputSha256": "e127f419e543a149b2a73974f8deeff05a7c71174e8149477ed44fd6bdc4bdac",
+  "finalOutputSha256": "272f0c9e5e40d8df459012b63d7291d6b67a13388f497ed7f3422c10c78063a0",
+  "postprocessVersion": 1
+}

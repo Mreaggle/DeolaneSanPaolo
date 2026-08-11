@@ -1,0 +1,14 @@
+{
+  "assetId": "item-silver-compass",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "017f43d028054037cb714c2b983d1bc91e613471d6d09bd190ce185b5f60ad3d",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:07:54.141Z",
+  "originalOutputSha256": "1da83e7a4aa8562d5dee46f2f0576a378a6c1914ba4c160b1c67a49a85dcfaca",
+  "finalOutputSha256": "aec9ea6d7094e75591405da05c93be98ee10825ce719f0a8122e8660724449d8",
+  "postprocessVersion": 1
+}

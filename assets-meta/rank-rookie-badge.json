@@ -1,0 +1,14 @@
+{
+  "assetId": "rank-rookie-badge",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "17187dde3ff0be8bd9a58adfa879439f701d6cca24c71db1aa995b0cd5271ed7",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/magglass.png",
+    "references/carmen_sandiego_DOS/www/detective_raw.png"
+  ],
+  "generatedAt": "2026-08-11T03:57:06.372Z",
+  "originalOutputSha256": "3118509c20f01f8e0cff55ba1936ca27bdf4b497c1de2104134bbc305c405bde",
+  "finalOutputSha256": "58922d8619f88c19e3dd473876bfb8e9661077d041ffadd559264806e69c928f",
+  "postprocessVersion": 1
+}

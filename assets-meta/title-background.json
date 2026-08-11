@@ -1,0 +1,15 @@
+{
+  "assetId": "title-background",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "b2887914ae59809576d6e7b88849e82a25408c1d93b95139342e84c33ca23b6a",
+  "referenceAssets": [
+    ".cache/generated-assets/title-background-base.png",
+    ".cache/generated-assets/suspect-deolane-san-paolo-dossier.png",
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png"
+  ],
+  "generatedAt": "2026-08-11T05:16:01.475Z",
+  "originalOutputSha256": "d7c257738ec098c1b5c5b3963bd7f04297903bdf03bee5d7e1ba6fe88ab870d4",
+  "finalOutputSha256": "eedddae3f0ec798328a5b44705e33b6989251d973497b400d9f3b99da5663ab3",
+  "postprocessVersion": 1
+}

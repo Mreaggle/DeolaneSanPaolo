@@ -1,0 +1,14 @@
+{
+  "assetId": "city-athens",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "529dc09cc3af182ef6413a2f5ce4ebf18aeb395482a13aa95d322c913ef8ecc0",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:22:58.640Z",
+  "originalOutputSha256": "d2df1e3054ebf7cd19c55a5e69d2a7237bf278d257176bedb3b968bcd3f59704",
+  "finalOutputSha256": "dc8ef4102bd1c957bd667e4607449a69af54f766d04b980d75ad3cac13d977ef",
+  "postprocessVersion": 1
+}

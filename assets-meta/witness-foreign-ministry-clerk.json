@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-foreign-ministry-clerk",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "d83bfce8bfadf3d14ad2f8ce05e245afbf779f57097a3794c2dad080f1568c54",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:35:34.372Z",
+  "originalOutputSha256": "48b7d707c6fea753d8e7f354dff099930c5caba07b3deb28c539bd23ebec8637",
+  "finalOutputSha256": "59361349e52e2ba6ab6e8e24a60e20e2c0258d1902b50cfc68487f2edccc264d",
+  "postprocessVersion": 1
+}

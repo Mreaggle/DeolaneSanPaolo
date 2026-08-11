@@ -1,0 +1,14 @@
+{
+  "assetId": "item-obsidian-idol",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "6b972990395da6a0ee32b965b3ee2aed28cfdb7cdc10211f3c995dddb3867c2c",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:07:21.338Z",
+  "originalOutputSha256": "389973b9ad8592e197d4599e9cce4da4520d8707251c7fe84af50a1ceaf9f9da",
+  "finalOutputSha256": "12a94511771c6515ec0a0544d75c93bcfc3a1309dd934395694dc0b58affb2d1",
+  "postprocessVersion": 1
+}

@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-stock-exchange-analyst",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "0572e92af7be37de1d073ca8c6dfa22e5f9680496f571c2cc40927ef91f2d716",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:52:10.896Z",
+  "originalOutputSha256": "3f33fd490e39c751c131d8b483cff105ac274147dbfc29541794a0502fd41eb5",
+  "finalOutputSha256": "3a6e857d3217fe47ea408a28860f06cc509c3e1d488b69179ed7b9c19f15bc43",
+  "postprocessVersion": 1
+}

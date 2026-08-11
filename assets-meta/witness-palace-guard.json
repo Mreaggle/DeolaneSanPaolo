@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-palace-guard",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "dd53b126562bbe4f13a0b904254a4f0752710c2468566d62ed75247cd0eabb98",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:46:54.816Z",
+  "originalOutputSha256": "647ff5de0b9af5d3414c11b740c07e6def28d155741b5d46d095175de295422f",
+  "finalOutputSha256": "055d96ebfdbc2e1cd5b6c497a9cbb5de608b892078a73d6b31238b9960e51aa8",
+  "postprocessVersion": 1
+}

@@ -1,0 +1,14 @@
+{
+  "assetId": "city-mexico-city",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "143f3129431f33d132be1a06dcf3a2ae84991c52ffccf918925aec4f1bf3121c",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:08:18.002Z",
+  "originalOutputSha256": "84e4a23b9ee2789e25f1c72d96fdf69e6214d700e9986c172bab059fd5528656",
+  "finalOutputSha256": "07c0fa5a88765def7f6f4296db80527a4f98b82271bcdc29376f175738ec2582",
+  "postprocessVersion": 1
+}

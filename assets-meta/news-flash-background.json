@@ -1,0 +1,14 @@
+{
+  "assetId": "news-flash-background",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "32c4580aaad022bbb8a7d86352b27b9a441d7be5d2da91b6f54f4fedb019d14b",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png"
+  ],
+  "generatedAt": "2026-08-11T03:47:52.200Z",
+  "originalOutputSha256": "70db90a72728b55fdcec719a831f209741d2bf365cc47a24b3f7e78c4e784de3",
+  "finalOutputSha256": "30b435aaabccc95fef0f6efaf8812c6fe66bc305b9eed20aa67d3516dfd74642",
+  "postprocessVersion": 1
+}

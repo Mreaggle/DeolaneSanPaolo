@@ -1,0 +1,14 @@
+{
+  "assetId": "item-marble-bust",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "17a791cc1f44d7199a1ca3a17cecf796d56c5773ce257a50b74a100d5afc83db",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:11:42.499Z",
+  "originalOutputSha256": "3783e341cb72d5f77b409ae9d05f0512d3d4c2964d07ed88a768125abd01a801",
+  "finalOutputSha256": "83231b47fee593824e740e2d4aa9ff97b4f3fdf1efd7d3db72a796e1fad62819",
+  "postprocessVersion": 1
+}

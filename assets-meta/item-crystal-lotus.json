@@ -1,0 +1,14 @@
+{
+  "assetId": "item-crystal-lotus",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "b538e2ba807ed5ff093ef0952333efd88e86836b23feb64eb0131c8b7d66197c",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:09:39.518Z",
+  "originalOutputSha256": "3a80a23e770610dc61b51fbaf9e6e2126b981a4464d911a2523ead1151d94c4e",
+  "finalOutputSha256": "3b40d1b5957b7627cc82b28fa60d60d27044fa620a621fd318e5bb20286f5e41",
+  "postprocessVersion": 1
+}

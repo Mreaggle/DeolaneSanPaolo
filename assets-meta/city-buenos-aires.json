@@ -1,0 +1,14 @@
+{
+  "assetId": "city-buenos-aires",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "c6d8c4c32d73f75afd2ade25d8b68685abbdb3aa1aaae82a3155c88cf968befe",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:13:06.739Z",
+  "originalOutputSha256": "424e78e736f12d4ce2ffa9a001a836fe23f539bb926b54142e5c0695854d2f81",
+  "finalOutputSha256": "8ba3d236a33b2cbf70268e03662183f2b5713094c9780c2978ff8c0ec2d45c3f",
+  "postprocessVersion": 1
+}

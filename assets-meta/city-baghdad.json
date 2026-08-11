@@ -1,0 +1,14 @@
+{
+  "assetId": "city-baghdad",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "8f05d355591427c913a45bd9d521d4d2b7e0f64463c00987e622e9135cfac6c2",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:10:39.668Z",
+  "originalOutputSha256": "e817c4fcd1ac3fa908e0f26301dbbb586e18c75341f89ff086710c77e848d640",
+  "finalOutputSha256": "4623ee16a479602e394c3ba596e48f0fd8ca4b4d64f58b00c48dc0f3e00601a8",
+  "postprocessVersion": 1
+}

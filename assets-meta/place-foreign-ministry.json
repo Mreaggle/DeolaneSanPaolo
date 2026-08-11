@@ -1,0 +1,14 @@
+{
+  "assetId": "place-foreign-ministry",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "c25a1ec0d534dd0bd9d6b0efa5260716f31b79b5ae55b06fbbbff6373ca82e5d",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/harbor_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:27:32.522Z",
+  "originalOutputSha256": "440ae44f2922b98bc3cb1c62345bc3e281a63751fe2531e5dbfbcb6f2c1be977",
+  "finalOutputSha256": "e025d599b61c5d6e35b40a6ff99de8ef6606164c0d60462e087796f99acf0cf2",
+  "postprocessVersion": 1
+}

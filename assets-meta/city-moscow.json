@@ -1,0 +1,14 @@
+{
+  "assetId": "city-moscow",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "61ed5e5042b85860e8228d71ca9d9cb795a016b09a729e42a26bfb61db5c82dc",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:09:26.343Z",
+  "originalOutputSha256": "342c662e3c71970d51ee38fb49c6c1ad12e7e7dc92ecbb2b0608b0aa67eb6d3c",
+  "finalOutputSha256": "8af1f504fd85148580779b63cb9f841e14cf8c1fef19a28e73ca9cf8adf35b2f",
+  "postprocessVersion": 1
+}

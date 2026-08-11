@@ -1,0 +1,14 @@
+{
+  "assetId": "agency-clerk-portrait",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "a6421ff992410e98493fbe2388e959d614dc92d389feaeccf561abcac9005441",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png"
+  ],
+  "generatedAt": "2026-08-11T03:53:40.903Z",
+  "originalOutputSha256": "1910319a09894291c1bbead435ff4c83a47dd975d5af871a8f2faf9512b5630f",
+  "finalOutputSha256": "6f2ddd8293cf73f616fe87ee7d6cacdd7c2d58a85d6653e71a5b89a60a38f992",
+  "postprocessVersion": 1
+}

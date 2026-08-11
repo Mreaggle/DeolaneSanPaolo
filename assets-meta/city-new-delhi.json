@@ -1,0 +1,14 @@
+{
+  "assetId": "city-new-delhi",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "d8394cd93f75b62dc278e2f52d279a6d97d68833891ae1cd6be22188881225f5",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:12:33.860Z",
+  "originalOutputSha256": "b68b922600ef4d793dbd7d46cdf1dad82254756f2b67bac993d463e65871c8d0",
+  "finalOutputSha256": "d1f948b74dbd67692037c542879943b2d9fad57e39b776f81a0c4c66f02a56ce",
+  "postprocessVersion": 1
+}

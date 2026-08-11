@@ -1,0 +1,14 @@
+{
+  "assetId": "city-san-marino",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "735ea1d3e111c9e57c5b643c52e3cf0d2cb772c05bbc3a90933fe57dac84eacf",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:14:18.645Z",
+  "originalOutputSha256": "0495c671eb69ad63835b2fe1763d72e9aece1abbff9b4f33ddb8636713e7371e",
+  "finalOutputSha256": "d58c8015794b3e48671ea7f30dbf123c2100828cab975c289dfaaa118b035bb0",
+  "postprocessVersion": 1
+}

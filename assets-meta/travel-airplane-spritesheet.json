@@ -1,0 +1,14 @@
+{
+  "assetId": "travel-airplane-spritesheet",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "d3ad664e18d2086ac24e4bcd2e5fe8c1702a37f987447d31ceffed79f5b5144a",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/magglass.png",
+    "references/carmen_sandiego_DOS/www/detective_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:06:04.322Z",
+  "originalOutputSha256": "931e84d3ca4585bcd6230cad056ecb8ae4912b03b8314ed3d87c966bf6ab0095",
+  "finalOutputSha256": "65be2f708a2e1ec79ac6e15d4b9f1fe564ab4334dd6fc0745c3c8e3ae3b2b8ed",
+  "postprocessVersion": 1
+}

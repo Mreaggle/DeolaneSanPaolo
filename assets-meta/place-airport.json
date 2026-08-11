@@ -1,0 +1,14 @@
+{
+  "assetId": "place-airport",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "35a7e2137800bcb9fec51db1f6ec35f339d88d340e8a1f989937b0247c624fed",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/harbor_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:26:31.480Z",
+  "originalOutputSha256": "f35c28ae31f19924d39b3945d9d9b030e83c852774d26d21398a3a14d1c46106",
+  "finalOutputSha256": "697654b5968b8703dc88502bd6682cfabaf26be8c5d6a3f97667f10b75474e06",
+  "postprocessVersion": 1
+}

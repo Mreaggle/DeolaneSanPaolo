@@ -1,0 +1,12 @@
+{
+  "name": "Deolane San Paolo",
+  "short_name": "Deolane",
+  "description": "Investigação geográfica com alma de DOS.",
+  "lang": "pt-BR",
+  "start_url": "/DeolaneSanPaolo/",
+  "scope": "/DeolaneSanPaolo/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#050505",
+  "theme_color": "#050505"
+}

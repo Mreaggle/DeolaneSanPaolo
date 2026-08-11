@@ -1,0 +1,14 @@
+{
+  "assetId": "item-ruby-orb",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "c393805adcd25704e441cd7dfd36bb125a543c9aacd6aa09a2b87b6c4073aed6",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:12:45.485Z",
+  "originalOutputSha256": "6ef36a740870ebb944cd83352aa5fa01431b1c7359b3e473a7dee3ce299c8289",
+  "finalOutputSha256": "53b3e1fde103d9035b7dd4820e184300007dfcd70646da165c3028f3daff6319",
+  "postprocessVersion": 1
+}

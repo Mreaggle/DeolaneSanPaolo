@@ -1,0 +1,14 @@
+{
+  "assetId": "city-istanbul",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "8fde969f40a911bf56246bd9c55ed42918a87c10ea6afa16e887844a591e7b7f",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:10:01.128Z",
+  "originalOutputSha256": "f22a64578d6eb2ad53c4cf653d9204082928fb1c83d9095bb446c91a14006021",
+  "finalOutputSha256": "fb38921c00ddf824e0fef173141d59ba3057c74c33016e3c947c7140b6759439",
+  "postprocessVersion": 1
+}

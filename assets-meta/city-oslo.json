@@ -1,0 +1,14 @@
+{
+  "assetId": "city-oslo",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "25735755fd2df1aaa0b9aa7a52526f6cdebb60475091a0a7e87d326b507839a9",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:26:00.068Z",
+  "originalOutputSha256": "44a93c89812d907cc3019a68d713388e51fe8935050bedde5cb1fc781b83ac92",
+  "finalOutputSha256": "71525264ad696b8de406b34110911b7aea7ec0e06ee6a5d4a14e47346dc79cf3",
+  "postprocessVersion": 1
+}

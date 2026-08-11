@@ -1,0 +1,14 @@
+{
+  "assetId": "city-bangkok",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "9795cbf620bd449f058b445b0d9c5e116ba45175e2845960ac491a3c16fb17e2",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:21:45.588Z",
+  "originalOutputSha256": "32c0a6299d8415c9a4172c8f9f1a2edc5e216b9c7d158dbad9f431495c4a42f6",
+  "finalOutputSha256": "aa0713bccd04f69f567e213df2d6abc828690c014e848b33ff1676d301c961ae",
+  "postprocessVersion": 1
+}

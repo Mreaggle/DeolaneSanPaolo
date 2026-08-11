@@ -1,0 +1,14 @@
+{
+  "assetId": "city-singapore",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "376debf5e8aae2c801883646ee4124119bf50ba0de52d33505d166b33cbd547d",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:14:51.790Z",
+  "originalOutputSha256": "0fb0f60873d928f436970d9b7921b5b6e8595e9e19fa7f97185d3cde4595d56b",
+  "finalOutputSha256": "75dad661006c1f0deb901a30afbc50229a1159584a40832936d24903c2cb4868",
+  "postprocessVersion": 1
+}

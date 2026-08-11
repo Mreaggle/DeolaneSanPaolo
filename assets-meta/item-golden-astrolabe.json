@@ -1,0 +1,14 @@
+{
+  "assetId": "item-golden-astrolabe",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "c7807b27cb6b59537531c8ff3306d22e004190225a48ba65062b17dd8c59f1c8",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:03:24.785Z",
+  "originalOutputSha256": "9df11db2aa1465f5a869d30f0f77e6b7be52629d904a0fad42caf71913251f6a",
+  "finalOutputSha256": "c9bb3716b1600e919627c9cf2bf82552af094200051bec0544599487997b82ac",
+  "postprocessVersion": 1
+}

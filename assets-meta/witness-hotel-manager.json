@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-hotel-manager",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "deef323f36225b719739927316c06400fef39b3cb9ff9d053e0df0b4d53ec33c",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:39:48.984Z",
+  "originalOutputSha256": "5c1fa00e1dcf7a7a593315ef0ca6df4a8a44e666784608da791fe432b6922d11",
+  "finalOutputSha256": "946c87e9fe2e1c47979bc6a0491643e711c952649889f3f07d8509fa71f3c823",
+  "postprocessVersion": 1
+}

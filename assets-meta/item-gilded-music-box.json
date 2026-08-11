@@ -1,0 +1,14 @@
+{
+  "assetId": "item-gilded-music-box",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "8e9559bc1e2a2bb21edf6024e97f45285b08af20e31c286ae798799f64a9f232",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:12:15.943Z",
+  "originalOutputSha256": "a3f53c7022f6ec4f0d7c8bd0150d4d5512e220032b99358f018f4c6f2fb39fa1",
+  "finalOutputSha256": "70ca4b0a47bc3b06b20c193b1b02203622d793f1921688ee2cd4dcbfb6cd67b1",
+  "postprocessVersion": 1
+}

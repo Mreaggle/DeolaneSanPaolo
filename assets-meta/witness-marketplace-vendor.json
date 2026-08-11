@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-marketplace-vendor",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "f09e1cc7d3404e8ebeed5a38b4f61f0399a33cf83cb530ee8ba1a488e7f140ff",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:43:07.454Z",
+  "originalOutputSha256": "64b80e36dcfb5101927c873f06539f6044e1bbdbc8dcfe33088aaa74b2ec3082",
+  "finalOutputSha256": "0cf8337d4c32faf3fd3f4dc2a4c0ee975320e5037d439f51bf50a16f82ba3b5e",
+  "postprocessVersion": 1
+}

@@ -1,0 +1,14 @@
+{
+  "assetId": "city-rio-de-janeiro",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "a5f58c2bce28276c7de593748970b2dce3e69a5952500d27ad3a8badec3d615b",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:23:30.776Z",
+  "originalOutputSha256": "fcd1ae964a48f8a2ce20648dac485f056c033a30028d495c6b23c918b0945646",
+  "finalOutputSha256": "32e358c9cac5b2221cb13ae044bda9937f2dda7912617a4e45528dadeea5b55f",
+  "postprocessVersion": 1
+}

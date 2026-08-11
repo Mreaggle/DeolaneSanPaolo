@@ -1,0 +1,14 @@
+{
+  "assetId": "item-imperial-dagger",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "a7e909d18166c5cc67b1bc4048a545ea8cf95e8f62ee4d50ad42ae25c1dfbf23",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:03:52.295Z",
+  "originalOutputSha256": "56e4bda996d289a75e01195c2d7ee6659579685da1549906b84e1826b3e2fa7e",
+  "finalOutputSha256": "b3281cafdfdb0b538ab9a3b441766fa62133b18a9015daa77eeada0b7b180d11",
+  "postprocessVersion": 1
+}

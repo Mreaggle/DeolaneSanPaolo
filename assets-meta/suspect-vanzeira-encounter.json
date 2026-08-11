@@ -1,0 +1,14 @@
+{
+  "assetId": "suspect-vanzeira-encounter",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "e2a21890ce88de5a815975b389ae1166d72ee72df1d2ea9cc1d3a3e6418b9d15",
+  "referenceAssets": [
+    ".cache/generated-assets/suspect-vanzeira-dossier.png",
+    "references/carmen_sandiego_DOS/www/profiles/carmen_sandiego.png"
+  ],
+  "generatedAt": "2026-08-11T05:01:57.002Z",
+  "originalOutputSha256": "1f5161ec50b0e03de79fbb8753a70ad25134e84cc789d75df6c04b0c32ac0590",
+  "finalOutputSha256": "d36806fe046b7bb293d2eea114e413f7b2864d9a53cd96b6bd51e9ee9d98aad4",
+  "postprocessVersion": 1
+}

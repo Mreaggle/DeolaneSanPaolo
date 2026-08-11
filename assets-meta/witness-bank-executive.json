@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-bank-executive",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "fd7929bef2d8c5538861578424268ad96ede87278a62cf92cef4fba2f0b3927d",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:35:05.709Z",
+  "originalOutputSha256": "d77e30b8ec81a468fc0520c98a2d6d9ea34c36f31b440d3c9b94c09453c74dbc",
+  "finalOutputSha256": "93a60c71545e05b19d444a1f53b29e05075906adf0983c0fd4f7cf2343cb494b",
+  "postprocessVersion": 1
+}

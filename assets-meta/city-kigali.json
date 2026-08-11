@@ -1,0 +1,14 @@
+{
+  "assetId": "city-kigali",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "8b6dddcda74011143b7006b22b1142a20d6015310ac5ea7eda55f38ba179dc57",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:24:02.362Z",
+  "originalOutputSha256": "5a04375714efc35b808413dba48e94de10c587da17e9c8ec4992b8d0da6fbe28",
+  "finalOutputSha256": "005eac1f1aa3bf46033abb1d002b95ff867afc4fac45f7e317d0c142a5304f02",
+  "postprocessVersion": 1
+}

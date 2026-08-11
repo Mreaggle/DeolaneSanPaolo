@@ -1,0 +1,14 @@
+{
+  "assetId": "city-london",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "3e1ff8762c18882c6ce64cd34fadad85304f3c0d86e51c5cbce8a32a90bfb098",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:08:50.974Z",
+  "originalOutputSha256": "16f9666c2c1e10c9d9b3ec170bebd896eade59373414cd570ba0b6fa355b183f",
+  "finalOutputSha256": "e1b8f76e11a694c4278c39505931ea830cda5bbca81b30db3357bbc36d720572",
+  "postprocessVersion": 1
+}

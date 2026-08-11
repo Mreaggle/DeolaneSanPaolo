@@ -1,0 +1,32 @@
+{
+  "name": "deolane-san-paolo",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "npm run check && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:bulk": "vitest run tests/generation/bulk.test.ts",
+    "test:e2e": "playwright test",
+    "assets:analyze": "tsx scripts/analyze-reference-art.ts",
+    "assets:validate": "tsx scripts/validate-assets.ts",
+    "assets:prepare": "tsx scripts/generate-assets.ts --dry-run",
+    "assets:generate": "tsx scripts/generate-assets.ts --run"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@sveltejs/vite-plugin-svelte": "^7.3.0",
+    "@types/node": "^26.2.0",
+    "sharp": "^0.35.3",
+    "svelte": "^5.56.8",
+    "svelte-check": "^4.7.5",
+    "tsx": "^4.23.12",
+    "typescript": "^6.0.3",
+    "vite": "^8.2.1",
+    "vitest": "^4.1.10"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "assetId": "suspect-zeze-do-rap-encounter",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "ad688ce5560a9f839de8f223be7039dc29f8855caf7c0b099d2efd4836608a70",
+  "referenceAssets": [
+    ".cache/generated-assets/suspect-zeze-do-rap-dossier.png",
+    "references/carmen_sandiego_DOS/www/profiles/carmen_sandiego.png"
+  ],
+  "generatedAt": "2026-08-11T05:00:45.070Z",
+  "originalOutputSha256": "af34a946fb82e3c89a269b07c1b3a7f1abce513163e1a44634671e6fe4d59976",
+  "finalOutputSha256": "001c3eabd3e0d909e7127f48ddf2d12c6f7b7c1df744ed674890a8e0d79b2927",
+  "postprocessVersion": 1
+}

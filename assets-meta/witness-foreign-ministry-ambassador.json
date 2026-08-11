@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-foreign-ministry-ambassador",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "fbce332e93c4d9b21003f5dfad6d152bde3873e8bf47db86fcaf2c20d9156762",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:36:39.874Z",
+  "originalOutputSha256": "582164a3d6250915ecea620ee6f8f469cb3fbaac9d4196ac43814ecf9f9dbbb6",
+  "finalOutputSha256": "53e5e88c15a3227033728b22472b879f73b25ef166dcc8c03549162e76ba97a3",
+  "postprocessVersion": 1
+}

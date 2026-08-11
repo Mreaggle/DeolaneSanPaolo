@@ -1,0 +1,14 @@
+{
+  "assetId": "trail-alert-spritesheet",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "bb35c64a371f829aad9ffb1cc3e2d781e9b5f8f7c926f207e73016224d27ca81",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/magglass.png",
+    "references/carmen_sandiego_DOS/www/detective_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:06:34.718Z",
+  "originalOutputSha256": "2a0c577a5711c41a82a233b453b3d232fd4a1ac14e41d90f3e050d83f7a22ab0",
+  "finalOutputSha256": "591d05b2292070c547e631ad24255764206675861c756ce32018ab1d16fa2e1a",
+  "postprocessVersion": 1
+}

@@ -1,0 +1,14 @@
+{
+  "assetId": "rank-private-eye-badge",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "1bf9f3e37f009a4970a262a8d039733a91d51c5a482ab0f8075de3e7bb7bc745",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/magglass.png",
+    "references/carmen_sandiego_DOS/www/detective_raw.png"
+  ],
+  "generatedAt": "2026-08-11T03:58:24.418Z",
+  "originalOutputSha256": "dd16f2c8ff363f567bb60c4bfeda6a0d39dbc83decbba8cebaf094261158c6cc",
+  "finalOutputSha256": "f0b7a7e1a5d0a8872a140e3972d85e1cef314b675a2cb8b16880796e6afac5aa",
+  "postprocessVersion": 1
+}

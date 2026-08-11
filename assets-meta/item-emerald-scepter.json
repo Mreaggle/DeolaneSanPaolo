@@ -1,0 +1,14 @@
+{
+  "assetId": "item-emerald-scepter",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "d2052f37cde8391aad6eeb47e19af17ba6c4d0921f0d749c5fd705c4a16cf13b",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:04:48.812Z",
+  "originalOutputSha256": "c0e1ad9b7987c686b0915de49b9e628849bfeeeae0ec406557eeddd94a51bd72",
+  "finalOutputSha256": "59c761f4b83926f2cecd895e6ca2d6cea2ed56c3e672bd744885092d9836d00d",
+  "postprocessVersion": 1
+}

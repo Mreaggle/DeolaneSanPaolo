@@ -1,0 +1,14 @@
+{
+  "assetId": "place-marketplace",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "380822b9511b4694f18e591c291ddeb3fefbe8bef2849cf5126772ca927932e3",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/harbor_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:29:35.626Z",
+  "originalOutputSha256": "32bde9e8570a1c618964f9fc74c8b43b2c7578345b4a181025c2e3b2d8fa4f3f",
+  "finalOutputSha256": "d05e6510fab4ef96e0e2e9203e4442a1796c43878b380df6405f55ac7a472a94",
+  "postprocessVersion": 1
+}

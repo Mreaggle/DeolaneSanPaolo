@@ -1,0 +1,14 @@
+{
+  "assetId": "item-pearl-diadem",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "fd3fff6f6e2a21aa90ce19c34661bf8d67c21757eb61eee2122cc1a41b87fb00",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:10:08.298Z",
+  "originalOutputSha256": "61b3bb9e4990f15eabd307ddcc49785c8f4e1f0b0b43dfa50edffa84a6a0fdf3",
+  "finalOutputSha256": "f9d827c97d7f89d256601e31d755cd33640a78bb6d3325374353452d179f0edf",
+  "postprocessVersion": 1
+}

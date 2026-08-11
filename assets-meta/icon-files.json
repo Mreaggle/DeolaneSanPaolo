@@ -1,0 +1,14 @@
+{
+  "assetId": "icon-files",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "ad4bc280981d7426fdae4f3398f93b361daee3d4140e4622abfd22a1905ed6f6",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/magglass.png",
+    "references/carmen_sandiego_DOS/www/detective_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:01:03.848Z",
+  "originalOutputSha256": "825d94ab2b74979a4c7498952bd649bc285cbc0b82008809fa839ae9ad846d38",
+  "finalOutputSha256": "323db6ca4b8965e642e8e8a20861739022fb15154ae017d803207111a0dbaf09",
+  "postprocessVersion": 1
+}

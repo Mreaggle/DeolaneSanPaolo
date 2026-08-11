@@ -1,0 +1,14 @@
+{
+  "assetId": "place-harbor",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "b354bc5c6d149dd759ccf52897e58d5846ed89bcb7468e6c3b110513945e0869",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/harbor_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:28:01.865Z",
+  "originalOutputSha256": "2a11175989738dda0c870c66a63824472ffe22e7556a79c5fd4f798cb667f38f",
+  "finalOutputSha256": "b985ba4039da442300402c780897cf1821e241c1bc9f2733a329ce56c08bb0e4",
+  "postprocessVersion": 1
+}

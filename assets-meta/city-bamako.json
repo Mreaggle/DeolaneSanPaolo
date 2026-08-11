@@ -1,0 +1,14 @@
+{
+  "assetId": "city-bamako",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "eee65023a9f9d33dd902d50e37ff3d33d71be89b34da9b43dcb01541dd221063",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:24:40.484Z",
+  "originalOutputSha256": "e749009cb2de2564fd60f684278700e1a489a04f604339bd3bac7109d92a5b99",
+  "finalOutputSha256": "e0a61e96c33da3c64d64f51b0b1c376b9fdc482eb8e5790f5f4dcfe1fe30e405",
+  "postprocessVersion": 1
+}

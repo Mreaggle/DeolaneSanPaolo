@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-airport-pilot",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "923e17dd263651785f1f68c4e0d875525f57e76d9e060a0eb7169a9d037c889b",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:32:20.807Z",
+  "originalOutputSha256": "d0b52719a0a06283ed990e18f9568fa898deff098aba19bdea511385f0deec8f",
+  "finalOutputSha256": "2b94a9ed2d8db36bebe1ad49f1d0be9acd70d7d4b548e3ad3f7a679f54853a9e",
+  "postprocessVersion": 1
+}

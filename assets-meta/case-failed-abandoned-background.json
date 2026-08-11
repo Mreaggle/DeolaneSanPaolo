@@ -1,0 +1,14 @@
+{
+  "assetId": "case-failed-abandoned-background",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "7c26ffbbc03e6b78d80135ed46c99e5d897a104a17b41a40be8c9aa5da361762",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png"
+  ],
+  "generatedAt": "2026-08-11T03:51:54.122Z",
+  "originalOutputSha256": "c56ac96e631c3470d8864a7cde17d8f909c2e91ea5ce068c127ef3dcabc6a005",
+  "finalOutputSha256": "5886309d77e185e9d28c67451d6ceaf15e3613622981f6ffce065519428831bb",
+  "postprocessVersion": 1
+}

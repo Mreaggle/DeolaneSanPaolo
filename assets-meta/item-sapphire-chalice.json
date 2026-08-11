@@ -1,0 +1,14 @@
+{
+  "assetId": "item-sapphire-chalice",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "80325289712e257a6c8d16243053ece0f085879a366b1190093250f42145adfc",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:08:24.951Z",
+  "originalOutputSha256": "a498bf0ab9338623686761dc7698254ea51074da8250d085115548e36c15b67a",
+  "finalOutputSha256": "db2000e22ce481abf12d714b2da9bce1f591100927b382ad262a4644f77af675",
+  "postprocessVersion": 1
+}

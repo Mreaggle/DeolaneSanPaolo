@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-sports-club-player",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "963a6d47c5712f6f4295bb3280e40ed8f003ba62bf1971be44d16a10a440afb8",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:50:07.869Z",
+  "originalOutputSha256": "702c967781fb2dc68abd4a3c724ed262c849c095a5a5e410444e7c1652a80363",
+  "finalOutputSha256": "41b34145c218bca453d7f1bd5354bdba43669f36934b3f494335d8cf12a8023b",
+  "postprocessVersion": 1
+}

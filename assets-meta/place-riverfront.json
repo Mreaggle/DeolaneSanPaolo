@@ -1,0 +1,14 @@
+{
+  "assetId": "place-riverfront",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "f132a027e690e06e3923b832e7978c4309992b574154b7dc5ae721192f0a5be2",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/harbor_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:31:14.684Z",
+  "originalOutputSha256": "4a34a77ac303c3301dd456fd96d35ce622afed5c76e7406b7b4c22ffd0062ddd",
+  "finalOutputSha256": "5debc8af05964423864f766b5c1392c1bd0cb2819db689aa0040deccf32cf801",
+  "postprocessVersion": 1
+}

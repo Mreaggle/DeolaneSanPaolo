@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-palace-gardener",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "a9648f96ae4c48bc707423a100897c88e282e9a9d71a513d92027205ecce884d",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:47:27.004Z",
+  "originalOutputSha256": "58c3c8a2aa26bd51e8d69fda4611b7e95236b199930c1cd5c6bb7ca06755b697",
+  "finalOutputSha256": "e78fe5d882366698a29a977f704370e3e7e9554f8a871ae5c94a51263bc14d49",
+  "postprocessVersion": 1
+}

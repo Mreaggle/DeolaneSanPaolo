@@ -1,0 +1,14 @@
+{
+  "assetId": "suspect-lua-metrayu-encounter",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "5a35d459c37e7938c373010bf6b22267a47117166818404b8deae26fcbb72987",
+  "referenceAssets": [
+    ".cache/generated-assets/suspect-lua-metrayu-dossier.png",
+    "references/carmen_sandiego_DOS/www/profiles/carmen_sandiego.png"
+  ],
+  "generatedAt": "2026-08-11T04:57:46.167Z",
+  "originalOutputSha256": "372f0cc76fbb0d088df8b2ba2bfb7c5e36d47a490069c8dd200d856cdba8cf71",
+  "finalOutputSha256": "16738af6f1bb8560b2e83a97a98e3e29a2da3958f2dd1a75083567ce2a8ec6fb",
+  "postprocessVersion": 1
+}

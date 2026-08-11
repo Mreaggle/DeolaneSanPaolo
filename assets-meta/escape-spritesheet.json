@@ -1,0 +1,14 @@
+{
+  "assetId": "escape-spritesheet",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "b8d78283d0749fd4918ec16f407fc901f559427cc60d21804b4bfd7ca776aead",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/magglass.png",
+    "references/carmen_sandiego_DOS/www/detective_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:07:42.866Z",
+  "originalOutputSha256": "be0e041bbc3a4acfb703206ba05509fbd8c69d0ebe76b23fc723f1095cf86d4e",
+  "finalOutputSha256": "e5e5dd46da7116f7568e6640942f67ec3ef5fbee8f013921d6c0dc37996ba9c1",
+  "postprocessVersion": 1
+}

@@ -1,0 +1,14 @@
+{
+  "assetId": "assignment-background",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "4e487e59d7e45ba638e91542668ffa6c349de5b519fd2a0ae2426466ab254ba4",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png"
+  ],
+  "generatedAt": "2026-08-11T03:48:23.126Z",
+  "originalOutputSha256": "93a7b7ceac825b67d39afbd8dfdd41edbbfb824055a6a4230cc62c73e51ade6e",
+  "finalOutputSha256": "72a940bba4920f726bd6f0fc98bb8e5d30f9f938cdd9ccdabeb94a5f73324247",
+  "postprocessVersion": 1
+}

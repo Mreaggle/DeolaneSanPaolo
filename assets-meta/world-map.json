@@ -1,0 +1,14 @@
+{
+  "assetId": "world-map",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "f8ae12640efdcb937718241b5eecad1d977da589ac24a780d696d98468228b08",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/world.png",
+    "references/carmen_sandiego_DOS/www/cities/london.png"
+  ],
+  "generatedAt": "2026-08-11T03:54:14.004Z",
+  "originalOutputSha256": "012290ce08b91c01608be54f12b4674bc23da8837e2d82f2e3d716f882a9e918",
+  "finalOutputSha256": "55ef6c3b5e98807122068c2eefe391c62527f5bb23c612819674c60a9b7b4358",
+  "postprocessVersion": 1
+}

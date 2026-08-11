@@ -1,0 +1,14 @@
+{
+  "assetId": "city-paris",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "00a5f2584223711d10963e0550838de27eeb12b6342104ff87c2a77f32365716",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:19:14.960Z",
+  "originalOutputSha256": "ad69f948c4c98e2e009ac25b3897fb23798ff014ab560802e74512ec54ba5914",
+  "finalOutputSha256": "f79abdd89e3dc4fb5470b377d55dc31ebc999fdcb2f8c0613712639b9f0a7dcf",
+  "postprocessVersion": 1
+}

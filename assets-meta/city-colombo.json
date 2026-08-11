@@ -1,0 +1,14 @@
+{
+  "assetId": "city-colombo",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "04318094be2e263c791f5310b0127d2efeff8f49ed5c27d067157f9d9fffa333",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:19:48.527Z",
+  "originalOutputSha256": "23818f6ca58da5487a99296b34ac7e53b94baa0aa0911367258a59324885efff",
+  "finalOutputSha256": "28564abe02c0f0f9618a4934c30e08878d53b0eb2fdb934d6fba50f548df4336",
+  "postprocessVersion": 1
+}

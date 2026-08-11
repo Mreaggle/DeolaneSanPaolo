@@ -1,0 +1,14 @@
+{
+  "assetId": "place-sports-club",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "5331f464cc3dd7abe3dbe87f99544c01463629fcf156cd7d1bf74035448937fb",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/harbor_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:31:46.263Z",
+  "originalOutputSha256": "63b39ca3c91b63471ce083e0accc17a2b9fbb16dd1c132b7f20fe7cc6157ddc1",
+  "finalOutputSha256": "581f682b7dd5b2d644ee0c03221b615cd06dfbcd8588d42c17ac2b69ce70b051",
+  "postprocessVersion": 1
+}

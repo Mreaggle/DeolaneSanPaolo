@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-palace-chamberlain",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "312c7f3a6708ec5308cfcf4557fac70de072833af843892ab86210dae39b9cad",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:46:19.016Z",
+  "originalOutputSha256": "2fbc4e9c7819ac6c94f041d630f3b7459056fe21ceb9776600f60efe14b70d07",
+  "finalOutputSha256": "8b97c782ea9dd2b107bd3443cef3f0784cb6312dbf8cd0d5fc8c4a7f4c6efbf9",
+  "postprocessVersion": 1
+}

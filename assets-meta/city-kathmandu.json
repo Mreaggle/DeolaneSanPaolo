@@ -1,0 +1,14 @@
+{
+  "assetId": "city-kathmandu",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "943391811851cb81667cdd3161b13f86f785f154e59afc8914f952c122ad2998",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:21:11.575Z",
+  "originalOutputSha256": "dd10eaa36f2915ee53a3654b5f6de9f6e4ba22a00f0a4dab0ef57e331005b6dd",
+  "finalOutputSha256": "3f29722ab00f959ef6c6bfd0e96c63ffd76c0bd66df681ea9b0fabffb3fe1c4c",
+  "postprocessVersion": 1
+}

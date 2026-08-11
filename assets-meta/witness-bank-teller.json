@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-bank-teller",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "bd83ee95486bdf2a8a200f191f88c5acf00037dcdfd42fef85d083f23154ea13",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:33:59.058Z",
+  "originalOutputSha256": "024e56ccbbe661c082338077312e892f2383f233993b2cc0e4862285989965cc",
+  "finalOutputSha256": "97a23ba522af0526712113810b3561c874c382baee81e2ca9badf10b64ccad90",
+  "postprocessVersion": 1
+}

@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-library-researcher",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "4b0c456db10e9abce9a3316dc996bb05e846b77f93af7e39ec4c4d2c5affeb2a",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:42:37.590Z",
+  "originalOutputSha256": "5b55e09139aca7cbd54c432611bf6dfd608da66345deb381fa7a86b6b983c7ba",
+  "finalOutputSha256": "190bf3a939f7bd8599b76ac10e6a0b8358ce10119bf5e01283803a0cb3a41cca",
+  "postprocessVersion": 1
+}

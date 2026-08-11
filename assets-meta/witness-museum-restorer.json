@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-museum-restorer",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "35890d5f674fdeb95f8cccf3926cbcee83e825ea5a8ae73f39852edc8a12747e",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:45:45.914Z",
+  "originalOutputSha256": "b3e8be7d9e2363c76e6df052013b2d4cb13eca9819a539232e9b2b7f8e941af3",
+  "finalOutputSha256": "f7be846a178c1858f0c4161979a129fc2b961a4247dd4795874b9b5e820a60e0",
+  "postprocessVersion": 1
+}

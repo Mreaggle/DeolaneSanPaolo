@@ -1,0 +1,14 @@
+{
+  "assetId": "icon-warrant",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "2c8e57d35cd4bb328503bb861d6911c820c3d499c3d82d68b1716018d06f0b36",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/magglass.png",
+    "references/carmen_sandiego_DOS/www/detective_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:02:56.676Z",
+  "originalOutputSha256": "1076ef952895344b7463a6667d0f4068dceef7cb4aa8ccbf3f80a03e907f5f9f",
+  "finalOutputSha256": "2b6153418c9db8f61237b7901f079dcb39a501c6f2af2df6a986119b0772ba06",
+  "postprocessVersion": 1
+}

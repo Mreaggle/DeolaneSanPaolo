@@ -1,0 +1,14 @@
+{
+  "assetId": "city-moroni",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "3f4ade49f2380f351cb138ac606037a802876a99f19f5b143093be0b44ccb184",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:25:22.457Z",
+  "originalOutputSha256": "279e2ec6f75342eadca8787803da087cfb4b908593ab6c9c761c2d2aba7113b6",
+  "finalOutputSha256": "52ead4e84f4b8d42d1069eab9e4afb133b01b2c41ac123716a63b13656405af6",
+  "postprocessVersion": 1
+}

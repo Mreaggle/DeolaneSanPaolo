@@ -1,0 +1,14 @@
+{
+  "assetId": "item-ancient-map-case",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "38405680eb04d2f606233017db42d528f8466d57829715a1ca5d8d7114a07ef9",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:10:45.621Z",
+  "originalOutputSha256": "6fd51c2908fa43bd0f0406776984bfc7181d4e5f13d7e2bf16c8255b238abe73",
+  "finalOutputSha256": "f5c0eef61eb2abcb3cfe1f0e0e3d56399de767c53ce83677eb04bd7d12e93b49",
+  "postprocessVersion": 1
+}

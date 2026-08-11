@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-riverfront-boatman",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "f2e4431875130c377160b2d582cff17a68c83064ceb6d0bd2d55779107668345",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:48:26.747Z",
+  "originalOutputSha256": "2750a0b2549ba902ef9f2033beef833e6c655fd78728781dcfcdf2e100ea3049",
+  "finalOutputSha256": "04c020ba4fc4b0ba0849b8668f4f464086a553258cb4ec28a4e3ad609cd02955",
+  "postprocessVersion": 1
+}

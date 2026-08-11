@@ -1,0 +1,14 @@
+{
+  "assetId": "item-sun-disc",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "687b4fd38c7b2daee9102b629e8a4520b1ff0a9dc2d8e3384f5b9580c020f416",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:05:49.453Z",
+  "originalOutputSha256": "028c0cb2359061b84ceb2bc47ae695ba38e2b90f6229d2d91f7a6b489aa8999e",
+  "finalOutputSha256": "401254242967916c49971da743b1bd9d705b600913ecb314cc57943c70710320",
+  "postprocessVersion": 1
+}

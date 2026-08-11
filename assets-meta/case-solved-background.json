@@ -1,0 +1,14 @@
+{
+  "assetId": "case-solved-background",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "685d3d6279f5aba06630f51070c2b435aaf1bfd7f575b6a3f1e8143170ad78b3",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png"
+  ],
+  "generatedAt": "2026-08-11T03:49:22.404Z",
+  "originalOutputSha256": "22a20a3cff9ab360a2f1ec19c9bc106dc482dd89c616c7918872eb54cdca68d6",
+  "finalOutputSha256": "0b289af89470f674d260f92e8c23f91eed2cfac558874a6eac90dd6936e50d54",
+  "postprocessVersion": 1
+}

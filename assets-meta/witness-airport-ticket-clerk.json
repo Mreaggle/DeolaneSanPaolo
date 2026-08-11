@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-airport-ticket-clerk",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "ee19b046c4f7f577b839321f35fb5053a0cd1afc099dcf35436da2b2e3d527c8",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:32:50.034Z",
+  "originalOutputSha256": "b611b3b08e67d2f0ac899816834f83c83c016df26137553b41cc94e598a8ee37",
+  "finalOutputSha256": "edf2b4f9f7b3226ff2c788be54bd9362e73f378eed42a47234a5f49a7dae9cf9",
+  "postprocessVersion": 1
+}

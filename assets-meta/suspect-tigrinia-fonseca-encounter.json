@@ -1,0 +1,14 @@
+{
+  "assetId": "suspect-tigrinia-fonseca-encounter",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "1360a7752703a86de0e9a7de73d45899d886b1bd76b3cf73d4c6fc112e30132c",
+  "referenceAssets": [
+    ".cache/generated-assets/suspect-tigrinia-fonseca-dossier.png",
+    "references/carmen_sandiego_DOS/www/profiles/carmen_sandiego.png"
+  ],
+  "generatedAt": "2026-08-11T04:59:00.831Z",
+  "originalOutputSha256": "ef7ad6466b34de7c06e881b56cbc762c2ced44c466c73567f1fd98bb4f3b71bc",
+  "finalOutputSha256": "d71ba668a4217d0e6eb905cc5c03cc3e6059c4721b4738acc5f1ff608b75ec2f",
+  "postprocessVersion": 1
+}

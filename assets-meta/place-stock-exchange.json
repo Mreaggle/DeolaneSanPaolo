@@ -1,0 +1,14 @@
+{
+  "assetId": "place-stock-exchange",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "377415c0ca43de0d3205654d05408627be23313943c3a98a5ab53a12c881046e",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/harbor_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:32:20.492Z",
+  "originalOutputSha256": "0a1671bc8ef34beb65b532d92f7239494ddf9af5d39105c47cc1cb1aefbb241a",
+  "finalOutputSha256": "4e2714df862ea699537e50460f88cabd69d3dde979e659a99ad70a4642dd22a6",
+  "postprocessVersion": 1
+}

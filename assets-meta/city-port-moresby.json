@@ -1,0 +1,14 @@
+{
+  "assetId": "city-port-moresby",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "bb25adaf791a99aa7a521d43a7b2c754c748fba6b9ed1b5471fee1c24ce1456e",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:11:48.956Z",
+  "originalOutputSha256": "c407fc36f0b197cf6e4398e0869c1514063ad385586aa2eb1d39737eca2358b1",
+  "finalOutputSha256": "26f8e40b1e761057b4ac8f966506fe2f6485f885518a9741ca674daf16889950",
+  "postprocessVersion": 1
+}

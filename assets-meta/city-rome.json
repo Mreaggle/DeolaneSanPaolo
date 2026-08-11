@@ -1,0 +1,14 @@
+{
+  "assetId": "city-rome",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "8801d71dfc298ba12e7265bca6754ec29ef9e7da6e2837e2a26edbce625e75e5",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:15:25.132Z",
+  "originalOutputSha256": "b1406e010fd497b3a163f4f030777efb2c5490f60957c3b1a4be9df517fdb472",
+  "finalOutputSha256": "967049462f6c077b90662c6a45bbcc7ed32c0e28972389911d1f5d22571c9b3a",
+  "postprocessVersion": 1
+}

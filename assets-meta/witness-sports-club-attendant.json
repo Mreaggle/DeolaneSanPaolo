@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-sports-club-attendant",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "d39c9fccf2de46cb902bc5a4116720900bbc1c9cedece2e85f6db1af49a961cf",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:50:38.860Z",
+  "originalOutputSha256": "ea97747354c927a5547415db9e2dc8fd460edc75a2791e7dfedd72f74aa0920d",
+  "finalOutputSha256": "8457f81ef1735d166410b74e1db60f6f661a7d38b67c1ceb68c5113781e356dc",
+  "postprocessVersion": 1
+}

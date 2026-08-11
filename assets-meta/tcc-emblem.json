@@ -1,0 +1,14 @@
+{
+  "assetId": "tcc-emblem",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "fe4951bf9e759779ce8d66cf20d03d44ae4e36d88613da9823ec282299434feb",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/magglass.png",
+    "references/carmen_sandiego_DOS/www/detective_raw.png"
+  ],
+  "generatedAt": "2026-08-11T05:14:47.975Z",
+  "originalOutputSha256": "133e21dadb207f0b93b413673dd9d62df3792c79942db18f5e6124c5906a2945",
+  "finalOutputSha256": "cf5bead7726a9407db58ba445726f107f029a621563134932bb09802b776f273",
+  "postprocessVersion": 1
+}

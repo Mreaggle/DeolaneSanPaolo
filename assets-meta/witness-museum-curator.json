@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-museum-curator",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "1df8353b1b91ccabf3713bde66c10c5045bdc9b79920891400eef51fd2687fa1",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:44:46.831Z",
+  "originalOutputSha256": "a41f478beca62c87d3124ada6a26809e35b0848ff58b85d572e5973d7177bd7d",
+  "finalOutputSha256": "467457f9f856b88e8852d06ea6e6524520a01eacaec61e096be1500c74dd67fd",
+  "postprocessVersion": 1
+}

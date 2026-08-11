@@ -1,0 +1,14 @@
+{
+  "assetId": "city-new-york",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "530acf9c1bbd2171cf974df71c5e0ed5f618b436fdfd94fa0e1b76fd1917de87",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:18:39.200Z",
+  "originalOutputSha256": "2eec8182e5a84ac579de72c29b9f2a8c2b759f03bc53c8294ec6804bed543a90",
+  "finalOutputSha256": "627fe310d6fed56154c2be7e7ce765d71c5e6839a46b6618c05a1c7d03084fd9",
+  "postprocessVersion": 1
+}

@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-riverfront-fisher",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "5796989df09f8ba900a5387d5752a1f53e383924aad6a0b64d542a1698db4fd4",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:47:54.549Z",
+  "originalOutputSha256": "31c9a31ec889ac03bd4fbb40f1568423c0264bebbb5dd6f2e0e76f7b70f25da0",
+  "finalOutputSha256": "054862e3892872d36c629a427468af20f2e15bb493b4266793a3f3b29cd3292a",
+  "postprocessVersion": 1
+}

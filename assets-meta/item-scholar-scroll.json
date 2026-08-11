@@ -1,0 +1,14 @@
+{
+  "assetId": "item-scholar-scroll",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "5de6cf1c5554048211e4e6b8a471f301bc128fa1a378f2d03fa517181b056460",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:13:16.352Z",
+  "originalOutputSha256": "5ef3a16673f75dda64adff5e0effa49d8233290cb8ce46a80bff498db87955f3",
+  "finalOutputSha256": "b53694e84022feb032a8e3a9f8b7999da6bedc261b9498bf9dd75dc2cec153b9",
+  "postprocessVersion": 1
+}

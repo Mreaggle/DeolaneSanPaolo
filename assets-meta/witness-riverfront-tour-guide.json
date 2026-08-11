@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-riverfront-tour-guide",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "82f936e654cebc6004cbbdffd25cdbcca65499baae3fa5f72a57bea10fa192d4",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:49:04.099Z",
+  "originalOutputSha256": "594f6d39cadf48dca2498423210ab69996e742dfd20fdd5fb2ca65754f513a0a",
+  "finalOutputSha256": "f42979fe6f63af12c9d05d6ec27b94d9a78b9b14a3b828b8ebe85ac66a4a4b32",
+  "postprocessVersion": 1
+}

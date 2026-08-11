@@ -1,0 +1,14 @@
+{
+  "assetId": "rank-investigator-badge",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "b28d8db10d830625ebe1b5fa63e4500535b84abd77eb542ac973e1fecabdd443",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/magglass.png",
+    "references/carmen_sandiego_DOS/www/detective_raw.png"
+  ],
+  "generatedAt": "2026-08-11T03:58:56.698Z",
+  "originalOutputSha256": "39a4f2066d2abfaf4c3a170397fb174b38ae769d99657d628f83ca201e160f79",
+  "finalOutputSha256": "4511e2f2f38e4ef83ec1a9ae7533017a710334edb14c3ad25d623a6f89e62e6a",
+  "postprocessVersion": 1
+}

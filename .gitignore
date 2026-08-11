@@ -1,0 +1,15 @@
+.env
+.venv/
+.env.*
+!.env.example
+node_modules/
+dist/
+.cache/
+playwright-report/
+test-results/
+coverage/
+references/carmen_sandiego_DOS/
+tmp/imagegen/
+output/imagegen/
+*:Zone.Identifier
+.DS_Store

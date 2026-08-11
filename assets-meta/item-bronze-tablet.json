@@ -1,0 +1,14 @@
+{
+  "assetId": "item-bronze-tablet",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "097a3536fecb03a0396a709a32e6d7edfdfadf839e9762ab8b79c15ad98d3248",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:08:56.629Z",
+  "originalOutputSha256": "13ad45bd953a6f13b7520da6b2553ccef996cb4c2401e0db95998df6a9d15159",
+  "finalOutputSha256": "0bc1077bcb0ccdc1e1b520e45836eb7a23e23ba2b9ecdab0b0c60bcb57673080",
+  "postprocessVersion": 1
+}

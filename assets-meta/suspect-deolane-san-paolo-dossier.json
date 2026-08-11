@@ -1,0 +1,15 @@
+{
+  "assetId": "suspect-deolane-san-paolo-dossier",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "ce42e4297ac1195a178bd97ae1b6f78e30a2c9c77c2238eea828927fe7b3c962",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/profiles/carmen_sandiego.png",
+    "references/carmen_sandiego_DOS/www/profiles/lady_agatha_wayland.png",
+    "references/carmen_sandiego_DOS/www/profiles/len_red_bulk.png"
+  ],
+  "generatedAt": "2026-08-11T05:13:30.911Z",
+  "originalOutputSha256": "763e543d14aa748b9d5c1a71a724ee281b22d61f6848234aec688cc00a77ec4e",
+  "finalOutputSha256": "537ba905cc704e5dc5daf7f062e38ab3aa882beb9f548b2558015398495a29d5",
+  "postprocessVersion": 1
+}

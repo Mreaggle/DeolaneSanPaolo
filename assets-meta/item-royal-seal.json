@@ -1,0 +1,14 @@
+{
+  "assetId": "item-royal-seal",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "542fc5644450cdce575d2f20b7a9f30405cff91eb91b4cfc657f09309f3a2fa9",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:05:18.033Z",
+  "originalOutputSha256": "8d5e85329cd3e93cd101b754f824b72afead5d2caee49e3dd74bb3d6df5ba170",
+  "finalOutputSha256": "1b5f69b4ad275b4fa33e513e8cd3889b6cf487fad7acad5d3e9b4f0aff958039",
+  "postprocessVersion": 1
+}

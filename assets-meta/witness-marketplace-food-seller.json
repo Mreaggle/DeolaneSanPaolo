@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-marketplace-food-seller",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "66bb46acc0b9c5289b4c771f64e9a0f3a0a78e57a55c21a3b7194532d0604588",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:44:13.843Z",
+  "originalOutputSha256": "8a3965e5c01a696a0239b69ef9ab1a48536f6957b6640420e9153579f6ffdb71",
+  "finalOutputSha256": "a52c54b1582f45eefcca38bfa8b52be36131f829250ff53325bdb12154f0096a",
+  "postprocessVersion": 1
+}

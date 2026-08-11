@@ -1,0 +1,14 @@
+{
+  "assetId": "city-budapest",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "97e1a0a999b5567e205fa621fdcc7d0fae13660b051e1b5bb92df7ba75fa6fb6",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:20:27.604Z",
+  "originalOutputSha256": "2dd40fdc2a30fb40b936e37dd9e075b852fb07cd7b5bedb73b21aa6af8f562f4",
+  "finalOutputSha256": "f6a9172d4fff73079677119235f1ad3d271eaf1b550def542c15d0ab534727cd",
+  "postprocessVersion": 1
+}

@@ -1,0 +1,14 @@
+{
+  "assetId": "dossier-cabinet-illustration",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "02506d6e60db814c126dd09371b05782d1bc020d6d0a0db19f18e994307f880d",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png"
+  ],
+  "generatedAt": "2026-08-11T03:54:53.634Z",
+  "originalOutputSha256": "1443a37f0b095f0861f499196f4200d3dfe9899ab1ec1aa20802df1725642dd8",
+  "finalOutputSha256": "8ab307f91913b20146fc39d1df3bb2fa8d349a3ba2a6510f77e3140a96b58b50",
+  "postprocessVersion": 1
+}

@@ -1,0 +1,14 @@
+{
+  "assetId": "suspect-cris-minosa-encounter",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "19bbcb1199c83ba2c298d8609b8883dcf5ca82f8f0f0676a82094b54973856e6",
+  "referenceAssets": [
+    ".cache/generated-assets/suspect-cris-minosa-dossier.png",
+    "references/carmen_sandiego_DOS/www/profiles/carmen_sandiego.png"
+  ],
+  "generatedAt": "2026-08-11T04:57:13.330Z",
+  "originalOutputSha256": "aaac012384701fab0438bce526e9a74dc9a0bc3d4127f470fb392e1240ac6301",
+  "finalOutputSha256": "2f02af5afef0a66fada1f1298abf4b8b266de776798d2eba2703e182133b89a2",
+  "postprocessVersion": 1
+}

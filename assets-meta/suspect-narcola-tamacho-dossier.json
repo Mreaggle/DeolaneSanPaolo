@@ -1,0 +1,14 @@
+{
+  "assetId": "suspect-narcola-tamacho-dossier",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "1a41ef63256d3bdfe521568c7f397f32796b2eac261c5a1f638280e2363dadc0",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/profiles/carmen_sandiego.png",
+    "references/carmen_sandiego_DOS/www/profiles/len_red_bulk.png"
+  ],
+  "generatedAt": "2026-08-11T04:55:02.606Z",
+  "originalOutputSha256": "6a7414ed24155947c9e31b3dc2165fbfba6f738b31475aed4ab996cfaebb1a1c",
+  "finalOutputSha256": "95fea302c4a69e965ff25f224b236af1f52a7e1370dcad254912270c296d559a",
+  "postprocessVersion": 1
+}

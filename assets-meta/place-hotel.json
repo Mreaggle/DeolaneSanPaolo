@@ -1,0 +1,14 @@
+{
+  "assetId": "place-hotel",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "a47570e2f9e1dc58b3063f706b3c436935a6e170762a0153d6cdf0f9d36a2549",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/harbor_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:28:34.479Z",
+  "originalOutputSha256": "fea6282b47b944ed3cb3874052986455561784cd5d2bad0b6b971e8a0c766ae7",
+  "finalOutputSha256": "a40c6080176c0273cc62477bb2788feda6984c746d575a2e5a0c5abded1f0151",
+  "postprocessVersion": 1
+}

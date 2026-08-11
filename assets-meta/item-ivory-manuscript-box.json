@@ -1,0 +1,14 @@
+{
+  "assetId": "item-ivory-manuscript-box",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "9d2be57c6c3871735868e6aeb6b44b0f1c7903359892e6b04e8ca12d4248611f",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:06:24.867Z",
+  "originalOutputSha256": "15b4ecae1624d059249dca359cc36b290a6955667f050e43718b1c702081f948",
+  "finalOutputSha256": "446f8adba30d74e1bcb7edc6263fc9515f1de6ec960498dea03bc9bc1f1fcb0d",
+  "postprocessVersion": 1
+}

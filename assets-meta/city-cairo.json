@@ -1,0 +1,14 @@
+{
+  "assetId": "city-cairo",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "f8e4acbdcd5dbdfefacc640b74ecee42b5cd4de3b4d9e7dcd36ec2de3d3cbd13",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
+    "references/carmen_sandiego_DOS/www/cities/bangkok.png"
+  ],
+  "generatedAt": "2026-08-11T04:22:15.577Z",
+  "originalOutputSha256": "d018570940d7441ce899075c71198c1911de94de64107f76ef9e8fa165ebcd97",
+  "finalOutputSha256": "767696dfa8d0d391cd3ed44711c9881d9e27dfc3678804d8ea4e52a28fd5f5e6",
+  "postprocessVersion": 1
+}

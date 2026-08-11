@@ -1,0 +1,14 @@
+{
+  "assetId": "witness-bank-guard",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "dd1ee02cd302d41493b7da2a5bfc77d4fd1dfb3205a64bddfb1d8a61b4ec182b",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/raws/bank_person_raw.png",
+    "references/carmen_sandiego_DOS/www/raws/airport_person_raw.png"
+  ],
+  "generatedAt": "2026-08-11T04:34:33.059Z",
+  "originalOutputSha256": "0be31284a1722886f696b86bbe3c28732906b2f7e00af4f306a0bd9d7abad858",
+  "finalOutputSha256": "a033f299fabe3cb57a010d1679c7807135b1e7be2b5d5f14ae19436c4bff3fb4",
+  "postprocessVersion": 1
+}

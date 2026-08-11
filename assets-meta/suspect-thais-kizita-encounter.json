@@ -1,0 +1,14 @@
+{
+  "assetId": "suspect-thais-kizita-encounter",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "dbb0cad9332b15e40fb072261d856db8da90f7ecf6ca04909659e1ca893a0a64",
+  "referenceAssets": [
+    ".cache/generated-assets/suspect-thais-kizita-dossier.png",
+    "references/carmen_sandiego_DOS/www/profiles/carmen_sandiego.png"
+  ],
+  "generatedAt": "2026-08-11T04:58:21.557Z",
+  "originalOutputSha256": "d2454ffd06d055f3c765c8b9f93c310523304d2e9e31cf805fb7e46f1cdc9ebe",
+  "finalOutputSha256": "3384a70d09234ae13940ffcb347d3872993c18352a0ac5163e475c3c76cb7bd6",
+  "postprocessVersion": 1
+}

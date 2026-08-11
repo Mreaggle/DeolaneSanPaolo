@@ -1,0 +1,14 @@
+{
+  "assetId": "item-ceremonial-gold-mask",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "e93df390c59ec12458ea2f099f0c2ed3af548100c8f9cf8bc4249eb93c2019fd",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:04:21.176Z",
+  "originalOutputSha256": "1aae3cb15dc3a192581a75f99d5d64130c8046a538e185582dfb36c3cbccbe85",
+  "finalOutputSha256": "0d9849d479c2de7de64f208ee39b5095bb37e7bb5010e76491562db08ef24197",
+  "postprocessVersion": 1
+}

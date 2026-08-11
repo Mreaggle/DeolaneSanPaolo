@@ -1,0 +1,14 @@
+{
+  "assetId": "item-jeweled-crown",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "97e68fbc5944ab9e7680b1e800d3ac8048e02e5865db031f933667f27974a661",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/fax.png",
+    "references/carmen_sandiego_DOS/www/paper.png"
+  ],
+  "generatedAt": "2026-08-11T05:06:52.663Z",
+  "originalOutputSha256": "8ff8f8d1d81fbbe392b863c50dd39ed8b495c0bc375b9c879a33163b0b94303e",
+  "finalOutputSha256": "9096d203b9e26394c310fcb65e0da8ff19ab33c6f2495cef6a218f0b4fbb6958",
+  "postprocessVersion": 1
+}

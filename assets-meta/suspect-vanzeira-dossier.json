@@ -1,0 +1,14 @@
+{
+  "assetId": "suspect-vanzeira-dossier",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "17028997791e4197c930c025718cb3fc75a9f836bb65bd4773c4f3e999ed4d18",
+  "referenceAssets": [
+    "references/carmen_sandiego_DOS/www/profiles/carmen_sandiego.png",
+    "references/carmen_sandiego_DOS/www/profiles/len_red_bulk.png"
+  ],
+  "generatedAt": "2026-08-11T04:56:38.575Z",
+  "originalOutputSha256": "d335e15a0aa0d6be2ef7289a519a18789818091f535b4fb4489c5cd706f0f582",
+  "finalOutputSha256": "87c67cccf4e675fd38db9d7dc00b57faeb42001d5c394b39e0949dca75eff07f",
+  "postprocessVersion": 1
+}
