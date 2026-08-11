@@ -1346,7 +1346,7 @@ PASS only if standard city gameplay contains:
 - [ ] SEE;
 - [ ] DEPART;
 - [ ] SEARCH;
-- [ ] FILES.
+- [ ] P.C.
 
 ---
 

@@ -7,7 +7,7 @@ import { BrowserStorageAdapter, SaveRepository } from '../persistence/SaveReposi
 
 export type UiScreen =
   | 'title' | 'signin' | 'new-player' | 'news' | 'assignment' | 'city' | 'places' | 'witness'
-  | 'travel' | 'traveling' | 'dossiers' | 'warrant' | 'result' | 'promotion' | 'hall-of-fame' | 'credits';
+  | 'routes' | 'travel' | 'traveling' | 'dossiers' | 'warrant' | 'result' | 'promotion' | 'hall-of-fame' | 'credits';
 
 export interface UiState {
   screen: UiScreen;

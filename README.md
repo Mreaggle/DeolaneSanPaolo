@@ -2,7 +2,7 @@
 
 Jogo de investigação geográfica para navegador, construído do zero com a estrutura mecânica e a linguagem visual dos jogos DOS de investigação do fim dos anos 1980 e início dos 1990.
 
-Você entra para a Agência Atlas, segue pistas por 30 cidades, identifica um dos dez suspeitos, emite um mandado válido e tenta deter a **T.C.C. — Tríade Chapa-Coco** antes do prazo de 120 horas. O décimo quarto caso leva ao confronto final com Deolane San Paolo.
+Você entra para a Agência Federal, segue pistas por 30 cidades, identifica um dos dez suspeitos, emite um mandado válido e tenta deter a **T.C.C. — Tríade Chapa-Coco** antes do prazo de 120 horas. O décimo quarto caso leva ao confronto final com Deolane San Paolo.
 
 ## Jogar
 
@@ -11,7 +11,7 @@ Produção: <https://mreaggle.github.io/DeolaneSanPaolo/>
 - No PC, a superfície lógica de 640×400 é ampliada como uma única tela para 1280×800 ou mais quando há espaço.
 - No celular, jogue em paisagem; a composição original é ajustada ao visor sem reordenar os painéis.
 - Use **TELA CHEIA** no título ou `F11` durante uma investigação.
-- Atalhos: `S`/`1` locais, `D`/`2` viagem, `R`/`3` mandado, `F`/`4` dossiês.
+- Atalhos: `V`/`1` consulta de rotas, `P`/`2` viagem, `B`/`3` busca local, `C`/`4` computador de mandados.
 
 ## Desenvolvimento
 
@@ -40,6 +40,6 @@ O gerador aceita `--dry-run`, `--run`, `--only`, `--category`, `--max-assets`, `
 
 ## Pesquisa e independência
 
-O projeto consulta capturas, manual e reconstruções apenas como evidência comparativa. Decisões confirmadas e limitações da pesquisa estão registradas em [ORIGINAL_GAME_ANALYSIS.md](ORIGINAL_GAME_ANALYSIS.md). Ficção, personagens, T.C.C., Agência Atlas, textos, código e artes finais são originais deste projeto.
+O projeto consulta capturas, manual e reconstruções apenas como evidência comparativa. Decisões confirmadas e limitações da pesquisa estão registradas em [ORIGINAL_GAME_ANALYSIS.md](ORIGINAL_GAME_ANALYSIS.md). Ficção, personagens, T.C.C., Agência Federal, textos, código e artes finais são originais deste projeto.
 
 A interface usa localmente a fonte bitmap **Silkscreen**, distribuída sob a SIL Open Font License 1.1; a licença acompanha o jogo em `public/fonts/OFL.txt`. Nenhuma fonte é carregada de um serviço externo durante o jogo.

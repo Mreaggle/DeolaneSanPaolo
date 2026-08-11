@@ -340,7 +340,7 @@ Exact structure is refined by `NARRATIVE_WALKTHROUGH.md`.
 
 Opens suspect dossiers.
 
-This is functionally equivalent to the FILES/DOSSIER action where applicable.
+This is the exclusive entry point for suspect dossiers. No bottom primary action duplicates it.
 
 ---
 
@@ -529,7 +529,7 @@ The canonical standard gameplay action row contains four controls:
 SEE
 DEPART
 SEARCH
-FILES
+P.C
 ```
 
 These concepts correspond to the supplied DOS reference.
@@ -542,19 +542,23 @@ Labels may be localized.
 
 ### SEE
 
-Opens/returns to local investigation choices.
+Displays a read-only list of the cities currently reachable from the present city.
+
+It does not select a destination and does not initiate travel.
 
 ### DEPART
 
-Opens travel destinations/map.
+Opens the actionable travel destinations/map and owns destination selection.
 
 ### SEARCH
 
-Opens suspect-search/warrant-computer functionality.
+Opens the local investigation choices such as hotel, bank and museum.
 
-### FILES
+### P.C
 
-Opens suspect dossiers/reference files.
+Opens characteristic filtering and warrant-computer functionality.
+
+Suspect dossiers are accessed only through the top `DOSSIERS` menu.
 
 ---
 
@@ -643,20 +647,11 @@ Arrow keys navigate menu/list where applicable
 Primary actions may support:
 
 ```text
-S → SEE
-D → DEPART
-F → FILES
+V → SEE / route preview
+P → DEPART
+B → SEARCH / local investigation
+C → P.C / warrant computer
 ```
-
-SEARCH must avoid collision.
-
-Potential:
-
-```text
-R → SEARCH
-```
-
-or another clearly documented shortcut.
 
 Shortcuts must not activate while typing a player name.
 
@@ -825,11 +820,11 @@ This is presentation-only and costs 0 hours.
 
 ---
 
-# PART XV — SEE / INVESTIGATION FLOW
+# PART XV — SEARCH / INVESTIGATION FLOW
 
-## 45. SEE button
+## 45. SEARCH button
 
-Selecting `SEE` opens the three current investigation locations in the information panel.
+Selecting the magnifying-glass `SEARCH` control opens the three current investigation locations in the information panel.
 
 Display exactly:
 
@@ -912,7 +907,22 @@ Exact flow should minimize accidental extra investigations.
 
 ---
 
-# PART XVI — DEPART FLOW
+# PART XVI — SEE / DEPART FLOW
+
+## 50A. SEE route preview
+
+Selecting `SEE` displays the legal generated candidate cities as plain text.
+
+The preview is strictly read-only:
+
+- no city is selectable;
+- no destination is highlighted as correct;
+- no travel occurs;
+- the clock does not advance.
+
+The candidate set must be identical to the selectable set shown by `DEPART`.
+
+---
 
 ## 51. DEPART button
 
@@ -1077,13 +1087,15 @@ Previously collected clues remain available through evidence/history if such a f
 
 ---
 
-# PART XX — FILES / DOSSIERS
+# PART XX — DOSSIERS MENU
 
-## 62. FILES action
+## 62. DOSSIERS menu action
 
-Selecting `FILES` opens suspect dossiers.
+Selecting the top `DOSSIERS` menu opens suspect dossiers.
 
 This does not advance time.
+
+No bottom primary-action button opens dossiers.
 
 ---
 
@@ -1141,11 +1153,11 @@ No clue/location selection is lost.
 
 ---
 
-# PART XXI — SEARCH / WARRANT COMPUTER
+# PART XXI — P.C / WARRANT COMPUTER
 
-## 67. SEARCH action
+## 67. P.C action
 
-Selecting `SEARCH` opens the warrant computer.
+Selecting the bottom computer control opens the warrant computer.
 
 This is a modal gameplay tool.
 
@@ -1349,9 +1361,9 @@ The player should infer proximity from trail feedback.
 
 ---
 
-## 79. Final SEE behavior
+## 79. Final SEARCH behavior
 
-`SEE` still presents three investigation locations.
+The magnifying-glass `SEARCH` control still presents three investigation locations.
 
 One is the hideout.
 
@@ -1921,7 +1933,7 @@ CITY_IDLE
 SEE      enabled
 DEPART   enabled
 SEARCH   enabled
-FILES    enabled
+P.C      enabled
 ```
 
 ---
@@ -1933,10 +1945,10 @@ Primary action row may remain visible but inactive, or be replaced by local navi
 Preferred:
 
 ```text
-SEE      active/current
-DEPART   available via Back to city first
-SEARCH   disabled or hidden
-FILES    disabled or hidden
+SEE      available as read-only route preview
+DEPART   available
+SEARCH   active/current
+P.C      available after statement completion
 ```
 
 Do not allow accidental mode switching mid-location selection unless explicitly designed.
@@ -1953,15 +1965,15 @@ After completion, show explicit return/continue.
 
 ## 120. TRAVEL_SELECT
 
-`DEPART` is active mode.
+`DEPART` is active mode and owns destination selection.
 
 Other primary actions should not commit until travel selection closes.
 
 ---
 
-## 121. WARRANT
+## 121. WARRANT / P.C
 
-Underlying primary actions disabled.
+`P.C` is active/current. Other primary actions remain available except while a warrant computation is resolving.
 
 ---
 
@@ -2116,7 +2128,7 @@ The UI belongs to the DOS fiction.
 
 ## 130. Investigation
 
-- [ ] SEE shows exactly three locations;
+- [ ] SEARCH shows exactly three locations;
 - [ ] visited status visible;
 - [ ] new investigation transitions cleanly to witness;
 - [ ] revisiting redisplays clue without implying new time cost;
@@ -2126,7 +2138,8 @@ The UI belongs to the DOS fiction.
 
 ## 131. Travel
 
-- [ ] DEPART displays generated candidate cities only;
+- [ ] SEE lists generated candidate cities without allowing selection;
+- [ ] DEPART displays the same generated candidates as selectable destinations;
 - [ ] no correct destination marking;
 - [ ] map does not reveal hidden route;
 - [ ] travel locks controls during transition;

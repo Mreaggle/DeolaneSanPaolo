@@ -47,7 +47,7 @@
     if (playerName.trim()) actions.createProfile(playerName.trim().slice(0, 18));
   };
 
-  const gameplayScreens: UiScreen[] = ['city', 'places', 'witness', 'travel', 'traveling', 'dossiers', 'warrant'];
+  const gameplayScreens: UiScreen[] = ['city', 'places', 'witness', 'routes', 'travel', 'traveling', 'dossiers', 'warrant'];
   const statusText = (status?: string) => ({
     FAILED_TIME: 'O PRAZO ACABOU. A T.C.C. DESAPARECEU COM O OBJETO.',
     FAILED_NO_WARRANT: 'VOCÊ ENCONTROU O CULPADO SEM UM MANDADO VÁLIDO.',
@@ -95,6 +95,11 @@
     return investigationCost(runtime.investigationsThisVisit);
   };
 
+  const placeVisited = (placeId: string): boolean => {
+    const runtime = $gameState?.activeCase?.runtime;
+    return Boolean(runtime?.visitedLocationKeys.includes(`${runtime.currentCityId}:${placeId}`));
+  };
+
   const setWarrant = (category: TraitCategory, value: string) => {
     warrant = { ...warrant, [category]: value || undefined };
   };
@@ -104,10 +109,10 @@
     if (event.key === 'F11') { event.preventDefault(); void fullscreen(); }
     if ($uiState.screen === 'traveling' || ($uiState.screen === 'witness' && !witnessTextComplete)) return;
     const key = event.key.toLowerCase();
-    if (key === '1' || key === 's') actions.go('places');
-    if (key === '2' || key === 'd') actions.go('travel');
-    if (key === '3' || key === 'r') actions.go('warrant');
-    if (key === '4' || key === 'f') actions.dossier(0);
+    if (key === '1' || key === 'v') actions.go('routes');
+    if (key === '2' || key === 'p') actions.go('travel');
+    if (key === '3' || key === 'b') actions.go('places');
+    if (key === '4' || key === 'c') actions.go('warrant');
   };
 
   const actionDisabled = (): boolean => {
@@ -128,10 +133,12 @@
 </script>
 
 <svelte:head>
-  <title>Deolane San Paolo — Agência Atlas</title>
+  <title>Deolane San Paolo — Agência Federal</title>
   <meta name="theme-color" content="#050505" />
   <meta name="description" content="Jogo de investigação geográfica com alma de DOS." />
 </svelte:head>
+
+<svelte:window on:contextmenu|preventDefault />
 
 <div class="app-shell" bind:this={root}>
   <div class="scale-box">
@@ -142,7 +149,7 @@
           <div class="dither-shade"></div>
           <div class="title-copy">
             <img class="title-ornament" src={asset('title-logo')} alt="" />
-            <div class="tiny-kicker">AGÊNCIA ATLAS APRESENTA</div>
+            <div class="tiny-kicker">AGÊNCIA FEDERAL APRESENTA</div>
             <h1>DEOLANE<br /><span>SAN PAOLO</span></h1>
             <div class="tcc-line">NO RASTRO DA T.C.C.</div>
             <div class="title-actions">
@@ -150,14 +157,14 @@
               <PixelButton label="CONTINUAR" disabled={!$hasSave} onactivate={actions.continueGame} />
               <PixelButton label="TELA CHEIA" onactivate={() => void fullscreen()} />
             </div>
-            <p>© 1991/2026 ATLAS SOFTWARE · CLIQUE OU USE O TECLADO</p>
+            <p>© 1991/2026 FEDERAL SOFTWARE · CLIQUE OU USE O TECLADO</p>
           </div>
         </section>
       {:else if $uiState.screen === 'signin'}
         <section class="terminal full-screen">
-          <img class="full-art" src={asset('hq-background')} alt="Sede da Agência Atlas" />
+          <img class="full-art" src={asset('hq-background')} alt="Sede da Agência Federal" />
           <div class="terminal-frame">
-            <div class="terminal-title">TERMINAL CENTRAL · AGÊNCIA ATLAS</div>
+            <div class="terminal-title">TERMINAL CENTRAL · AGÊNCIA FEDERAL</div>
             <TypewriterText text={'IDENTIFICAÇÃO OBRIGATÓRIA.\nDIGITE SEU NOME, INVESTIGADOR:'} speed={20} />
             <form on:submit|preventDefault={submitName}>
               <label for="player-name">NOME</label>
@@ -168,9 +175,9 @@
         </section>
       {:else if $uiState.screen === 'new-player'}
         <section class="terminal full-screen">
-          <img class="full-art" src={asset('hq-background')} alt="Sede da Agência Atlas" />
+          <img class="full-art" src={asset('hq-background')} alt="Sede da Agência Federal" />
           <div class="terminal-frame paper">
-            <img class="clerk" src={asset('agency-clerk-portrait')} alt="Atendente da Agência Atlas" />
+            <img class="clerk" src={asset('agency-clerk-portrait')} alt="Atendente da Agência Federal" />
             <div class="terminal-title">CONSULTA AO ARQUIVO DE PESSOAL</div>
             <TypewriterText text={`PROCURANDO: ${$gameState?.profile.name.toUpperCase()}...\n\nNUNCA VI VOCÊ POR AQUI.\nNENHUMA FICHA. NENHUMA PROMOÇÃO.\n\nISSO MUDA AGORA.`} speed={18} />
             <PixelButton label="AGUARDAR BOLETIM" onactivate={actions.prepareCase} />
@@ -178,9 +185,9 @@
         </section>
       {:else if $uiState.screen === 'news' && $gameState?.activeCase}
         <section class="full-screen narrative-screen">
-          <img class="full-art" src={asset('news-flash-background')} alt="Plantão da Agência Atlas" />
+          <img class="full-art" src={asset('news-flash-background')} alt="Plantão da Agência Federal" />
           <div class="news-card">
-            <div class="flash">PLANTÃO ATLAS</div>
+            <div class="flash">PLANTÃO FEDERAL</div>
             <h2>ROUBO INTERNACIONAL!</h2>
             <div class="item-shot"><img src={asset(itemById($gameState.activeCase.definition.stolenItemId)?.assetId ?? '')} alt="" /></div>
             <p><strong>{itemById($gameState.activeCase.definition.stolenItemId)?.name}</strong> desapareceu em <strong>{cityById($gameState.activeCase.definition.route[0])?.name}</strong>.</p>
@@ -203,7 +210,7 @@
             <button on:click={() => { showOptions = false; actions.go('city'); }}>JOGO</button>
             <button on:click={() => showOptions = !showOptions}>OPÇÕES</button>
             <button on:click={() => { showOptions = false; actions.dossier(0); }}>DOSSIÊS</button>
-            <span>AGÊNCIA ATLAS</span>
+            <span>AGÊNCIA FEDERAL</span>
             <button class="fullscreen-button" on:click={() => void fullscreen()} title="Tela cheia (F11)">□</button>
           </nav>
           {#if showOptions}
@@ -229,20 +236,31 @@
               {#if $uiState.screen === 'traveling'}
                 <h2>EM TRÂNSITO</h2>
                 <div class="travel-animation"><i style={`background-image:url(${asset('travel-airplane-spritesheet')})`}></i></div>
-                <p>O avião da Agência Atlas cruza o mapa. O relógio do caso já está correndo.</p>
+                <p>O avião da Agência Federal cruza o mapa. O relógio do caso já está correndo.</p>
               {:else if $uiState.screen === 'city'}
-                <h2>CHEGADA CONFIRMADA</h2>
-                <div class="info-art city-mini"><img src={asset('agency-emblem')} alt="Emblema Atlas" /></div>
+                {@const currentCity = cityById($gameState.activeCase.runtime.currentCityId)}
+                <h2>{currentCity?.name} · {currentCity?.country}</h2>
                 {#if $uiState.event?.type === 'ARRIVED' && ['CORRECT_FORWARD', 'FINAL_CITY'].includes($uiState.event.classification)}
                   <img class="trail-strip" src={asset('trail-alert-spritesheet')} alt="Pista quente" />
                 {/if}
-                <p>{eventText() || `Você está em ${cityById($gameState.activeCase.runtime.currentCityId)?.name}. Escolha um local para investigar ou consulte as rotas de partida.`}</p>
+                <p class="city-intro">A Agência Federal registra sua chegada a {currentCity?.name}, em {currentCity?.country}. A fotografia oficial da cidade está exibida ao lado.</p>
+                {#if $uiState.event?.type === 'ARRIVED'}<p class="trail-note">{eventText()}</p>{/if}
+                <div class="city-curiosities"><b>CURIOSIDADES LOCAIS</b><ul>{#each currentCity?.facts.slice(0, 2) ?? [] as fact}<li>{fact.text}</li>{/each}</ul></div>
                 <dl class="case-status"><dt>MANDADO</dt><dd>{suspectById($gameState.activeCase.runtime.activeWarrantSuspectId)?.name ?? 'NENHUM'}</dd><dt>PISTAS</dt><dd>{$gameState.activeCase.runtime.discoveredClueIds.length}</dd></dl>
+              {:else if $uiState.screen === 'routes'}
+                <h2>CIDADES DISPONÍVEIS</h2>
+                <p>Conexões registradas a partir de {cityById($gameState.activeCase.runtime.currentCityId)?.name}:</p>
+                <ol class="route-list">
+                  {#each currentGeneratedCity()?.travelCandidates ?? [] as cityId}
+                    <li><b>{cityById(cityId)?.name}</b><small>{cityById(cityId)?.country}</small></li>
+                  {/each}
+                </ol>
+                <p class="route-hint">CONSULTA APENAS. USE PARTIR PARA SELECIONAR O DESTINO.</p>
               {:else if $uiState.screen === 'places'}
                 <h2>ONDE INVESTIGAR?</h2>
                 <div class="place-list">
                   {#each currentGeneratedCity()?.places ?? [] as generated, index}
-                    <button on:click={() => visit(generated.placeId)}><span>{index + 1}</span>{placeById(generated.placeId)?.name}<small>{placeCost(generated.placeId)}H</small></button>
+                    <button class:visited={placeVisited(generated.placeId)} on:click={() => visit(generated.placeId)}><span>{index + 1}</span>{placeById(generated.placeId)?.name}<small>{placeVisited(generated.placeId) ? 'VISITADO' : `${placeCost(generated.placeId)}H`}</small></button>
                   {/each}
                 </div>
                 <p>Revisitar um local já consultado não gasta tempo.</p>
@@ -252,7 +270,7 @@
                 <h2>{placeById(selectedPlaceId)?.name ?? 'DEPOIMENTO'}</h2>
                 <div class="witness-row">
                   <img class="witness" src={asset(witness?.assetId ?? 'agency-clerk-portrait')} alt={witness?.name ?? 'Testemunha'} />
-                  <div class="speech"><b class="witness-name">{witness?.name ?? 'TESTEMUNHA'}</b><TypewriterText text={eventText()} speed={10} oncomplete={() => { witnessTextComplete = true; }} /></div>
+                  <div class="speech"><b class="witness-name">{witness?.name ?? 'TESTEMUNHA'}</b><TypewriterText text={eventText()} speed={10} oncomplete={() => { witnessTextComplete = true; }} onadvance={() => actions.go('places')} /></div>
                 </div>
                 <PixelButton label="OUTRO LOCAL" onactivate={() => actions.go('places')} />
               {:else if $uiState.screen === 'travel'}
@@ -260,7 +278,7 @@
                 <div class="map-box"><img src={asset('world-map')} alt="Mapa-múndi" />
                   {#each currentGeneratedCity()?.travelCandidates ?? [] as cityId}
                     {@const marker = cityById(cityId)}
-                    {#if marker}<i style={`left:${marker.coordinates.x}%;top:${marker.coordinates.y}%`}></i>{/if}
+                    {#if marker}<i data-city-id={cityId} style={`left:${marker.coordinates.x * 100}%;top:${marker.coordinates.y * 100}%`}></i>{/if}
                   {/each}
                 </div>
                 <div class="destination-list">
@@ -302,10 +320,10 @@
               {/if}
             </section>
             <nav class="action-bar" aria-label="Ações de investigação">
-              <button disabled={actionDisabled()} class:active={$uiState.screen === 'places'} on:click={() => actions.go('places')}><img class="pixel-icon" src={asset('icon-see')} alt="" />VER<small>[S/1]</small></button>
-              <button disabled={actionDisabled()} class:active={$uiState.screen === 'travel'} on:click={() => actions.go('travel')}><img class="pixel-icon" src={asset('icon-depart')} alt="" />PARTIR<small>[D/2]</small></button>
-              <button disabled={actionDisabled()} class:active={$uiState.screen === 'warrant'} on:click={() => actions.go('warrant')}><img class="pixel-icon" src={asset('icon-search')} alt="" />BUSCAR<small>[R/3]</small></button>
-              <button disabled={actionDisabled()} class:active={$uiState.screen === 'dossiers'} on:click={() => actions.dossier(0)}><img class="pixel-icon" src={asset('icon-files')} alt="" />FICHAS<small>[F/4]</small></button>
+              <button disabled={actionDisabled()} class:active={$uiState.screen === 'routes'} on:click={() => actions.go('routes')}><img class="pixel-icon" src={asset('icon-see')} alt="" />VER<small>[V/1]</small></button>
+              <button disabled={actionDisabled()} class:active={$uiState.screen === 'travel'} on:click={() => actions.go('travel')}><img class="pixel-icon" src={asset('icon-depart')} alt="" />PARTIR<small>[P/2]</small></button>
+              <button disabled={actionDisabled()} class:active={$uiState.screen === 'places'} on:click={() => actions.go('places')}><img class="pixel-icon" src={asset('icon-search')} alt="" />BUSCAR<small>[B/3]</small></button>
+              <button disabled={actionDisabled()} class:active={$uiState.screen === 'warrant'} on:click={() => actions.go('warrant')}><span class="computer-icon" aria-hidden="true"></span>P.C<small>[C/4]</small></button>
             </nav>
           </div>
         </section>
@@ -389,10 +407,13 @@
   .info-panel { position: relative; overflow: hidden; padding: 10px 12px; color: #fff; background-color: #050505; border-bottom: 2px solid #111; }
   .info-panel h2 { margin: -10px -12px 9px; padding: 6px 9px; color: #050505; background: #dedede; border-bottom: 2px solid #777; font-size: 12px; letter-spacing: .5px; }
   .header-emblem { width: 14px; height: 14px; margin: -3px 2px -3px 0; vertical-align: middle; }
-  .info-art { float: right; display: grid; place-items: center; width: 92px; height: 92px; margin: 0 0 7px 9px; background: #1b3451; border: 3px ridge #999; }
-  .info-art img { max-width: 82px; max-height: 82px; }
   .trail-strip { width: 128px; height: 48px; margin: 0 4px 5px 0; object-fit: fill; }
   .info-panel p { font-size: 10px; line-height: 1.45; }
+  .city-intro { margin-bottom: 5px; }
+  .trail-note { margin-bottom: 5px; color: #ffd92a; }
+  .city-curiosities { clear: both; margin-bottom: 6px; padding: 5px 6px; color: #050505; background: #dedede; border: 1px solid #777; font-size: 8px; }
+  .city-curiosities ul { margin: 3px 0 0; padding-left: 14px; }
+  .city-curiosities li + li { margin-top: 3px; }
   .case-status { display: grid; grid-template-columns: 65px 1fr; gap: 3px; clear: both; padding: 7px; color: #000; background: #fff; border: 1px solid #555; }
   .case-status dt { font-weight: 700; }
   .case-status dd { margin: 0; }
@@ -402,26 +423,36 @@
   .action-bar button:disabled { color: #777; background: #aaa; }
   .action-bar small { position: absolute; right: 3px; bottom: 2px; font-size: 6px; }
   .pixel-icon { width: 24px; height: 24px; object-fit: contain; }
+  .computer-icon { position: relative; display: block; width: 22px; height: 15px; margin-bottom: 5px; background: #d8d8d8; border: 2px solid #09105d; box-shadow: inset 0 0 0 2px #16858a; }
+  .computer-icon::before { content: ''; position: absolute; left: 7px; bottom: -6px; width: 5px; height: 4px; background: #09105d; }
+  .computer-icon::after { content: ''; position: absolute; left: 3px; bottom: -8px; width: 13px; height: 2px; background: #09105d; }
   .travel-animation { position: relative; height: 155px; margin: 18px 0 10px; overflow: hidden; background: #122947; border: 3px ridge #999; }
   .travel-animation::after { content: ''; position: absolute; left: 0; right: 0; top: 78px; height: 2px; background: #fff; box-shadow: 0 16px #888, 0 32px #333; }
   .travel-animation i { position: absolute; z-index: 1; left: 140px; top: 51px; width: 32px; height: 32px; background-size: 128px 32px; animation: plane-frames .8s steps(4) infinite, plane-bob .8s steps(2) infinite; }
   @keyframes plane-frames { to { background-position: -128px 0; } }
   @keyframes plane-bob { 50% { top: 48px; } }
   .place-list { display: grid; gap: 7px; margin: 16px 6px; }
-  .place-list button { display: grid; grid-template-columns: 26px 1fr 25px; align-items: center; padding: 6px; border: 2px solid #111; background: #fff; text-align: left; }
+  .place-list button { display: grid; grid-template-columns: 26px 1fr 55px; align-items: center; padding: 6px; border: 2px solid #111; background: #fff; text-align: left; }
+  .place-list button.visited { background: #d4d4d4; }
   .place-list button span { display: grid; place-items: center; width: 19px; height: 19px; color: #fff; background: #111; }
-  .place-list button small { text-align: right; }
+  .place-list button small { font-size: 7px; text-align: right; }
+  .place-list button.visited small { font-weight: 700; }
   .witness-row { display: grid; grid-template-columns: 112px 1fr; gap: 9px; min-height: 205px; }
   .witness { width: 112px; height: 176px; object-fit: contain; object-position: center bottom; background: #142743; border: 2px solid #111; }
   .speech { position: relative; height: 170px; padding: 12px; color: #000; background: #fff; border: 2px solid #111; font-size: 11px; line-height: 1.5; }
   .speech::before { content: ''; position: absolute; left: -10px; top: 24px; width: 14px; height: 14px; background: #fff; border-left: 2px solid #111; border-bottom: 2px solid #111; transform: rotate(45deg); }
   .witness-name { display: block; margin: -12px -12px 9px; padding: 4px 7px; color: #fff; background: #111; text-transform: uppercase; }
   .map-box { position: relative; height: 130px; overflow: hidden; background: #09233f; border: 2px solid #111; }
-  .map-box img { width: 100%; height: 100%; object-fit: cover; }
-  .map-box i { position: absolute; width: 5px; height: 5px; background: #f6242d; border: 1px solid #fff; animation: flash-dot .7s steps(1) infinite; }
+  .map-box img { width: 100%; height: 100%; object-fit: fill; }
+  .map-box i { position: absolute; width: 6px; height: 6px; margin: -3px 0 0 -3px; background: #f6242d; border: 1px solid #fff; animation: flash-dot .7s steps(1) infinite; }
   @keyframes flash-dot { 50% { background: #fff; } }
   .destination-list { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 7px; }
   .destination-list button { padding: 4px; color: #fff; background: #111; border: 2px solid #777; text-align: left; }
+  .route-list { display: grid; gap: 5px; margin: 11px 4px; padding: 0; list-style: none; counter-reset: route; }
+  .route-list li { counter-increment: route; display: grid; grid-template-columns: 24px 1fr auto; align-items: center; min-height: 28px; padding: 4px 6px; color: #050505; background: #dedede; border: 2px solid; border-color: #fff #444 #444 #fff; }
+  .route-list li::before { content: counter(route); display: grid; place-items: center; width: 17px; height: 17px; color: #fff; background: #111; }
+  .route-list small { font-size: 7px; text-transform: uppercase; }
+  .route-hint { color: #ffd92a; font-size: 8px !important; }
   .dossier { display: grid; grid-template-columns: 118px 1fr; gap: 10px; }
   .dossier img { width: 118px; height: 176px; object-fit: cover; border: 3px double #111; }
   .dossier h3 { margin: 0 0 3px; color: #f12a32; font-size: 14px; }

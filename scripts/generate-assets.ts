@@ -89,7 +89,7 @@ const promptFor = (asset: AssetEntry): string => {
   if (asset.category === 'badge') return `${styleLock} Create one original detective rank shield: ${asset.purpose} Symmetrical gold-and-navy badge, visual rank motif without lettering, readable at 48 pixels. Flat chroma green #00FF00 background. ${negatives}`;
   if (asset.category === 'animation-sheet') return `${styleLock} Create a single horizontal DOS sprite strip: ${asset.purpose} Exactly four equally spaced sequential frames, consistent sprite scale, no separators, readable after reduction to ${asset.width}x${asset.height}. Flat chroma green #00FF00 background. ${negatives}`;
   if (asset.id === 'world-map') return `${styleLock} Create a simplified Robinson-style world map for a detective travel screen, dark navy oceans, pale gray landmasses, black coast outlines, no borders, labels, text or markers, edge-to-edge opaque. ${negatives}`;
-  if (asset.id === 'agency-clerk-portrait') return `${styleLock} Create one original Agência Atlas terminal clerk, full body, 1990 office uniform, expressive helpful pose, centered. Flat chroma green #00FF00 background. ${negatives}`;
+  if (asset.id === 'agency-clerk-portrait') return `${styleLock} Create one original Agência Federal terminal clerk, full body, 1990 office uniform, expressive helpful pose, centered. Flat chroma green #00FF00 background. ${negatives}`;
   if (asset.id === 'title-logo') return `${styleLock} Create an ornamental title-logo plaque with empty central negative space, gold, red and navy crime-travel motifs, no actual lettering; title is rendered by browser text. Flat chroma green #00FF00 background. ${negatives}`;
   const screen = asset.id.replaceAll('-', ' ');
   const special = asset.id === 'title-background'
