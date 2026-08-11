@@ -397,7 +397,7 @@
   .info-art img { max-width: 82px; max-height: 82px; }
   .trail-strip { width: 128px; height: 48px; margin: 0 4px 5px 0; object-fit: fill; }
   .info-panel p { font-size: 10px; line-height: 1.45; }
-  .case-status { display: grid; grid-template-columns: 65px 1fr; gap: 3px; clear: both; padding: 7px; background: #fff; border: 1px solid #555; }
+  .case-status { display: grid; grid-template-columns: 65px 1fr; gap: 3px; clear: both; padding: 7px; color: #000; background: #fff; border: 1px solid #555; }
   .case-status dt { font-weight: 700; }
   .case-status dd { margin: 0; }
   .action-bar { display: grid; grid-template-columns: repeat(4, 1fr); background: #bbb; }
@@ -417,7 +417,7 @@
   .place-list button small { text-align: right; }
   .witness-row { display: grid; grid-template-columns: 112px 1fr; gap: 9px; min-height: 205px; }
   .witness { width: 112px; height: 176px; object-fit: contain; object-position: center bottom; background: #142743; border: 2px solid #111; }
-  .speech { position: relative; height: 170px; padding: 12px; background: #fff; border: 2px solid #111; font-size: 11px; line-height: 1.5; }
+  .speech { position: relative; height: 170px; padding: 12px; color: #000; background: #fff; border: 2px solid #111; font-size: 11px; line-height: 1.5; }
   .speech::before { content: ''; position: absolute; left: -10px; top: 24px; width: 14px; height: 14px; background: #fff; border-left: 2px solid #111; border-bottom: 2px solid #111; transform: rotate(45deg); }
   .witness-name { display: block; margin: -12px -12px 9px; padding: 4px 7px; color: #fff; background: #111; text-transform: uppercase; }
   .map-box { position: relative; height: 130px; overflow: hidden; background: #09233f; border: 2px solid #111; }
