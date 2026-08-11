@@ -46,6 +46,7 @@ export class GameEngine {
       investigationsThisVisit: 0,
       visitedLocationKeys: [],
       discoveredClueIds: [],
+      audioFlags: { timeWarningPlayed: false, finalCityPlayed: false },
       wrongCities: {}
     };
     const next = { ...clone(this.stateValue), activeCase: { definition, runtime } };
@@ -145,8 +146,10 @@ export class GameEngine {
       active.runtime.furthestRouteIndex += 1;
       active.runtime.trailAnchorCityId = cityId;
     }
+    const henchmanAppeared = classification === 'CORRECT_FORWARD'
+      && active.runtime.furthestRouteIndex === active.definition.route.length - 2;
     this.commit(next);
-    return { state: this.state, event: { type: 'ARRIVED', classification, cityId } };
+    return { state: this.state, event: { type: 'ARRIVED', classification, cityId, henchmanAppeared } };
   }
 
   computeWarrant(input: WarrantInput): EngineResult {
@@ -185,6 +188,13 @@ export class GameEngine {
 
   replaceState(state: GameState): void {
     this.stateValue = clone(state);
+  }
+
+  markAudioFlag(flag: keyof CaseRuntimeState['audioFlags']): void {
+    const next = clone(this.stateValue);
+    if (!next.activeCase) return;
+    next.activeCase.runtime.audioFlags[flag] = true;
+    this.commit(next);
   }
 }
 

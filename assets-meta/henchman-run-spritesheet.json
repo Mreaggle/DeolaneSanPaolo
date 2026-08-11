@@ -1,0 +1,14 @@
+{
+  "assetId": "henchman-run-spritesheet",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "aca90e90c74511c3fb3c67d8238539fd9112637714546c8977108c9b73a692fb",
+  "referenceAssets": [
+    "public/assets/animations/capture-spritesheet.png",
+    "public/assets/animations/escape-spritesheet.png"
+  ],
+  "generatedAt": "2026-08-11T22:09:55.871Z",
+  "originalOutputSha256": "daae05a14988e7f9c8c97994a878e061eea1f9e087349f8f4d376f825cc4269f",
+  "finalOutputSha256": "04ab674654da062cf3bf7bf1b567f1b66e3aac2c5413adbad9c6ce5c29cbea75",
+  "postprocessVersion": 1
+}

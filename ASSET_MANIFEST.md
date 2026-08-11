@@ -382,6 +382,8 @@ Each catalog row contains:
 | 156 | `item-gilded-music-box` | `public/assets/items/gilded-music-box.png` | `stolen-item` | Gilded music box illustration for case briefings/results. | `96x96` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
 | 157 | `item-ruby-orb` | `public/assets/items/ruby-orb.png` | `stolen-item` | Ruby orb illustration for case briefings/results. | `96x96` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
 | 158 | `item-scholar-scroll` | `public/assets/items/scholar-scroll.png` | `stolen-item` | Scholar scroll illustration for case briefings/results. | `96x96` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
+| 159 | `icon-pc` | `public/assets/icons/icon-pc.png` | `ui-icon` | Action icon for the P.C. warrant computer, matching the existing bitmap action-icon family. | `24x24` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
+| 160 | `henchman-run-spritesheet` | `public/assets/animations/henchman-run-spritesheet.png` | `animation-sheet` | Eight-frame side-view run cycle for a striped T.C.C. henchman crossing the city scene when the trail is close. | `512x64` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
 
 ---
 

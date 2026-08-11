@@ -32,6 +32,8 @@ const sync = (event: GameEvent, screen?: UiScreen): void => {
 };
 
 const seed = (): string => {
+  const requested = typeof location === 'undefined' ? null : new URLSearchParams(location.search).get('caseSeed');
+  if (import.meta.env.DEV && requested) return requested;
   const values = new Uint32Array(2);
   crypto.getRandomValues(values);
   return `${values[0]!.toString(16)}${values[1]!.toString(16)}`;
@@ -69,7 +71,7 @@ export const actions = {
     if (!engine) return;
     const result = engine.travel(cityId);
     sync(result.event, result.event.type === 'CASE_FAILED' ? 'result' : 'traveling');
-    if (result.event.type !== 'CASE_FAILED') window.setTimeout(() => actions.go('city'), 900);
+    if (result.event.type !== 'CASE_FAILED') window.setTimeout(() => actions.go('city'), 3_400);
   },
   warrant(input: WarrantInput): void {
     if (!engine) return;
@@ -88,6 +90,13 @@ export const actions = {
     else actions.prepareCase();
   },
   dossier(index: number): void { uiState.update((ui) => ({ ...ui, screen: 'dossiers', selectedDossierIndex: index })); },
+  markAudioFlag(flag: 'timeWarningPlayed' | 'finalCityPlayed'): void {
+    if (!engine) return;
+    engine.markAudioFlag(flag);
+    const state = engine.state as GameState;
+    gameState.set(state);
+    repository?.save(state);
+  },
   reset(): void {
     repository?.clear();
     engine = undefined;

@@ -1,0 +1,15 @@
+{
+  "assetId": "icon-pc",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "7676b042a89b33529a798d3367f7711da6ee8be250fb04d64a37258fee5943c2",
+  "referenceAssets": [
+    "public/assets/icons/icon-see.png",
+    "public/assets/icons/icon-depart.png",
+    "public/assets/icons/icon-search.png"
+  ],
+  "generatedAt": "2026-08-11T22:09:39.165Z",
+  "originalOutputSha256": "4a84418638737fa149cf57957b4c5dcf51d05957b87a46ff4b57fa59c6da5499",
+  "finalOutputSha256": "0fcb90088848ad9bb401dc693c2b56eb85c5a304a7860c07daf55b77848fe2b7",
+  "postprocessVersion": 1
+}

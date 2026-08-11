@@ -65,6 +65,10 @@ export interface CaseRuntimeState {
   investigationsThisVisit: number;
   visitedLocationKeys: string[];
   discoveredClueIds: string[];
+  audioFlags: {
+    timeWarningPlayed: boolean;
+    finalCityPlayed: boolean;
+  };
   activeWarrantSuspectId?: string;
   wrongCities: Record<string, WrongCityDefinition>;
 }
@@ -91,7 +95,7 @@ export interface WarrantInput {
 export type GameEvent =
   | { type: 'CASE_STARTED' }
   | { type: 'INVESTIGATION_COMPLETED'; clue: GeneratedClue; reviewed: boolean; finalEncounter: boolean }
-  | { type: 'ARRIVED'; classification: ArrivalClassification; cityId: string }
+  | { type: 'ARRIVED'; classification: ArrivalClassification; cityId: string; henchmanAppeared: boolean }
   | { type: 'WARRANT_NO_MATCH' }
   | { type: 'WARRANT_MULTIPLE_MATCHES'; suspectIds: readonly string[] }
   | { type: 'WARRANT_ISSUED'; suspectId: string }
@@ -102,4 +106,3 @@ export interface EngineResult {
   state: Readonly<GameState>;
   event: GameEvent;
 }
-
