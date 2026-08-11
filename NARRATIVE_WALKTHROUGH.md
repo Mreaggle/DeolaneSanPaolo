@@ -6,7 +6,7 @@ Este documento define a sequência canônica apresentada ao jogador em **Deolane
 
 ## 2. Identidades narrativas
 
-- Organização investigativa: **Agência Atlas**.
+- Organização investigativa: **Agência Federal**.
 - Facção criminosa: **T.C.C. — Tríade Chapa-Coco**.
 - Chefe e alvo final da T.C.C.: **Deolane San Paolo**.
 
@@ -21,7 +21,7 @@ O texto é econômico, levemente teatral e seco, como software de investigação
 ### 4.1 Boot
 
 1. Tela preta.
-2. `AGÊNCIA ATLAS — TERMINAL GEOGRÁFICO` aparece em texto bitmap.
+2. `AGÊNCIA FEDERAL — TERMINAL GEOGRÁFICO` aparece em texto bitmap.
 3. Uma linha de verificação percorre a tela: `ROTAS... ARQUIVOS... MANDADOS... OK`.
 4. A vinheta curta apresenta uma silhueta criminosa, um avião e uma perseguição.
 5. O título **DEOLANE SAN PAOLO** aparece.
@@ -37,7 +37,7 @@ Comandos:
 - `OPÇÕES`;
 - `CRÉDITOS`.
 
-`INICIAR` abre o terminal da Agência Atlas. Não abre o mapa.
+`INICIAR` abre o terminal da Agência Federal. Não abre o mapa.
 
 ## 5. Primeiro contato
 
@@ -95,7 +95,7 @@ O retrato do culpado nunca aparece. O boletim apresenta o objeto e uma arte do l
 
 ## 7. Designação
 
-A Agência Atlas responde:
+A Agência Federal responde:
 
 ```text
 DETETIVE: {playerName}
@@ -115,11 +115,11 @@ RECUPERE {stolenItemName}.
 
 ### 8.1 Chegada
 
-A cidade, dia e hora aparecem à esquerda. O painel informa uma frase curta de chegada. Nenhum texto declara se a cidade está certa ou errada.
+A cidade, dia e hora aparecem à esquerda. A fotografia da cidade ocupa o painel visual. À direita, o painel apresenta uma introdução curta e algumas curiosidades locais derivadas do conteúdo canônico da cidade. Nenhum texto declara se a cidade está certa ou errada.
 
-### 8.2 Ver
+### 8.2 Buscar
 
-`VER` mostra exatamente três locais. Um local visitado recebe o marcador `VISITADO`; pode ser reaberto sem custo para reler o depoimento.
+O botão de lupa `BUSCAR` mostra exatamente três locais. Um local visitado recebe o marcador `VISITADO`; pode ser reaberto sem custo para reler o depoimento.
 
 Ao investigar um local novo:
 
@@ -151,7 +151,9 @@ Não há pistas falsas nem nova evidência de identidade.
 
 ## 9. Viagem
 
-`PARTIR` abre o mapa e somente os destinos candidatos. Nenhum recebe marca de recomendação.
+`VER` exibe somente uma lista textual das cidades candidatas. Essa lista é informativa: nenhuma cidade pode ser selecionada e nenhuma viagem parte dessa tela.
+
+`PARTIR` abre o mapa e os mesmos destinos candidatos como opções selecionáveis. Nenhum recebe marca de recomendação.
 
 Após a escolha:
 
@@ -163,13 +165,13 @@ Após a escolha:
 
 ## 10. Arquivos
 
-`ARQUIVOS` abre os dez dossiês da T.C.C. Cada dossiê mostra retrato, nome, ocupação ficcional e os cinco traços usados pelo mandado. Consultar arquivos não consome tempo.
+O menu superior `DOSSIÊS` abre os dez dossiês da T.C.C. Cada dossiê mostra retrato, nome, ocupação ficcional e os cinco traços usados pelo mandado. Consultar arquivos não consome tempo.
 
 As biografias são curtas e não acrescentam relações ou fatos de vida da Deolane além do que for definido em conteúdo aprovado.
 
 ## 11. Mandado
 
-`BUSCAR` abre o computador de mandados da Agência Atlas. Os campos são sexo, cabelo, hobby, característica e veículo.
+O quarto botão, representado por um computador e rotulado `P.C`, abre o computador de mandados da Agência Federal. Os campos são sexo, cabelo, hobby, característica e veículo.
 
 Antes de confirmar:
 
@@ -202,7 +204,7 @@ Com tempo restante e mandado correto:
 
 1. o culpado aparece;
 2. a perseguição curta é exibida;
-3. a Agência Atlas confirma a prisão;
+3. a Agência Federal confirma a prisão;
 4. o objeto roubado é recuperado;
 5. surge `CASO RESOLVIDO`.
 
@@ -233,7 +235,7 @@ CASOS RESOLVIDOS: {solvedCases}
 
 > CASO ENCERRADO A PEDIDO DO DETETIVE.
 
-Toda falha retorna à Agência Atlas, preserva o posto e permite outro caso.
+Toda falha retorna à Agência Federal, preserva o posto e permite outro caso.
 
 ## 15. Promoção
 
@@ -271,7 +273,7 @@ O OBJETO FOI RECUPERADO.
 Segue o Hall da Fama:
 
 ```text
-AGÊNCIA ATLAS — HALL DA FAMA
+AGÊNCIA FEDERAL — HALL DA FAMA
 DETETIVE: {playerName}
 POSTO: DETETIVE ÁS
 CASOS RESOLVIDOS: 14
@@ -282,7 +284,7 @@ O perfil permanece salvo e o Hall da Fama pode ser revisto pelo menu. O primeiro
 ## 18. Sequência completa
 
 ```text
-BOOT → TÍTULO → AGÊNCIA ATLAS → NOME → BUSCA DE REGISTRO
+BOOT → TÍTULO → AGÊNCIA FEDERAL → NOME → BUSCA DE REGISTRO
 → PLANTÃO → DESIGNAÇÃO → CIDADE → INVESTIGAÇÃO/VIAGEM/ARQUIVOS/MANDADO
 → ESCONDERIJO → CAPTURA OU FUGA → RELATÓRIO → PROMOÇÃO/AGÊNCIA
 → CASOS SUBSEQUENTES → CASO DEOLANE → HALL DA FAMA

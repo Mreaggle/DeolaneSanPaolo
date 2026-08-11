@@ -14,7 +14,7 @@ export const content = Object.freeze({
   suspects,
   stolenItems,
   organizations: [
-    { id: 'agencia-atlas', name: 'Agência Atlas', type: 'detective-agency' as const },
+    { id: 'agencia-atlas', name: 'Agência Federal', type: 'detective-agency' as const },
     { id: 'tcc', name: 'T.C.C. — Tríade Chapa-Coco', type: 'criminal-organization' as const }
   ]
 });

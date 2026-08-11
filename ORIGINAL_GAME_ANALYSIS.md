@@ -2220,4 +2220,18 @@ The exact target executable is still not fingerprinted. The Internet Archive ite
 
 ## 69. Independent implementation decision
 
-The recreated shell uses the historical information hierarchy and interaction density, but every shipped character, emblem, scene, object, faction name, line of dialogue and raster asset is original to Deolane San Paolo. The criminal faction is **T.C.C. — Tríade Chapa-Coco** and the detective organization is **Agência Atlas**.
+The recreated shell uses the historical information hierarchy and interaction density, but every shipped character, emblem, scene, object, faction name, line of dialogue and raster asset is original to Deolane San Paolo. The criminal faction is **T.C.C. — Tríade Chapa-Coco** and the detective organization is **Agência Federal**.
+
+## 70. Project-owner control-mapping observation
+
+**Status:** `PROJECT_OWNER_RUNTIME_OBSERVATION`
+
+Direct comparison by the project owner with the original reference corrected an earlier interpretation of the four bottom controls:
+
+- `SEE` only displays the cities currently available from the present city; it does not select a destination;
+- `DEPART` opens the actionable travel interface and owns destination selection;
+- the magnifying-glass control opens the local investigation locations such as hotel and bank;
+- the computer control opens characteristic filtering and warrant computation;
+- suspect dossiers belong exclusively to the top `DOSSIERS` menu.
+
+The exact target executable revision remains unresolved, but this mapping is an explicit project decision and supersedes the earlier provisional mapping in the browser implementation.

@@ -1402,9 +1402,11 @@ interface Organization {
 Canonical organizations for the initial content pack:
 
 ```text
-agencia-atlas → Agência Atlas               → detective-agency
+agencia-atlas → Agência Federal             → detective-agency
 tcc           → T.C.C. — Tríade Chapa-Coco → criminal-organization
 ```
+
+The stable organization ID `agencia-atlas` is retained for save and content compatibility; its canonical player-facing name is **Agência Federal**.
 
 The canonical expansion of `T.C.C.` is **Tríade Chapa-Coco**. Internal stable IDs remain `tcc`.
 
