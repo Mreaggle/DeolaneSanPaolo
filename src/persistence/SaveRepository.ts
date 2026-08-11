@@ -22,7 +22,11 @@ export class SaveRepository {
     if (!raw) return undefined;
     try {
       const parsed = JSON.parse(raw) as GameState;
-      return parsed.schemaVersion === 1 ? parsed : undefined;
+      if (parsed.schemaVersion !== 1) return undefined;
+      if (parsed.activeCase && !parsed.activeCase.runtime.audioFlags) {
+        parsed.activeCase.runtime.audioFlags = { timeWarningPlayed: false, finalCityPlayed: false };
+      }
+      return parsed;
     } catch {
       return undefined;
     }
@@ -34,4 +38,3 @@ export class SaveRepository {
 
   clear(): void { this.storage.remove(KEY); }
 }
-

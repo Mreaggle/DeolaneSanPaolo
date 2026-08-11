@@ -49,6 +49,22 @@ describe('regras centrais', () => {
     expect(engine.travel(original).event).toMatchObject({ classification: 'TRAIL_ANCHOR' });
   });
 
+  it('sinaliza o capanga corredor na penúltima pista correta', () => {
+    const engine = new GameEngine(initialState(createProfile('Lia')));
+    engine.startCase('capanga-corredor');
+    const route = engine.state.activeCase!.definition.route;
+    let appeared = false;
+    for (const destination of route.slice(1)) {
+      const event = engine.travel(destination).event;
+      if (event.type === 'ARRIVED' && event.henchmanAppeared) {
+        appeared = true;
+        expect(event.classification).toBe('CORRECT_FORWARD');
+        expect(destination).toBe(route.at(-2));
+      }
+    }
+    expect(appeared).toBe(true);
+  });
+
   it('encerra a carreira ao capturar Deolane no décimo quarto caso', () => {
     const profile = { ...createProfile('Lia'), solvedCases: 13 };
     const engine = new GameEngine(initialState(profile));

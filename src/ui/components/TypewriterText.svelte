@@ -4,6 +4,7 @@
   export let speed = 14;
   export let oncomplete: () => void = () => undefined;
   export let onadvance: () => void = () => undefined;
+  export let oninteract: () => void = () => undefined;
   let shown = '';
   let done = false;
   let timer: number | undefined;
@@ -24,6 +25,7 @@
   };
   $: if (text) start();
   const complete = () => {
+    oninteract();
     if (!done) {
       if (timer) window.clearInterval(timer);
       shown = text;

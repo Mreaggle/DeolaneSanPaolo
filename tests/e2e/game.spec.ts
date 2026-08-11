@@ -1,7 +1,11 @@
 import { expect, test } from '@playwright/test';
+import { content, traitLabels } from '../../src/content';
+import { createProfile } from '../../src/engine/CaseEngine';
+import { generateCase } from '../../src/generation/CaseGenerator';
+import type { TraitCategory } from '../../src/content';
 
-const enterFirstCase = async (page: import('@playwright/test').Page) => {
-  await page.goto('./');
+const enterFirstCase = async (page: import('@playwright/test').Page, url = './') => {
+  await page.goto(url);
   await page.getByRole('button', { name: 'NOVO JOGO' }).click();
   await page.getByLabel('NOME').fill('Detetive Bia');
   await page.getByRole('button', { name: 'TRANSMITIR' }).click();
@@ -41,6 +45,7 @@ test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ 
   await expect(page.getByRole('button', { name: /VER/ })).toBeEnabled();
   await page.getByRole('button', { name: /P\.C/ }).click();
   await expect(page.getByText('COMPUTADOR DE MANDADOS')).toBeVisible();
+  await expect(page.getByRole('button', { name: /P\.C/ }).locator('img')).toHaveAttribute('src', /icon-pc\.png/);
   await expect(page.getByRole('button', { name: /VER/ })).toBeEnabled();
   await expect(page.getByRole('button', { name: /PARTIR/ })).toBeEnabled();
   await expect(page.getByRole('button', { name: /BUSCAR/ })).toBeEnabled();
@@ -53,7 +58,7 @@ test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ 
   expect(mapFit).toBe('fill');
   await page.locator('.destination-list button').first().click();
   await expect(page.getByText('EM TRÂNSITO')).toBeVisible();
-  await expect(page.locator('.city-curiosities li')).toHaveCount(2, { timeout: 2_000 });
+  await expect(page.locator('.city-curiosities li')).toHaveCount(2, { timeout: 5_000 });
 });
 
 test('marca local visitado e permite reler a mesma pista sem custo', async ({ page }) => {
@@ -101,4 +106,42 @@ test('bloqueia o menu de contexto do botão direito', async ({ page }) => {
     return event.defaultPrevented;
   });
   expect(contextMenuPrevented).toBe(true);
+});
+
+test('percorre um caso funcional e mantém as novas animações legíveis', async ({ page }) => {
+  test.setTimeout(70_000);
+  const seed = 'animation-demo';
+  const definition = generateCase(createProfile('Detetive Bia'), seed, content);
+  const culprit = content.suspects.find((suspect) => suspect.id === definition.culpritId)!;
+  const categories: TraitCategory[] = ['sex', 'hair', 'hobby', 'feature', 'vehicle'];
+  await enterFirstCase(page, `./?caseSeed=${seed}`);
+
+  await page.getByRole('button', { name: /P\.C/ }).click();
+  for (const category of categories) {
+    await page.getByLabel(traitLabels[category]).selectOption(culprit.traits[category]);
+  }
+  await page.getByRole('button', { name: 'COMPUTAR MANDADO' }).click();
+  await expect.poll(async () => page.evaluate(() => JSON.parse(localStorage.getItem('deolane-san-paolo.save') ?? '{}').activeCase?.runtime?.activeWarrantSuspectId)).toBe(culprit.id);
+  await expect(page.getByText(new RegExp(`MANDADO EMITIDO PARA ${culprit.name.toUpperCase()}`))).toBeVisible();
+
+  for (let index = 1; index < definition.route.length; index += 1) {
+    const city = content.cities.find((candidate) => candidate.id === definition.route[index])!;
+    await page.getByRole('button', { name: /PARTIR/ }).click();
+    await page.locator('.destination-list button').filter({ hasText: city.name }).click();
+    await expect(page.getByText('EM TRÂNSITO')).toBeVisible();
+    await page.waitForTimeout(1_150);
+    await expect(page.getByText('EM TRÂNSITO')).toBeVisible();
+    await expect(page.locator('.city-curiosities')).toBeVisible({ timeout: 5_000 });
+    if (index === definition.route.length - 2) {
+      await expect(page.locator('.henchman-crossing')).toBeVisible();
+      await expect(page.getByText(/CAPANGA DA T\.C\.C\./)).toBeVisible();
+    }
+  }
+
+  const hideout = content.places.find((place) => place.id === definition.finalHideoutPlaceId)!;
+  await page.getByRole('button', { name: /BUSCAR/ }).click();
+  await page.locator('.place-list button').filter({ hasText: hideout.name }).click();
+  await expect(page.locator('.result-animation')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'AGUARDE A SEQUÊNCIA...' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'RELATÓRIO À SEDE' })).toBeEnabled({ timeout: 5_000 });
 });

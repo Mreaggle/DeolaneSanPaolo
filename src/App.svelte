@@ -6,6 +6,8 @@
   import type { TraitCategory } from './content';
   import type { WarrantInput } from './engine/types';
   import { displayCaseTime, investigationCost } from './engine/TimeEngine';
+  import { AudioManager, type AudioSnapshot } from './audio/AudioManager';
+  import { preloadGroups, type AudioCueId } from './audio/audioRegistry';
   import PixelButton from './ui/components/PixelButton.svelte';
   import TypewriterText from './ui/components/TypewriterText.svelte';
 
@@ -16,6 +18,15 @@
   let selectedPlaceId = '';
   let witnessTextComplete = true;
   let showOptions = false;
+  let audioManager: AudioManager | undefined;
+  let audioSnapshot: AudioSnapshot = { enabled: true, volume: .75, unlocked: false, ambientPlaying: false };
+  let audioTimer: number | undefined;
+  let warningTimer: number | undefined;
+  let lastAudioKey = '';
+  let detectingPlayer = false;
+  let warrantBusy = false;
+  let resultAnimationComplete = true;
+  let actionsAreDisabled = false;
   const categories: TraitCategory[] = ['sex', 'hair', 'hobby', 'feature', 'vehicle'];
 
   const cityById = (id?: string) => actions.content.cities.find((city) => city.id === id);
@@ -44,8 +55,84 @@
   };
 
   const submitName = () => {
-    if (playerName.trim()) actions.createProfile(playerName.trim().slice(0, 18));
+    if (!playerName.trim() || detectingPlayer) return;
+    detectingPlayer = true;
+    audioManager?.request('DETECTIVE_SEARCH');
+    window.setTimeout(() => {
+      actions.createProfile(playerName.trim().slice(0, 18));
+      detectingPlayer = false;
+    }, 650);
   };
+
+  const computeWarrant = () => {
+    if (warrantBusy) return;
+    warrantBusy = true;
+    audioManager?.request('CRIME_COMPUTER_CALCULATING');
+    window.setTimeout(() => {
+      actions.warrant(warrant);
+      warrantBusy = false;
+    }, 850);
+  };
+
+  const requestCue = (cue: AudioCueId) => audioManager?.request(cue);
+
+  const screenAudioKey = (): string => {
+    const event = $uiState.event;
+    const detail = event?.type === 'ARRIVED' ? `${event.cityId}:${event.classification}:${event.henchmanAppeared}`
+      : event?.type === 'INVESTIGATION_COMPLETED' ? event.clue.id
+      : event?.type === 'CASE_FAILED' ? event.status
+      : event?.type ?? '';
+    return `${$gameState?.activeCase?.definition.id ?? 'none'}:${$uiState.screen}:${detail}`;
+  };
+
+  const syncScreenAudio = () => {
+    if (!audioManager) return;
+    const key = screenAudioKey();
+    if (key === lastAudioKey) return;
+    lastAudioKey = key;
+    if (audioTimer) window.clearTimeout(audioTimer);
+    const active = $gameState?.activeCase;
+    const event = $uiState.event;
+    if ($uiState.screen === 'title') requestCue('TITLE_THEME');
+    else if ($uiState.screen === 'signin') requestCue('HEADQUARTERS_AGENCY');
+    else if ($uiState.screen === 'new-player') requestCue('DETECTIVE_UNKNOWN');
+    else if ($uiState.screen === 'news') {
+      audioManager.preload(preloadGroups.case);
+      if (active?.definition.caseType === 'FINAL_DEOLANE') audioManager.preload(preloadGroups.finale);
+      requestCue('NEWS_FLASH');
+    }
+    else if ($uiState.screen === 'assignment') requestCue(active?.definition.caseType === 'FINAL_DEOLANE' ? 'DEOLANE_LEITMOTIF' : 'CASE_ASSIGNMENT');
+    else if ($uiState.screen === 'traveling') requestCue('AIRPLANE_TRAVEL');
+    else if ($uiState.screen === 'warrant' && event?.type === 'WARRANT_ISSUED') requestCue('WARRANT_ISSUED');
+    else if ($uiState.screen === 'warrant' && (event?.type === 'WARRANT_NO_MATCH' || event?.type === 'WARRANT_MULTIPLE_MATCHES')) requestCue('WARRANT_INCONCLUSIVE');
+    else if ($uiState.screen === 'witness' && active && active.runtime.currentCityId === active.definition.finalCityId && selectedPlaceId !== active.definition.finalHideoutPlaceId) requestCue('WRONG_FINAL_HIDEOUT');
+    else if ($uiState.screen === 'city' && event?.type === 'ARRIVED') {
+      if (event.classification === 'FINAL_CITY' && !active?.runtime.audioFlags.finalCityPlayed) {
+        requestCue('FINAL_CITY');
+        actions.markAudioFlag('finalCityPlayed');
+      } else if (event.henchmanAppeared) {
+        requestCue('SUSPICIOUS_HENCHMAN');
+        audioTimer = window.setTimeout(() => requestCue('CULPRIT_VERY_CLOSE'), 4_450);
+      } else if (event.classification === 'CORRECT_FORWARD') requestCue('HOT_TRAIL');
+      else if (event.classification === 'WRONG_CITY' || event.classification === 'OLD_ROUTE_CITY') requestCue('COLD_TRAIL');
+    } else if ($uiState.screen === 'result' && event?.type === 'CASE_SOLVED') {
+      resultAnimationComplete = false;
+      requestCue(active?.definition.caseType === 'FINAL_DEOLANE' ? 'FINAL_DEOLANE_REVEAL' : 'CRIMINAL_REVEALED');
+      audioTimer = window.setTimeout(() => requestCue(active?.definition.caseType === 'FINAL_DEOLANE' ? 'FINAL_CAPTURE_DEOLANE' : 'CASE_CLOSED'), 3_650);
+    } else if ($uiState.screen === 'result' && event?.type === 'CASE_FAILED') {
+      resultAnimationComplete = false;
+      requestCue('CRIMINAL_ESCAPED');
+    } else if ($uiState.screen === 'promotion') requestCue('RANK_PROMOTION');
+    else if ($uiState.screen === 'hall-of-fame') requestCue('HALL_OF_FAME');
+
+    if (active?.runtime.status === 'ACTIVE' && active.runtime.elapsedHours >= 102 && !active.runtime.audioFlags.timeWarningPlayed) {
+      actions.markAudioFlag('timeWarningPlayed');
+      if (warningTimer) window.clearTimeout(warningTimer);
+      warningTimer = window.setTimeout(() => requestCue('TIME_ALMOST_EXPIRED'), event?.type === 'ARRIVED' && event.henchmanAppeared ? 5_100 : 1_700);
+    }
+  };
+
+  $: syncScreenAudio();
 
   const gameplayScreens: UiScreen[] = ['city', 'places', 'witness', 'routes', 'travel', 'traveling', 'dossiers', 'warrant'];
   const statusText = (status?: string) => ({
@@ -55,12 +142,11 @@
     ABANDONED: 'O CASO FOI ARQUIVADO A SEU PEDIDO.'
   }[status ?? ''] ?? 'CASO ENCERRADO.');
 
-  const eventText = () => {
-    const event = $uiState.event;
+  const eventText = (event = $uiState.event) => {
     if (!event) return '';
     if (event.type === 'INVESTIGATION_COMPLETED') return event.clue.text;
     if (event.type === 'ARRIVED') return ({
-      CORRECT_FORWARD: 'A pista está quente. A T.C.C. passou por aqui.',
+      CORRECT_FORWARD: event.henchmanAppeared ? 'UM CAPANGA DA T.C.C. SUMIU ENTRE OS PRÉDIOS. VOCÊ ESTÁ PERTO!' : 'A pista está quente. A T.C.C. passou por aqui.',
       FINAL_CITY: 'Movimento suspeito confirmado. O esconderijo está nesta cidade.',
       WRONG_CITY: 'Pista fria. Ninguém viu a T.C.C. por aqui.',
       OLD_ROUTE_CITY: 'Você voltou a uma pista antiga.',
@@ -85,6 +171,10 @@
   const visit = (placeId: string) => {
     selectedPlaceId = placeId;
     witnessTextComplete = false;
+    const active = $gameState?.activeCase;
+    if (active && active.runtime.currentCityId === active.definition.finalCityId && placeId === active.definition.finalHideoutPlaceId) {
+      resultAnimationComplete = false;
+    }
     actions.investigate(placeId);
   };
 
@@ -115,11 +205,16 @@
     if (key === '4' || key === 'c') actions.go('warrant');
   };
 
-  const actionDisabled = (): boolean => {
-    return $uiState.screen === 'traveling' || ($uiState.screen === 'witness' && !witnessTextComplete);
-  };
+  $: actionsAreDisabled = $uiState.screen === 'traveling' || ($uiState.screen === 'witness' && !witnessTextComplete);
 
   onMount(() => {
+    audioManager = new AudioManager();
+    audioManager.preload(preloadGroups.opening);
+    const unsubscribeAudio = audioManager.subscribe((snapshot) => { audioSnapshot = snapshot; });
+    const unlockAudio = () => { void audioManager?.unlock(); };
+    window.addEventListener('pointerdown', unlockAudio, { once: true });
+    window.addEventListener('keydown', unlockAudio, { once: true });
+    syncScreenAudio();
     updateScale();
     window.addEventListener('resize', updateScale);
     window.addEventListener('keydown', keyboard);
@@ -128,6 +223,12 @@
       window.removeEventListener('resize', updateScale);
       window.removeEventListener('keydown', keyboard);
       document.removeEventListener('fullscreenchange', updateScale);
+      window.removeEventListener('pointerdown', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+      if (audioTimer) window.clearTimeout(audioTimer);
+      if (warningTimer) window.clearTimeout(warningTimer);
+      unsubscribeAudio();
+      audioManager?.dispose();
     };
   });
 </script>
@@ -169,7 +270,7 @@
             <form on:submit|preventDefault={submitName}>
               <label for="player-name">NOME</label>
               <input id="player-name" bind:value={playerName} maxlength="14" autocomplete="off" />
-              <PixelButton label="TRANSMITIR" disabled={!playerName.trim()} onactivate={submitName} />
+              <PixelButton label={detectingPlayer ? 'CONSULTANDO...' : 'TRANSMITIR'} disabled={!playerName.trim() || detectingPlayer} onactivate={submitName} />
             </form>
           </div>
         </section>
@@ -216,6 +317,8 @@
           {#if showOptions}
             <div class="options-menu">
               <b>OPÇÕES</b>
+              <button class="sound-toggle" on:click={() => audioManager?.setEnabled(!audioSnapshot.enabled)}><img src={asset(audioSnapshot.enabled ? 'icon-sound-on' : 'icon-sound-off')} alt="" />SOM: {audioSnapshot.enabled ? 'LIGADO' : 'DESLIGADO'}</button>
+              <label class="volume-control">VOLUME <input aria-label="Volume da música" type="range" min="0" max="1" step="0.05" value={audioSnapshot.volume} on:input={(event) => audioManager?.setVolume(Number(event.currentTarget.value))} /></label>
               <button on:click={() => { showOptions = false; void fullscreen(); }}>TELA CHEIA</button>
               <button on:click={() => { showOptions = false; actions.abandon(); }}>ABANDONAR CASO</button>
               <button on:click={() => showOptions = false}>FECHAR</button>
@@ -228,6 +331,9 @@
             </header>
             <div class="scene">
               <img src={asset(leftSceneAsset())} alt={$uiState.screen === 'witness' ? placeById(selectedPlaceId)?.name ?? 'Local' : $uiState.screen === 'dossiers' ? 'Arquivo de dossiês' : cityById($gameState.activeCase.runtime.currentCityId)?.name ?? 'Cidade'} />
+              {#if $uiState.screen === 'city' && $uiState.event?.type === 'ARRIVED' && $uiState.event.henchmanAppeared}
+                <div class="henchman-crossing" aria-label="Um capanga listrado da T.C.C. cruza a cidade correndo"><i style={`background-image:url(${asset('henchman-run-spritesheet')})`}></i></div>
+              {/if}
               <div class="scene-label">{$gameState.activeCase.runtime.elapsedHours}/120 HORAS</div>
             </div>
           </div>
@@ -241,10 +347,10 @@
                 {@const currentCity = cityById($gameState.activeCase.runtime.currentCityId)}
                 <h2>{currentCity?.name} · {currentCity?.country}</h2>
                 {#if $uiState.event?.type === 'ARRIVED' && ['CORRECT_FORWARD', 'FINAL_CITY'].includes($uiState.event.classification)}
-                  <img class="trail-strip" src={asset('trail-alert-spritesheet')} alt="Pista quente" />
+                  <div class="trail-animation-cue" aria-label="Pista quente"><i style={`background-image:url(${asset('trail-alert-spritesheet')})`}></i></div>
                 {/if}
                 <p class="city-intro">A Agência Federal registra sua chegada a {currentCity?.name}, em {currentCity?.country}. A fotografia oficial da cidade está exibida ao lado.</p>
-                {#if $uiState.event?.type === 'ARRIVED'}<p class="trail-note">{eventText()}</p>{/if}
+                {#if $uiState.event?.type === 'ARRIVED'}<p class="trail-note">{eventText($uiState.event)}</p>{/if}
                 <div class="city-curiosities"><b>CURIOSIDADES LOCAIS</b><ul>{#each currentCity?.facts.slice(0, 2) ?? [] as fact}<li>{fact.text}</li>{/each}</ul></div>
                 <dl class="case-status"><dt>MANDADO</dt><dd>{suspectById($gameState.activeCase.runtime.activeWarrantSuspectId)?.name ?? 'NENHUM'}</dd><dt>PISTAS</dt><dd>{$gameState.activeCase.runtime.discoveredClueIds.length}</dd></dl>
               {:else if $uiState.screen === 'routes'}
@@ -270,7 +376,7 @@
                 <h2>{placeById(selectedPlaceId)?.name ?? 'DEPOIMENTO'}</h2>
                 <div class="witness-row">
                   <img class="witness" src={asset(witness?.assetId ?? 'agency-clerk-portrait')} alt={witness?.name ?? 'Testemunha'} />
-                  <div class="speech"><b class="witness-name">{witness?.name ?? 'TESTEMUNHA'}</b><TypewriterText text={eventText()} speed={10} oncomplete={() => { witnessTextComplete = true; }} onadvance={() => actions.go('places')} /></div>
+                  <div class="speech"><b class="witness-name">{witness?.name ?? 'TESTEMUNHA'}</b><TypewriterText text={eventText($uiState.event)} speed={30} oninteract={() => { witnessTextComplete = true; }} onadvance={() => actions.go('places')} /></div>
                 </div>
                 <PixelButton label="OUTRO LOCAL" onactivate={() => actions.go('places')} />
               {:else if $uiState.screen === 'travel'}
@@ -315,15 +421,15 @@
                     </label>
                   {/each}
                 </div>
-                <div class="warrant-result">{eventText() || 'PREENCHA APENAS OS TRAÇOS CONFIRMADOS. A CONSULTA CUSTA 2 HORAS.'}</div>
-                <PixelButton label="COMPUTAR MANDADO" onactivate={() => actions.warrant(warrant)} />
+                <div class="warrant-result">{eventText($uiState.event) || 'PREENCHA APENAS OS TRAÇOS CONFIRMADOS. A CONSULTA CUSTA 2 HORAS.'}</div>
+                <PixelButton label={warrantBusy ? 'CALCULANDO...' : 'COMPUTAR MANDADO'} disabled={warrantBusy} onactivate={computeWarrant} />
               {/if}
             </section>
             <nav class="action-bar" aria-label="Ações de investigação">
-              <button disabled={actionDisabled()} class:active={$uiState.screen === 'routes'} on:click={() => actions.go('routes')}><img class="pixel-icon" src={asset('icon-see')} alt="" />VER<small>[V/1]</small></button>
-              <button disabled={actionDisabled()} class:active={$uiState.screen === 'travel'} on:click={() => actions.go('travel')}><img class="pixel-icon" src={asset('icon-depart')} alt="" />PARTIR<small>[P/2]</small></button>
-              <button disabled={actionDisabled()} class:active={$uiState.screen === 'places'} on:click={() => actions.go('places')}><img class="pixel-icon" src={asset('icon-search')} alt="" />BUSCAR<small>[B/3]</small></button>
-              <button disabled={actionDisabled()} class:active={$uiState.screen === 'warrant'} on:click={() => actions.go('warrant')}><span class="computer-icon" aria-hidden="true"></span>P.C<small>[C/4]</small></button>
+              <button disabled={actionsAreDisabled} class:active={$uiState.screen === 'routes'} on:click={() => actions.go('routes')}><img class="pixel-icon" src={asset('icon-see')} alt="" />VER<small>[V/1]</small></button>
+              <button disabled={actionsAreDisabled} class:active={$uiState.screen === 'travel'} on:click={() => actions.go('travel')}><img class="pixel-icon" src={asset('icon-depart')} alt="" />PARTIR<small>[P/2]</small></button>
+              <button disabled={actionsAreDisabled} class:active={$uiState.screen === 'places'} on:click={() => actions.go('places')}><img class="pixel-icon" src={asset('icon-search')} alt="" />BUSCAR<small>[B/3]</small></button>
+              <button disabled={actionsAreDisabled} class:active={$uiState.screen === 'warrant'} on:click={() => actions.go('warrant')}><img class="pixel-icon" src={asset('icon-pc')} alt="" />P.C<small>[C/4]</small></button>
             </nav>
           </div>
         </section>
@@ -333,10 +439,10 @@
           <div class:success={$uiState.event?.type === 'CASE_SOLVED'} class="result-card">
             <h2>{$uiState.event?.type === 'CASE_SOLVED' ? 'CASO ENCERRADO!' : 'A T.C.C. ESCAPOU'}</h2>
             <img class="result-suspect" src={asset(suspectById($gameState.activeCase.definition.culpritId)?.encounterAssetId ?? '')} alt={suspectById($gameState.activeCase.definition.culpritId)?.name ?? 'Suspeito'} />
-            <img class="result-strip" src={asset($uiState.event?.type === 'CASE_SOLVED' ? 'capture-spritesheet' : 'escape-spritesheet')} alt="" />
+            <div class="result-animation" aria-label={$uiState.event?.type === 'CASE_SOLVED' ? 'Animação de captura' : 'Animação de fuga'}><i class:escape={$uiState.event?.type !== 'CASE_SOLVED'} style={`background-image:url(${asset($uiState.event?.type === 'CASE_SOLVED' ? 'capture-spritesheet' : 'escape-spritesheet')})`} on:animationend={() => { resultAnimationComplete = true; }}></i></div>
             <p>{$uiState.event?.type === 'CASE_SOLVED' ? `${suspectById($gameState.activeCase.definition.culpritId)?.name} foi detido. O objeto roubado voltou ao acervo.` : statusText($gameState.activeCase.runtime.status)}</p>
             <p>TEMPO: {$gameState.activeCase.runtime.elapsedHours}H · CASOS RESOLVIDOS: {$gameState.profile.solvedCases}</p>
-            <PixelButton label="RELATÓRIO À SEDE" onactivate={actions.afterResult} />
+            <PixelButton label={resultAnimationComplete ? 'RELATÓRIO À SEDE' : 'AGUARDE A SEQUÊNCIA...'} disabled={!resultAnimationComplete} onactivate={actions.afterResult} />
           </div>
         </section>
       {:else if $uiState.screen === 'promotion' && $gameState}
@@ -390,10 +496,14 @@
   .menu-bar button:hover { color: #9b0c13; text-decoration: underline; }
   .menu-bar span { margin-left: auto; margin-right: 5px; font-size: 8px; }
   .menu-bar .fullscreen-button { width: 21px; padding: 0; color: #fff; background: #333; }
-  .options-menu { position: absolute; z-index: 5; top: 19px; left: 44px; display: grid; width: 145px; padding: 3px; background: #ddd; border: 2px solid; border-color: #fff #333 #333 #fff; box-shadow: 3px 3px 0 #111; }
+  .options-menu { position: absolute; z-index: 5; top: 19px; left: 44px; display: grid; width: 175px; padding: 3px; background: #ddd; border: 2px solid; border-color: #fff #333 #333 #fff; box-shadow: 3px 3px 0 #111; }
   .options-menu b { padding: 4px 5px; color: #fff; background: #111; }
   .options-menu button { padding: 5px; border: 0; background: transparent; text-align: left; }
   .options-menu button:hover { color: #970f12; background: #fff; }
+  .options-menu .sound-toggle { display: flex; align-items: center; gap: 5px; }
+  .sound-toggle img { width: 16px; height: 16px; image-rendering: pixelated; }
+  .volume-control { display: grid; grid-template-columns: 48px 1fr; align-items: center; padding: 4px 5px; font-size: 8px; }
+  .volume-control input { width: 105px; height: 12px; padding: 0; accent-color: #111; }
   .dos-shell.traveling .menu-bar button { pointer-events: none; color: #777; }
   .left-panel { display: grid; grid-template-rows: 46px 332px; border-right: 2px solid #111; }
   .city-header { display: flex; align-items: center; justify-content: space-between; padding: 4px 7px; color: #080808; background: #efefef; border-bottom: 2px solid #111; }
@@ -402,12 +512,20 @@
   .city-header time { max-width: 105px; padding: 5px; color: #fff; background: #111; font-size: 8px; text-align: center; }
   .scene { position: relative; overflow: hidden; background: #111; }
   .scene > img { width: 300px; height: 332px; object-fit: cover; }
+  .henchman-crossing { position: absolute; z-index: 3; inset: 0; overflow: hidden; pointer-events: none; }
+  .henchman-crossing::after { content: ''; position: absolute; right: 8px; bottom: 67px; width: 15px; height: 3px; background: #d7c39b; box-shadow: -14px 4px #76664e, -29px 1px #d7c39b; animation: getaway-dust 4.4s steps(4) forwards; }
+  .henchman-crossing i { position: absolute; left: -68px; bottom: 39px; width: 64px; height: 64px; background-size: 512px 64px; background-repeat: no-repeat; image-rendering: pixelated; animation: henchman-frames .64s steps(8) infinite, henchman-path 4.4s linear forwards; }
+  @keyframes henchman-frames { to { background-position: -512px 0; } }
+  @keyframes henchman-path { 0% { left: -68px; bottom: 35px; } 18% { bottom: 43px; } 52% { bottom: 37px; } 82% { bottom: 45px; } 100% { left: 304px; bottom: 39px; } }
+  @keyframes getaway-dust { 0%, 76% { opacity: 0; } 78%, 94% { opacity: 1; } 100% { opacity: 0; } }
   .scene-label { position: absolute; left: 5px; bottom: 5px; padding: 3px 5px; color: #fff; background: #111; border: 1px solid #fff; }
   .right-panel { display: grid; grid-template-rows: 306px 72px; }
   .info-panel { position: relative; overflow: hidden; padding: 10px 12px; color: #fff; background-color: #050505; border-bottom: 2px solid #111; }
   .info-panel h2 { margin: -10px -12px 9px; padding: 6px 9px; color: #050505; background: #dedede; border-bottom: 2px solid #777; font-size: 12px; letter-spacing: .5px; }
   .header-emblem { width: 14px; height: 14px; margin: -3px 2px -3px 0; vertical-align: middle; }
-  .trail-strip { width: 128px; height: 48px; margin: 0 4px 5px 0; object-fit: fill; }
+  .trail-animation-cue { float: right; display: grid; place-items: center; width: 44px; height: 54px; margin: 0 1px 4px 7px; overflow: hidden; background: #162940; border: 2px ridge #999; }
+  .trail-animation-cue i { display: block; width: 32px; height: 48px; background-size: 128px 48px; background-repeat: no-repeat; image-rendering: pixelated; animation: trail-frames .72s steps(4) 5; }
+  @keyframes trail-frames { to { background-position: -128px 0; } }
   .info-panel p { font-size: 10px; line-height: 1.45; }
   .city-intro { margin-bottom: 5px; }
   .trail-note { margin-bottom: 5px; color: #ffd92a; }
@@ -423,14 +541,13 @@
   .action-bar button:disabled { color: #777; background: #aaa; }
   .action-bar small { position: absolute; right: 3px; bottom: 2px; font-size: 6px; }
   .pixel-icon { width: 24px; height: 24px; object-fit: contain; }
-  .computer-icon { position: relative; display: block; width: 22px; height: 15px; margin-bottom: 5px; background: #d8d8d8; border: 2px solid #09105d; box-shadow: inset 0 0 0 2px #16858a; }
-  .computer-icon::before { content: ''; position: absolute; left: 7px; bottom: -6px; width: 5px; height: 4px; background: #09105d; }
-  .computer-icon::after { content: ''; position: absolute; left: 3px; bottom: -8px; width: 13px; height: 2px; background: #09105d; }
   .travel-animation { position: relative; height: 155px; margin: 18px 0 10px; overflow: hidden; background: #122947; border: 3px ridge #999; }
+  .travel-animation::before { content: ''; position: absolute; left: 35px; top: 27px; width: 26px; height: 6px; background: #dce8f1; box-shadow: 8px -5px #dce8f1, 18px 1px #dce8f1, 176px 24px #8aa1b7, 188px 19px #8aa1b7; animation: cloud-scroll 3.2s linear forwards; }
   .travel-animation::after { content: ''; position: absolute; left: 0; right: 0; top: 78px; height: 2px; background: #fff; box-shadow: 0 16px #888, 0 32px #333; }
-  .travel-animation i { position: absolute; z-index: 1; left: 140px; top: 51px; width: 32px; height: 32px; background-size: 128px 32px; animation: plane-frames .8s steps(4) infinite, plane-bob .8s steps(2) infinite; }
+  .travel-animation i { position: absolute; z-index: 1; left: -38px; top: 86px; width: 32px; height: 32px; background-size: 128px 32px; background-repeat: no-repeat; image-rendering: pixelated; animation: plane-frames .72s steps(4) infinite, plane-takeoff 3.2s cubic-bezier(.25,.05,.55,1) forwards; }
   @keyframes plane-frames { to { background-position: -128px 0; } }
-  @keyframes plane-bob { 50% { top: 48px; } }
+  @keyframes plane-takeoff { 0% { left: -38px; top: 91px; } 22% { top: 84px; } 58% { top: 49px; } 82% { top: 33px; } 100% { left: 336px; top: 19px; } }
+  @keyframes cloud-scroll { to { transform: translateX(-85px); } }
   .place-list { display: grid; gap: 7px; margin: 16px 6px; }
   .place-list button { display: grid; grid-template-columns: 26px 1fr 55px; align-items: center; padding: 6px; border: 2px solid #111; background: #fff; text-align: left; }
   .place-list button.visited { background: #d4d4d4; }
@@ -468,7 +585,10 @@
   .result-screen, .hall-screen { display: grid; place-items: center; }
   .result-card { inset: auto; width: 410px; min-height: 190px; text-align: center; }
   .result-suspect { float: left; width: 76px; height: 104px; margin: 0 10px 5px 0; object-fit: contain; background: #111; border: 2px solid #777; }
-  .result-strip { display: block; width: 96px; height: 32px; margin: 7px auto; object-fit: fill; }
+  .result-animation { display: grid; place-items: center; width: 104px; height: 72px; margin: 3px auto; overflow: hidden; background: #315765; border: 2px inset #777; }
+  .result-animation i { display: block; width: 48px; height: 64px; background-size: 192px 64px; background-repeat: no-repeat; image-rendering: pixelated; animation: result-frames .9s steps(4) 4; }
+  .result-animation i.escape { background-position: 0 0; }
+  @keyframes result-frames { to { background-position: -192px 0; } }
   .result-card h2 { margin: -14px -14px 15px; padding: 7px; color: #fff; background: #a30b12; }
   .result-card.success h2, .result-card.success > h2 { background: #196c31; }
   .promotion-screen h1 { color: #9f0d13; font-size: 28px; text-transform: uppercase; }

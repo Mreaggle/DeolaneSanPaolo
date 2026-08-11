@@ -28,6 +28,7 @@ const staticAssets: Record<string, string> = {
   'icon-depart': 'assets/icons/icon-depart.png',
   'icon-search': 'assets/icons/icon-search.png',
   'icon-files': 'assets/icons/icon-files.png',
+  'icon-pc': 'assets/icons/icon-pc.png',
   'icon-back': 'assets/icons/icon-back.png',
   'icon-continue': 'assets/icons/icon-continue.png',
   'icon-clock': 'assets/icons/icon-clock.png',
@@ -40,7 +41,8 @@ const staticAssets: Record<string, string> = {
   'travel-airplane-spritesheet': 'assets/animations/travel-airplane-spritesheet.png',
   'trail-alert-spritesheet': 'assets/animations/trail-alert-spritesheet.png',
   'capture-spritesheet': 'assets/animations/capture-spritesheet.png',
-  'escape-spritesheet': 'assets/animations/escape-spritesheet.png'
+  'escape-spritesheet': 'assets/animations/escape-spritesheet.png',
+  'henchman-run-spritesheet': 'assets/animations/henchman-run-spritesheet.png'
 };
 
 for (const city of cities) staticAssets[city.artworkAssetId] = `assets/cities/${city.id}.png`;
