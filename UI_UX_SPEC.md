@@ -1163,6 +1163,12 @@ This is a modal gameplay tool.
 
 Opening it costs 0 hours.
 
+The 340×306 P.C. content block is a front-facing close-up of the warrant
+computer, not a small decorative photograph. The artwork fills the block and
+the five interactive filters, result text and compute control are positioned
+inside the computer's CRT screen. Controls remain browser-rendered and
+interactive; they are never baked into the background image.
+
 ---
 
 ## 68. Warrant fields

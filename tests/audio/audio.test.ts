@@ -56,13 +56,12 @@ describe('trilha sonora', () => {
       const audio = new FakeAudio(src);
       created.push(audio);
       return audio;
-    }, transitionMs: 0 });
+    } });
     await manager.unlock();
     manager.request('HOT_TRAIL');
     await Promise.resolve();
     const hot = created[1]!;
     manager.request('COLD_TRAIL');
-    await Promise.resolve();
     expect(hot.paused).toBe(true);
     expect(manager.snapshot.currentCue).toBe('COLD_TRAIL');
     expect(created[0]!.paused).toBe(true);

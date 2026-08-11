@@ -1,14 +1,13 @@
 {
   "assetId": "warrant-computer-panel",
   "model": "gpt-image-2",
-  "promptVersion": 1,
-  "promptSha256": "0b2c01c21b8d3cf39c5c946f9aa86f35661aacd4782c94edc449b398f84d711c",
+  "promptVersion": 2,
+  "promptSha256": "cfd1e89f959bd658cb7ed2b7ed32f717e48e775a9ba5aa1b7d3e82d559822fd4",
   "referenceAssets": [
-    "references/carmen_sandiego_DOS/www/cities/rio_de_janeiro.png",
-    "references/carmen_sandiego_DOS/www/raws/bank_raw.png"
+    "public/assets/narrative/warrant-computer-panel.png"
   ],
-  "generatedAt": "2026-08-11T03:55:28.178Z",
-  "originalOutputSha256": "1fd88bcc91497b2a2c59ce06509cdb45960f673b81c569953a69889ac9184d4a",
-  "finalOutputSha256": "1d6b5e8383cecf448ec2215a24fa68238e989764109c8b2144b7253d0ab4fa0c",
+  "generatedAt": "2026-08-11T20:01:58-03:00",
+  "originalOutputSha256": "e58c71303c148b9cd1008198665d545e8768388fd7029e1547fb2162a585413e",
+  "finalOutputSha256": "7a1772d8ce803d7ef4e59be2285d09e38a6d4bb405244849128e6f193bfdd504",
   "postprocessVersion": 1
 }

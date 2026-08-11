@@ -56,7 +56,7 @@ export class AudioManager {
   constructor(options: ManagerOptions = {}) {
     this.createAudio = options.createAudio ?? ((src) => new Audio(src) as unknown as AudioLike);
     this.storage = options.storage ?? (typeof localStorage === 'undefined' ? undefined : localStorage);
-    this.transitionMs = options.transitionMs ?? 110;
+    this.transitionMs = options.transitionMs ?? 0;
     this.settings = this.loadSettings();
     this.ambient = this.createAudio(audioUrl(ambientTrack));
     this.ambient.loop = true;

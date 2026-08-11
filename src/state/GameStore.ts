@@ -60,7 +60,14 @@ export const actions = {
     const result = engine.startCase(seed());
     sync(result.event, 'news');
   },
-  go(screen: UiScreen): void { uiState.update((ui) => ({ ...ui, screen })); },
+  go(screen: UiScreen, clearEvent = false): void {
+    uiState.update((ui) => {
+      if (!clearEvent) return { ...ui, screen };
+      const next = { ...ui, screen };
+      delete next.event;
+      return next;
+    });
+  },
   investigate(placeId: string): void {
     if (!engine) return;
     const result = engine.investigate(placeId);

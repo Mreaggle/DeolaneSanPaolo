@@ -8,6 +8,7 @@
   import { displayCaseTime, investigationCost } from './engine/TimeEngine';
   import { AudioManager, type AudioSnapshot } from './audio/AudioManager';
   import { preloadGroups, type AudioCueId } from './audio/audioRegistry';
+  import { arrivalAudioEvent, cueForAudioEvent, type AudioEventId } from './audio/audioEvents';
   import PixelButton from './ui/components/PixelButton.svelte';
   import TypewriterText from './ui/components/TypewriterText.svelte';
 
@@ -20,8 +21,6 @@
   let showOptions = false;
   let audioManager: AudioManager | undefined;
   let audioSnapshot: AudioSnapshot = { enabled: true, volume: .75, unlocked: false, ambientPlaying: false };
-  let audioTimer: number | undefined;
-  let warningTimer: number | undefined;
   let lastAudioKey = '';
   let detectingPlayer = false;
   let warrantBusy = false;
@@ -57,7 +56,7 @@
   const submitName = () => {
     if (!playerName.trim() || detectingPlayer) return;
     detectingPlayer = true;
-    audioManager?.request('DETECTIVE_SEARCH');
+    requestAudioEvent('DETECTIVE_LOOKUP_STARTED');
     window.setTimeout(() => {
       actions.createProfile(playerName.trim().slice(0, 18));
       detectingPlayer = false;
@@ -67,7 +66,6 @@
   const computeWarrant = () => {
     if (warrantBusy) return;
     warrantBusy = true;
-    audioManager?.request('CRIME_COMPUTER_CALCULATING');
     window.setTimeout(() => {
       actions.warrant(warrant);
       warrantBusy = false;
@@ -75,6 +73,23 @@
   };
 
   const requestCue = (cue: AudioCueId) => audioManager?.request(cue);
+  const requestAudioEvent = (event: AudioEventId) => requestCue(cueForAudioEvent(event));
+
+  const openWarrantComputer = () => {
+    requestAudioEvent('WARRANT_COMPUTER_OPENED');
+    actions.go('warrant', true);
+  };
+
+  const beginTravel = (cityId: string) => {
+    requestAudioEvent('TRAVEL_STARTED');
+    actions.travel(cityId);
+  };
+
+  const finishResultAnimation = () => {
+    resultAnimationComplete = true;
+    if ($uiState.event?.type !== 'CASE_SOLVED') return;
+    requestAudioEvent($gameState?.activeCase?.definition.caseType === 'FINAL_DEOLANE' ? 'DEOLANE_CAPTURED' : 'CASE_SOLVED');
+  };
 
   const screenAudioKey = (): string => {
     const event = $uiState.event;
@@ -90,49 +105,60 @@
     const key = screenAudioKey();
     if (key === lastAudioKey) return;
     lastAudioKey = key;
-    if (audioTimer) window.clearTimeout(audioTimer);
     const active = $gameState?.activeCase;
     const event = $uiState.event;
-    if ($uiState.screen === 'title') requestCue('TITLE_THEME');
-    else if ($uiState.screen === 'signin') requestCue('HEADQUARTERS_AGENCY');
-    else if ($uiState.screen === 'new-player') requestCue('DETECTIVE_UNKNOWN');
+    let requestedEvent: AudioEventId | undefined;
+    const play = (audioEvent: AudioEventId) => {
+      requestedEvent = audioEvent;
+      requestAudioEvent(audioEvent);
+    };
+    if ($uiState.screen === 'title') play('TITLE_ENTERED');
+    else if ($uiState.screen === 'signin') play('HEADQUARTERS_ENTERED');
+    else if ($uiState.screen === 'new-player') play('DETECTIVE_NOT_FOUND');
     else if ($uiState.screen === 'news') {
       audioManager.preload(preloadGroups.case);
       if (active?.definition.caseType === 'FINAL_DEOLANE') audioManager.preload(preloadGroups.finale);
-      requestCue('NEWS_FLASH');
+      play('NEWS_FLASH_STARTED');
     }
-    else if ($uiState.screen === 'assignment') requestCue(active?.definition.caseType === 'FINAL_DEOLANE' ? 'DEOLANE_LEITMOTIF' : 'CASE_ASSIGNMENT');
-    else if ($uiState.screen === 'traveling') requestCue('AIRPLANE_TRAVEL');
-    else if ($uiState.screen === 'warrant' && event?.type === 'WARRANT_ISSUED') requestCue('WARRANT_ISSUED');
-    else if ($uiState.screen === 'warrant' && (event?.type === 'WARRANT_NO_MATCH' || event?.type === 'WARRANT_MULTIPLE_MATCHES')) requestCue('WARRANT_INCONCLUSIVE');
-    else if ($uiState.screen === 'witness' && active && active.runtime.currentCityId === active.definition.finalCityId && selectedPlaceId !== active.definition.finalHideoutPlaceId) requestCue('WRONG_FINAL_HIDEOUT');
+    else if ($uiState.screen === 'assignment') play(active?.definition.caseType === 'FINAL_DEOLANE' ? 'DEOLANE_THEME_REQUESTED' : 'CASE_ASSIGNMENT_SHOWN');
+    else if ($uiState.screen === 'traveling' && event?.type === 'ARRIVED') play('TRAVEL_STARTED');
+    else if ($uiState.screen === 'warrant' && !event) play('WARRANT_COMPUTER_OPENED');
+    else if ($uiState.screen === 'warrant' && event?.type === 'WARRANT_ISSUED') play('WARRANT_ISSUED');
+    else if ($uiState.screen === 'warrant' && (event?.type === 'WARRANT_NO_MATCH' || event?.type === 'WARRANT_MULTIPLE_MATCHES')) play('WARRANT_INCONCLUSIVE');
+    else if ($uiState.screen === 'witness' && active && event?.type === 'INVESTIGATION_COMPLETED' && !event.reviewed) {
+      if (active.runtime.currentCityId === active.definition.finalCityId && selectedPlaceId !== active.definition.finalHideoutPlaceId) {
+        play('FINAL_HIDEOUT_MISSED');
+      } else if (active.definition.route.indexOf(active.runtime.currentCityId) === active.definition.route.length - 2 && active.runtime.investigationsThisVisit === 1) {
+        play('CULPRIT_PROXIMITY_HIGH');
+      }
+    }
     else if ($uiState.screen === 'city' && event?.type === 'ARRIVED') {
-      if (event.classification === 'FINAL_CITY' && !active?.runtime.audioFlags.finalCityPlayed) {
-        requestCue('FINAL_CITY');
+      const arrivalEvent = arrivalAudioEvent(event.classification, event.henchmanAppeared, active?.runtime.audioFlags.finalCityPlayed ?? false);
+      if (arrivalEvent) play(arrivalEvent);
+      if (arrivalEvent === 'FINAL_CITY_REACHED') {
         actions.markAudioFlag('finalCityPlayed');
-      } else if (event.henchmanAppeared) {
-        requestCue('SUSPICIOUS_HENCHMAN');
-        audioTimer = window.setTimeout(() => requestCue('CULPRIT_VERY_CLOSE'), 4_450);
-      } else if (event.classification === 'CORRECT_FORWARD') requestCue('HOT_TRAIL');
-      else if (event.classification === 'WRONG_CITY' || event.classification === 'OLD_ROUTE_CITY') requestCue('COLD_TRAIL');
-    } else if ($uiState.screen === 'result' && event?.type === 'CASE_SOLVED') {
+      }
+    }
+    else if ($uiState.screen === 'result' && event?.type === 'CASE_SOLVED') {
       resultAnimationComplete = false;
-      requestCue(active?.definition.caseType === 'FINAL_DEOLANE' ? 'FINAL_DEOLANE_REVEAL' : 'CRIMINAL_REVEALED');
-      audioTimer = window.setTimeout(() => requestCue(active?.definition.caseType === 'FINAL_DEOLANE' ? 'FINAL_CAPTURE_DEOLANE' : 'CASE_CLOSED'), 3_650);
+      play(active?.definition.caseType === 'FINAL_DEOLANE' ? 'FINAL_DEOLANE_FOUND' : 'CULPRIT_FOUND');
     } else if ($uiState.screen === 'result' && event?.type === 'CASE_FAILED') {
       resultAnimationComplete = false;
-      requestCue('CRIMINAL_ESCAPED');
-    } else if ($uiState.screen === 'promotion') requestCue('RANK_PROMOTION');
-    else if ($uiState.screen === 'hall-of-fame') requestCue('HALL_OF_FAME');
+      play('CULPRIT_ESCAPED');
+    } else if ($uiState.screen === 'promotion') play('RANK_PROMOTED');
+    else if ($uiState.screen === 'hall-of-fame') play('HALL_OF_FAME_ENTERED');
 
-    if (active?.runtime.status === 'ACTIVE' && active.runtime.elapsedHours >= 102 && !active.runtime.audioFlags.timeWarningPlayed) {
+    if (!requestedEvent && active?.runtime.status === 'ACTIVE' && active.runtime.elapsedHours >= 102 && !active.runtime.audioFlags.timeWarningPlayed) {
+      play('TIME_WARNING_TRIGGERED');
       actions.markAudioFlag('timeWarningPlayed');
-      if (warningTimer) window.clearTimeout(warningTimer);
-      warningTimer = window.setTimeout(() => requestCue('TIME_ALMOST_EXPIRED'), event?.type === 'ARRIVED' && event.henchmanAppeared ? 5_100 : 1_700);
     }
   };
 
-  $: syncScreenAudio();
+  $: {
+    $uiState;
+    $gameState;
+    syncScreenAudio();
+  }
 
   const gameplayScreens: UiScreen[] = ['city', 'places', 'witness', 'routes', 'travel', 'traveling', 'dossiers', 'warrant'];
   const statusText = (status?: string) => ({
@@ -202,7 +228,7 @@
     if (key === '1' || key === 'v') actions.go('routes');
     if (key === '2' || key === 'p') actions.go('travel');
     if (key === '3' || key === 'b') actions.go('places');
-    if (key === '4' || key === 'c') actions.go('warrant');
+    if (key === '4' || key === 'c') openWarrantComputer();
   };
 
   $: actionsAreDisabled = $uiState.screen === 'traveling' || ($uiState.screen === 'witness' && !witnessTextComplete);
@@ -225,8 +251,6 @@
       document.removeEventListener('fullscreenchange', updateScale);
       window.removeEventListener('pointerdown', unlockAudio);
       window.removeEventListener('keydown', unlockAudio);
-      if (audioTimer) window.clearTimeout(audioTimer);
-      if (warningTimer) window.clearTimeout(warningTimer);
       unsubscribeAudio();
       audioManager?.dispose();
     };
@@ -243,7 +267,7 @@
 
 <div class="app-shell" bind:this={root}>
   <div class="scale-box">
-    <main class="game-stage" aria-label="Deolane San Paolo">
+    <main class="game-stage" aria-label="Deolane San Paolo" data-audio-cue={audioSnapshot.currentCue ?? (audioSnapshot.ambientPlaying ? 'AMBIENT' : 'NONE')}>
       {#if $uiState.screen === 'title'}
         <section class="full-screen title-screen">
           <img class="full-art" src={asset('title-background')} alt="" />
@@ -338,7 +362,7 @@
             </div>
           </div>
           <div class="right-panel">
-            <section class="info-panel">
+            <section class:warrant-panel={$uiState.screen === 'warrant'} class="info-panel">
               {#if $uiState.screen === 'traveling'}
                 <h2>EM TRÂNSITO</h2>
                 <div class="travel-animation"><i style={`background-image:url(${asset('travel-airplane-spritesheet')})`}></i></div>
@@ -351,7 +375,7 @@
                 {/if}
                 <p class="city-intro">A Agência Federal registra sua chegada a {currentCity?.name}, em {currentCity?.country}. A fotografia oficial da cidade está exibida ao lado.</p>
                 {#if $uiState.event?.type === 'ARRIVED'}<p class="trail-note">{eventText($uiState.event)}</p>{/if}
-                <div class="city-curiosities"><b>CURIOSIDADES LOCAIS</b><ul>{#each currentCity?.facts.slice(0, 2) ?? [] as fact}<li>{fact.text}</li>{/each}</ul></div>
+                <div class="city-brief"><b>PERFIL DA CIDADE</b><p>{currentCity?.brief}</p></div>
                 <dl class="case-status"><dt>MANDADO</dt><dd>{suspectById($gameState.activeCase.runtime.activeWarrantSuspectId)?.name ?? 'NENHUM'}</dd><dt>PISTAS</dt><dd>{$gameState.activeCase.runtime.discoveredClueIds.length}</dd></dl>
               {:else if $uiState.screen === 'routes'}
                 <h2>CIDADES DISPONÍVEIS</h2>
@@ -389,7 +413,7 @@
                 </div>
                 <div class="destination-list">
                   {#each currentGeneratedCity()?.travelCandidates ?? [] as cityId}
-                    <button on:click={() => actions.travel(cityId)}>{cityById(cityId)?.name}</button>
+                    <button on:click={() => beginTravel(cityId)}>{cityById(cityId)?.name}</button>
                   {/each}
                 </div>
               {:else if $uiState.screen === 'dossiers'}
@@ -407,29 +431,33 @@
                   <div class="pager"><PixelButton label="◀" disabled={$uiState.selectedDossierIndex === 0} onactivate={() => actions.dossier($uiState.selectedDossierIndex - 1)} /><PixelButton label="▶" disabled={$uiState.selectedDossierIndex === 9} onactivate={() => actions.dossier($uiState.selectedDossierIndex + 1)} /></div>
                 {/if}
               {:else if $uiState.screen === 'warrant'}
-                <h2>COMPUTADOR DE MANDADOS</h2>
-                <img class="warrant-machine" src={asset('warrant-computer-panel')} alt="Terminal de mandados" />
-                <div class="warrant-grid">
-                  {#each categories as category}
-                    <label>{traitLabels[category]}
-                      <select value={warrant[category] ?? ''} on:change={(event) => setWarrant(category, event.currentTarget.value)}>
-                        <option value="">DESCONHECIDO</option>
-                        {#each Array.from(new Set(actions.content.suspects.map((s) => s.traits[category]))) as value}
-                          <option {value}>{traitValueLabels[value] ?? value}</option>
-                        {/each}
-                      </select>
-                    </label>
-                  {/each}
+                <div class="warrant-console">
+                  <img class="warrant-machine" src={asset('warrant-computer-panel')} alt="Computador de mandados visto de frente" />
+                  <div class="warrant-screen-ui">
+                    <h2>COMPUTADOR DE MANDADOS</h2>
+                    <div class="warrant-grid">
+                      {#each categories as category}
+                        <label>{traitLabels[category]}
+                          <select value={warrant[category] ?? ''} on:change={(event) => setWarrant(category, event.currentTarget.value)}>
+                            <option value="">DESCONHECIDO</option>
+                            {#each Array.from(new Set(actions.content.suspects.map((s) => s.traits[category]))) as value}
+                              <option {value}>{traitValueLabels[value] ?? value}</option>
+                            {/each}
+                          </select>
+                        </label>
+                      {/each}
+                    </div>
+                    <div class="warrant-result">{eventText($uiState.event) || 'PREENCHA SÓ OS TRAÇOS CONFIRMADOS. CONSULTA: 2 HORAS.'}</div>
+                    <div class="warrant-submit"><PixelButton label={warrantBusy ? 'CALCULANDO...' : 'COMPUTAR MANDADO'} disabled={warrantBusy} onactivate={computeWarrant} /></div>
+                  </div>
                 </div>
-                <div class="warrant-result">{eventText($uiState.event) || 'PREENCHA APENAS OS TRAÇOS CONFIRMADOS. A CONSULTA CUSTA 2 HORAS.'}</div>
-                <PixelButton label={warrantBusy ? 'CALCULANDO...' : 'COMPUTAR MANDADO'} disabled={warrantBusy} onactivate={computeWarrant} />
               {/if}
             </section>
             <nav class="action-bar" aria-label="Ações de investigação">
               <button disabled={actionsAreDisabled} class:active={$uiState.screen === 'routes'} on:click={() => actions.go('routes')}><img class="pixel-icon" src={asset('icon-see')} alt="" />VER<small>[V/1]</small></button>
               <button disabled={actionsAreDisabled} class:active={$uiState.screen === 'travel'} on:click={() => actions.go('travel')}><img class="pixel-icon" src={asset('icon-depart')} alt="" />PARTIR<small>[P/2]</small></button>
               <button disabled={actionsAreDisabled} class:active={$uiState.screen === 'places'} on:click={() => actions.go('places')}><img class="pixel-icon" src={asset('icon-search')} alt="" />BUSCAR<small>[B/3]</small></button>
-              <button disabled={actionsAreDisabled} class:active={$uiState.screen === 'warrant'} on:click={() => actions.go('warrant')}><img class="pixel-icon" src={asset('icon-pc')} alt="" />P.C<small>[C/4]</small></button>
+              <button disabled={actionsAreDisabled} class:active={$uiState.screen === 'warrant'} on:click={openWarrantComputer}><img class="pixel-icon" src={asset('icon-pc')} alt="" />P.C<small>[C/4]</small></button>
             </nav>
           </div>
         </section>
@@ -439,7 +467,7 @@
           <div class:success={$uiState.event?.type === 'CASE_SOLVED'} class="result-card">
             <h2>{$uiState.event?.type === 'CASE_SOLVED' ? 'CASO ENCERRADO!' : 'A T.C.C. ESCAPOU'}</h2>
             <img class="result-suspect" src={asset(suspectById($gameState.activeCase.definition.culpritId)?.encounterAssetId ?? '')} alt={suspectById($gameState.activeCase.definition.culpritId)?.name ?? 'Suspeito'} />
-            <div class="result-animation" aria-label={$uiState.event?.type === 'CASE_SOLVED' ? 'Animação de captura' : 'Animação de fuga'}><i class:escape={$uiState.event?.type !== 'CASE_SOLVED'} style={`background-image:url(${asset($uiState.event?.type === 'CASE_SOLVED' ? 'capture-spritesheet' : 'escape-spritesheet')})`} on:animationend={() => { resultAnimationComplete = true; }}></i></div>
+            <div class="result-animation" aria-label={$uiState.event?.type === 'CASE_SOLVED' ? 'Animação de captura' : 'Animação de fuga'}><i class:escape={$uiState.event?.type !== 'CASE_SOLVED'} style={`background-image:url(${asset($uiState.event?.type === 'CASE_SOLVED' ? 'capture-spritesheet' : 'escape-spritesheet')})`} on:animationend={finishResultAnimation}></i></div>
             <p>{$uiState.event?.type === 'CASE_SOLVED' ? `${suspectById($gameState.activeCase.definition.culpritId)?.name} foi detido. O objeto roubado voltou ao acervo.` : statusText($gameState.activeCase.runtime.status)}</p>
             <p>TEMPO: {$gameState.activeCase.runtime.elapsedHours}H · CASOS RESOLVIDOS: {$gameState.profile.solvedCases}</p>
             <PixelButton label={resultAnimationComplete ? 'RELATÓRIO À SEDE' : 'AGUARDE A SEQUÊNCIA...'} disabled={!resultAnimationComplete} onactivate={actions.afterResult} />
@@ -529,9 +557,8 @@
   .info-panel p { font-size: 10px; line-height: 1.45; }
   .city-intro { margin-bottom: 5px; }
   .trail-note { margin-bottom: 5px; color: #ffd92a; }
-  .city-curiosities { clear: both; margin-bottom: 6px; padding: 5px 6px; color: #050505; background: #dedede; border: 1px solid #777; font-size: 8px; }
-  .city-curiosities ul { margin: 3px 0 0; padding-left: 14px; }
-  .city-curiosities li + li { margin-top: 3px; }
+  .city-brief { clear: both; margin-bottom: 6px; padding: 5px 6px; color: #050505; background: #dedede; border: 1px solid #777; font-size: 8px; line-height: 1.35; }
+  .city-brief p { margin: 3px 0 0; font-size: 8px; line-height: 1.35; }
   .case-status { display: grid; grid-template-columns: 65px 1fr; gap: 3px; clear: both; padding: 7px; color: #000; background: #fff; border: 1px solid #555; }
   .case-status dt { font-weight: 700; }
   .case-status dd { margin: 0; }
@@ -577,11 +604,17 @@
   .traits dt { font-weight: 700; }
   .traits dd { margin: 0; }
   .pager { position: absolute; right: 10px; bottom: 8px; display: flex; gap: 4px; }
-  .warrant-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 8px; }
-  .warrant-machine { float: right; width: 74px; height: 58px; margin: 0 0 5px 7px; object-fit: cover; border: 2px solid #777; }
-  .warrant-grid label { font-weight: 700; }
-  .warrant-grid select { display: block; width: 100%; height: 24px; margin-top: 2px; border: 2px inset #777; background: #fff; font-size: 8px; }
-  .warrant-result { min-height: 39px; margin: 8px 0; padding: 5px; color: #25e35c; background: #050505; border: 2px inset #777; font-size: 8px; }
+  .info-panel.warrant-panel { padding: 0; }
+  .warrant-console { position: absolute; inset: 0; overflow: hidden; }
+  .warrant-machine { position: absolute; inset: 0; width: 340px; height: 306px; object-fit: fill; image-rendering: pixelated; }
+  .warrant-screen-ui { position: absolute; z-index: 1; left: 40px; top: 35px; width: 260px; height: 211px; padding: 4px 6px; color: #8ef4e5; }
+  .warrant-screen-ui h2 { margin: 0 0 4px; padding: 0 0 3px; color: #8ef4e5; background: transparent; border-bottom: 1px solid #3a7d80; font-size: 9px; text-align: center; letter-spacing: 0; }
+  .warrant-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 6px; }
+  .warrant-grid label { color: #8ef4e5; font-size: 6px; font-weight: 700; }
+  .warrant-grid select { display: block; width: 100%; height: 18px; margin-top: 1px; padding: 0 2px; color: #d8fff5; background: #071a29; border: 1px solid #4e9695; border-radius: 0; font-family: inherit; font-size: 7px; }
+  .warrant-result { min-height: 29px; margin: 4px 0; padding: 3px 4px; color: #63f399; background: #02080f; border: 1px solid #3a7d80; font-size: 7px; line-height: 1.25; }
+  .warrant-submit { display: flex; justify-content: center; font-size: 7px; }
+  .warrant-submit :global(button) { min-height: 20px; padding: 2px 6px; }
   .result-screen, .hall-screen { display: grid; place-items: center; }
   .result-card { inset: auto; width: 410px; min-height: 190px; text-align: center; }
   .result-suspect { float: left; width: 76px; height: 104px; margin: 0 10px 5px 0; object-fit: contain; background: #111; border: 2px solid #777; }
