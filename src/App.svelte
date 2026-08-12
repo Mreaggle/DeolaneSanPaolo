@@ -293,7 +293,7 @@
             <img class="agency-title-emblem" src={asset('agency-emblem')} alt="Brasão da Agência Federal" />
             <div class="tiny-kicker">AGÊNCIA FEDERAL APRESENTA</div>
             <h1 class="visual-title">
-              <img class="title-wordmark" src={asset('title-wordmark')} alt="Where is Deolane San Paolo?" />
+              <img class="title-wordmark" src={asset('title-wordmark-retro')} alt="Where is Deolane San Paolo?" />
             </h1>
             <div class="tcc-line">NO RASTRO DA T.C.C.</div>
             <div class="title-actions">
