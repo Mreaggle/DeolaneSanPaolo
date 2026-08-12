@@ -22,7 +22,9 @@ const expectAudioCue = async (page: import('@playwright/test').Page, cue: string
 
 test('abre o prólogo e entra no primeiro caso', async ({ page }, testInfo) => {
   await page.goto('./');
-  await expect(page.getByRole('heading', { name: /DEOLANE/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Where is Deolane San Paolo?' })).toBeVisible();
+  await expect(page.getByAltText('Where is Deolane San Paolo?')).toHaveAttribute('src', /deolane-logo\.png$/);
+  await expect(page.getByAltText('Brasão da Agência Federal')).toHaveAttribute('src', /agency-emblem\.png$/);
   await enterFirstCase(page);
   await expect(page.getByRole('navigation', { name: 'Ações de investigação' })).toBeVisible();
   await expect(page.getByText('AGÊNCIA FEDERAL', { exact: true })).toBeVisible();

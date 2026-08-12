@@ -289,9 +289,11 @@
           <img class="full-art" src={asset('title-background')} alt="" />
           <div class="dither-shade"></div>
           <div class="title-copy">
-            <img class="title-ornament" src={asset('title-logo')} alt="" />
+            <img class="agency-title-emblem" src={asset('agency-emblem')} alt="Brasão da Agência Federal" />
             <div class="tiny-kicker">AGÊNCIA FEDERAL APRESENTA</div>
-            <h1>DEOLANE<br /><span>SAN PAOLO</span></h1>
+            <h1 class="visual-title">
+              <img class="title-wordmark" src={asset('title-wordmark')} alt="Where is Deolane San Paolo?" />
+            </h1>
             <div class="tcc-line">NO RASTRO DA T.C.C.</div>
             <div class="title-actions">
               <PixelButton label="NOVO JOGO" onactivate={actions.newGame} />
@@ -514,15 +516,15 @@
   .full-screen { position: absolute; inset: 0; overflow: hidden; background: #111; }
   .full-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
   .dither-shade { position: absolute; inset: 0; background-color: rgba(0,0,0,.28); }
-  .title-copy { position: absolute; inset: 35px 28px 22px 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; text-shadow: 2px 2px #000; }
+  .title-copy { position: absolute; inset: 22px 28px 18px 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; text-shadow: 2px 2px #000; }
   .tiny-kicker { padding: 3px 7px; color: #050505; background: #f6d21d; text-shadow: none; letter-spacing: 1px; }
-  .title-ornament { width: 160px; height: 48px; margin-bottom: 3px; object-fit: contain; }
+  .agency-title-emblem { width: 46px; height: 46px; margin-bottom: 2px; object-fit: contain; image-rendering: pixelated; }
   h1, h2, h3, p { margin-top: 0; }
-  .title-copy h1 { margin: 14px 0 3px; color: #fff; font-size: 34px; line-height: .88; letter-spacing: -2px; }
-  .title-copy h1 span { color: #ef2632; }
-  .tcc-line { margin-bottom: 18px; padding: 3px 12px; color: #ffd92a; border: 2px solid #ffd92a; font-weight: 700; }
-  .title-actions { display: grid; gap: 6px; width: 150px; }
-  .title-copy p { position: absolute; bottom: -10px; margin: 0; font-size: 7px; }
+  .visual-title { width: 184px; height: 126px; margin: 3px 0 1px; }
+  .title-wordmark { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
+  .tcc-line { margin-bottom: 8px; padding: 3px 12px; color: #ffd92a; border: 2px solid #ffd92a; font-weight: 700; }
+  .title-actions { display: grid; gap: 4px; width: 150px; }
+  .title-copy p { position: absolute; bottom: -7px; margin: 0; font-size: 7px; }
   .terminal { display: grid; place-items: center; color: #21df50; background-color: #041006; }
   .terminal-frame { position: relative; z-index: 1; width: 500px; min-height: 240px; padding: 20px; border: 4px double #25a94b; background: #041006; box-shadow: inset 0 0 0 2px #020; font-size: 13px; }
   .terminal-frame.paper { color: #111; background: #ddd6b2; border-color: #fff #555 #555 #fff; box-shadow: inset 0 0 0 2px #888; }
