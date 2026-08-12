@@ -1,14 +1,11 @@
 {
   "assetId": "agency-emblem",
   "model": "gpt-image-2",
-  "promptVersion": 1,
-  "promptSha256": "4e36701a1dce0e54a5718096a2b55d39afee42aa79b16384f906b1f3fe9f0f78",
-  "referenceAssets": [
-    "references/carmen_sandiego_DOS/www/magglass.png",
-    "references/carmen_sandiego_DOS/www/detective_raw.png"
-  ],
-  "generatedAt": "2026-08-11T03:56:05.736Z",
-  "originalOutputSha256": "5a65ceda37ed559ac0e3a28348f9df47f9472c685f02f3d926a3a26fdc39f338",
-  "finalOutputSha256": "895c03644688b70316dc0436a5818b8e3e7bc8766a5a58db67d2739cff788fc7",
-  "postprocessVersion": 1
+  "promptVersion": 2,
+  "promptSha256": "c9f24af512b722ed35ad4337d3ad57daba7e067a3d99051c8c56454c4e4d0868",
+  "referenceAssets": [],
+  "generatedAt": "2026-08-12T00:44:37.000Z",
+  "originalOutputSha256": "da774f516a3e5315b9d604795d3c2f606ed21486a82c57d9ac43d091eee1c106",
+  "finalOutputSha256": "76c842ba39c80110e3ebb62af94e99259f845c94a70f81dc57391537a0764c23",
+  "postprocessVersion": 2
 }
