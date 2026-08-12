@@ -42,7 +42,7 @@ describe('trilha sonora', () => {
     await manager.unlock();
     expect(ambient.paused).toBe(true);
     expect(manager.snapshot.currentCue).toBe('NEWS_FLASH');
-    const cue = created[1]!;
+    const cue = created.find((audio) => audio.src.endsWith('/5_news_flash.mp3'))!;
     expect(cue.paused).toBe(false);
     cue.finish();
     await Promise.resolve();
@@ -61,7 +61,7 @@ describe('trilha sonora', () => {
     await manager.unlock();
     manager.request('HOT_TRAIL');
     await Promise.resolve();
-    const hot = created[1]!;
+    const hot = created.find((audio) => audio.src.endsWith('/8_hot_trail.mp3'))!;
     manager.request('COLD_TRAIL');
     expect(hot.paused).toBe(true);
     expect(manager.snapshot.currentCue).toBe('COLD_TRAIL');
@@ -78,14 +78,37 @@ describe('trilha sonora', () => {
     await manager.unlock();
     manager.request('DETECTIVE_UNKNOWN');
     await Promise.resolve();
-    const cue = created[1]!;
+    const cue = created.find((audio) => audio.src.endsWith('/4_detective_unknown.mp3'))!;
 
     manager.playUiSound('TYPEWRITER');
-    const typewriter = created[2]!;
+    const typewriter = created.find((audio) => audio.src.endsWith(`/${uiSoundRegistry.TYPEWRITER}`))!;
 
     expect(typewriter.src).toContain(`/audio/sfx/${uiSoundRegistry.TYPEWRITER}`);
     expect(typewriter.paused).toBe(false);
     expect(cue.paused).toBe(false);
     expect(manager.snapshot.currentCue).toBe('DETECTIVE_UNKNOWN');
+  });
+
+  it('pré-carrega e toca o clique sem interromper o typewriter ou o cue', async () => {
+    const created: FakeAudio[] = [];
+    const manager = new AudioManager({ createAudio: (src) => {
+      const audio = new FakeAudio(src);
+      created.push(audio);
+      return audio;
+    } });
+    const typewriter = created.find((audio) => audio.src.endsWith(`/${uiSoundRegistry.TYPEWRITER}`))!;
+    const click = created.find((audio) => audio.src.endsWith(`/${uiSoundRegistry.MOUSE_CLICK}`))!;
+    await manager.unlock();
+    manager.request('HEADQUARTERS_AGENCY');
+    await Promise.resolve();
+    const cue = created.find((audio) => audio.src.endsWith('/2_headquarters_agency.mp3'))!;
+
+    manager.playUiSound('TYPEWRITER');
+    manager.playUiSound('MOUSE_CLICK');
+
+    expect(typewriter.plays).toBe(1);
+    expect(click.plays).toBe(1);
+    expect(typewriter.paused).toBe(false);
+    expect(cue.paused).toBe(false);
   });
 });

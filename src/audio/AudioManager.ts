@@ -72,6 +72,13 @@ export class AudioManager {
     this.ambient.loop = true;
     this.ambient.preload = 'auto';
     this.ambient.volume = this.settings.volume * 0.28;
+    for (const sound of Object.keys(uiSoundRegistry) as UiSoundId[]) {
+      const audio = this.createAudio(uiSoundUrl(uiSoundRegistry[sound]));
+      audio.preload = 'auto';
+      audio.volume = this.settings.volume;
+      audio.load?.();
+      this.uiSounds.set(sound, audio);
+    }
   }
 
   get snapshot(): AudioSnapshot {
@@ -112,12 +119,8 @@ export class AudioManager {
 
   playUiSound(sound: UiSoundId): void {
     if (!this.unlocked || !this.settings.enabled) return;
-    let audio = this.uiSounds.get(sound);
-    if (!audio) {
-      audio = this.createAudio(uiSoundUrl(uiSoundRegistry[sound]));
-      audio.preload = 'auto';
-      this.uiSounds.set(sound, audio);
-    }
+    const audio = this.uiSounds.get(sound);
+    if (!audio) return;
     audio.currentTime = 0;
     audio.volume = this.settings.volume;
     void audio.play().catch(() => undefined);

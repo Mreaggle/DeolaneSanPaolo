@@ -167,6 +167,55 @@ test('bloqueia atalhos de inspeção e seleção de texto', async ({ page }) => 
   await expect(page.locator('.game-stage')).toHaveCSS('user-select', 'none');
 });
 
+test('cadencia textos automáticos e respeita cada entrada do nome', async ({ page }) => {
+  await page.addInitScript(() => {
+    const plays: { typewriter: number[]; mouse: number[] } = { typewriter: [], mouse: [] };
+    Object.defineProperty(window, '__uiSoundPlays', { value: plays });
+    HTMLMediaElement.prototype.play = function () {
+      if (this.src.endsWith('/typewriter.mp3')) plays.typewriter.push(performance.now());
+      if (this.src.endsWith('/mouse_click.mp3')) plays.mouse.push(performance.now());
+      return Promise.resolve();
+    };
+  });
+  const soundPlays = () => page.evaluate(() => (window as typeof window & { __uiSoundPlays: { typewriter: number[]; mouse: number[] } }).__uiSoundPlays);
+  const clearTypewriter = () => page.evaluate(() => {
+    (window as typeof window & { __uiSoundPlays: { typewriter: number[]; mouse: number[] } }).__uiSoundPlays.typewriter.length = 0;
+  });
+
+  await page.goto('./');
+  await page.getByRole('button', { name: 'NOVO JOGO' }).click();
+  await page.waitForTimeout(650);
+  const automatic = (await soundPlays()).typewriter;
+  expect(automatic.length).toBeGreaterThanOrEqual(4);
+  expect(automatic.length).toBeLessThanOrEqual(6);
+  expect(automatic.slice(1).every((time, index) => time - automatic[index]! >= 110)).toBe(true);
+
+  await page.locator('.typewriter').click();
+  await clearTypewriter();
+  await page.getByLabel('NOME').pressSequentially('Bia ');
+  expect((await soundPlays()).typewriter).toHaveLength(4);
+  expect((await soundPlays()).mouse.length).toBeGreaterThanOrEqual(2);
+});
+
+test('usa cursores de mouse solto e pressionado somente no PC', async ({ page }, testInfo) => {
+  await page.goto('./');
+  const shell = page.locator('.app-shell');
+  const cursor = () => shell.evaluate((element) => getComputedStyle(element).cursor);
+
+  if (testInfo.project.name === 'desktop') {
+    await expect.poll(cursor).toContain('mouse-up.png');
+    const button = await page.getByRole('button', { name: 'NOVO JOGO' }).boundingBox();
+    expect(button).not.toBeNull();
+    await page.mouse.move(button!.x + button!.width / 2, button!.y + button!.height / 2);
+    await page.mouse.down();
+    await expect.poll(cursor).toContain('mouse-down.png');
+    await page.mouse.up();
+    await expect.poll(cursor).toContain('mouse-up.png');
+  } else {
+    expect(await cursor()).not.toContain('mouse-up.png');
+  }
+});
+
 test('percorre um caso funcional e mantém as novas animações legíveis', async ({ page }) => {
   test.setTimeout(70_000);
   const seed = 'animation-demo';

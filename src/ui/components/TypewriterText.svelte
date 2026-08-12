@@ -5,23 +5,31 @@
   export let oncomplete: () => void = () => undefined;
   export let onadvance: () => void = () => undefined;
   export let oninteract: () => void = () => undefined;
-  export let oncharacter: (character: string) => void = () => undefined;
+  export let onaudiopulse: () => void = () => undefined;
   let shown = '';
   let done = false;
   let timer: number | undefined;
+  let audioTimer: number | undefined;
+
+  const stopTimers = () => {
+    if (timer) window.clearInterval(timer);
+    if (audioTimer) window.clearInterval(audioTimer);
+    timer = undefined;
+    audioTimer = undefined;
+  };
 
   const start = () => {
-    if (timer) window.clearInterval(timer);
+    stopTimers();
     shown = '';
     done = false;
     let index = 0;
+    onaudiopulse();
+    audioTimer = window.setInterval(onaudiopulse, 150);
     timer = window.setInterval(() => {
-      const character = text[index] ?? '';
       shown = text.slice(0, ++index);
-      if (/\S/.test(character)) oncharacter(character);
       if (index >= text.length) {
         done = true;
-        if (timer) window.clearInterval(timer);
+        stopTimers();
         oncomplete();
       }
     }, speed);
@@ -30,7 +38,7 @@
   const complete = () => {
     oninteract();
     if (!done) {
-      if (timer) window.clearInterval(timer);
+      stopTimers();
       shown = text;
       done = true;
       oncomplete();
@@ -38,7 +46,7 @@
     }
     onadvance();
   };
-  onDestroy(() => { if (timer) window.clearInterval(timer); });
+  onDestroy(stopTimers);
 </script>
 
 <button class="typewriter" type="button" aria-label={done ? 'Avançar' : 'Completar texto'} on:click={complete}>
