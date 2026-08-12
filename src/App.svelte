@@ -32,6 +32,7 @@
   let scenePresentationKey = 'initial';
   let showSupport = false;
   let pixCopied = false;
+  let lastAudiblePlayerName = '';
   const categories: TraitCategory[] = ['sex', 'hair', 'hobby', 'feature', 'vehicle'];
   const supportPixCode = '00020126540014BR.GOV.BCB.PIX0111470052348470217DEOLANE-SAN-PAOLO5204000053039865802BR5916Kauan Crema Dias6009SAO PAULO62140510K1EVZGAMpp63044A02';
   const supportPaymentUrl = 'https://nubank.com.br/cobrar/18cvy/6a7bd4b6-3ce0-4c59-9431-5f49cd51dd9d';
@@ -83,6 +84,21 @@
 
   const requestCue = (cue: AudioCueId) => audioManager?.request(cue);
   const requestAudioEvent = (event: AudioEventId) => requestCue(cueForAudioEvent(event));
+  const playTypewriter = () => audioManager?.playUiSound('TYPEWRITER');
+
+  const handlePlayerNameInput = (event: Event) => {
+    const nextName = (event.currentTarget as HTMLInputElement).value;
+    const inputEvent = event as InputEvent;
+    const insertedText = inputEvent.data ?? (
+      nextName.length > lastAudiblePlayerName.length
+        ? nextName.slice(lastAudiblePlayerName.length)
+        : ''
+    );
+    for (const character of insertedText) {
+      if (/\S/.test(character)) playTypewriter();
+    }
+    lastAudiblePlayerName = nextName;
+  };
 
   const openWarrantComputer = () => {
     requestAudioEvent('WARRANT_COMPUTER_OPENED');
@@ -244,10 +260,15 @@
   };
 
   const keyboard = (event: KeyboardEvent) => {
+    const key = event.key.toLowerCase();
+    if (event.key === 'F12' || (event.ctrlKey && event.shiftKey && key === 'i')) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
     if (!gameplayScreens.includes($uiState.screen)) return;
     if (event.key === 'F11') { event.preventDefault(); void fullscreen(); }
     if ($uiState.screen === 'traveling' || ($uiState.screen === 'witness' && !witnessTextComplete)) return;
-    const key = event.key.toLowerCase();
     if (key === '1' || key === 'v') actions.go('routes');
     if (key === '2' || key === 'p') actions.go('travel');
     if (key === '3' || key === 'b') actions.go('places');
@@ -305,7 +326,7 @@
 
 <svelte:window on:contextmenu|preventDefault />
 
-<div class="app-shell" bind:this={root}>
+<div class="app-shell" bind:this={root} on:selectstart|preventDefault>
   <div class="scale-box">
     <main class="game-stage" aria-label="Deolane San Paolo" data-audio-cue={audioSnapshot.currentCue ?? (audioSnapshot.ambientPlaying ? 'AMBIENT' : 'NONE')}>
       {#if $uiState.screen === 'title'}
@@ -332,10 +353,10 @@
           <img class="full-art" src={asset('hq-background')} alt="Sede da Agência Federal" />
           <div class="terminal-frame">
             <div class="terminal-title">TERMINAL CENTRAL · AGÊNCIA FEDERAL</div>
-            <TypewriterText text={'IDENTIFICAÇÃO OBRIGATÓRIA.\nDIGITE SEU NOME, INVESTIGADOR:'} speed={20} />
+            <TypewriterText text={'IDENTIFICAÇÃO OBRIGATÓRIA.\nDIGITE SEU NOME, INVESTIGADOR:'} speed={20} oncharacter={playTypewriter} />
             <form on:submit|preventDefault={submitName}>
               <label for="player-name">NOME</label>
-              <input id="player-name" bind:value={playerName} maxlength="14" autocomplete="off" />
+              <input id="player-name" bind:value={playerName} maxlength="14" autocomplete="off" on:input={handlePlayerNameInput} />
               <PixelButton label={detectingPlayer ? 'CONSULTANDO...' : 'TRANSMITIR'} disabled={!playerName.trim() || detectingPlayer} onactivate={submitName} />
             </form>
           </div>
@@ -343,10 +364,12 @@
       {:else if $uiState.screen === 'new-player'}
         <section class="terminal full-screen">
           <img class="full-art" src={asset('hq-background')} alt="Sede da Agência Federal" />
-          <div class="terminal-frame paper">
-            <img class="clerk" src={asset('agency-clerk-portrait')} alt="Atendente da Agência Federal" />
+          <div class="terminal-frame paper personnel-lookup">
             <div class="terminal-title">CONSULTA AO ARQUIVO DE PESSOAL</div>
-            <TypewriterText text={`PROCURANDO: ${$gameState?.profile.name.toUpperCase()}...\n\nNUNCA VI VOCÊ POR AQUI.\nNENHUMA FICHA. NENHUMA PROMOÇÃO.\n\nISSO MUDA AGORA.`} speed={18} />
+            <div class="lookup-body">
+              <TypewriterText text={`PROCURANDO: ${$gameState?.profile.name.toUpperCase()}...\n\nNUNCA VI VOCÊ POR AQUI.\nNENHUMA FICHA. NENHUMA PROMOÇÃO.\n\nISSO MUDA AGORA.`} speed={18} oncharacter={playTypewriter} />
+              <img class="clerk" src={asset('agency-clerk-portrait')} alt="Atendente da Agência Federal" />
+            </div>
             <PixelButton label="AGUARDAR BOLETIM" onactivate={actions.prepareCase} />
           </div>
         </section>
@@ -367,7 +390,7 @@
           <img class="full-art" src={asset('assignment-background')} alt="Sala de briefing" />
           <div class="briefing">
             <h2>ORDEM DE SERVIÇO {$gameState.activeCase.definition.id.slice(-6).toUpperCase()}</h2>
-            <TypewriterText text={`AGENTE: ${$gameState.profile.name}\nPATENTE: ${rankById($gameState.activeCase.definition.rankId)?.name}\nPRAZO: 120 HORAS\n\nSIGA AS PISTAS GEOGRÁFICAS. IDENTIFIQUE O LADRÃO. EMITA O MANDADO ANTES DO ENCONTRO FINAL.`} speed={8} />
+            <TypewriterText text={`AGENTE: ${$gameState.profile.name}\nPATENTE: ${rankById($gameState.activeCase.definition.rankId)?.name}\nPARTIDA: ${cityById($gameState.activeCase.definition.route[0])?.name}\nOBJETO: ${itemById($gameState.activeCase.definition.stolenItemId)?.name}\nPRAZO: SÁBADO, 09:00 (${$gameState.activeCase.definition.deadlineHour} HORAS)\n\nSIGA AS PISTAS GEOGRÁFICAS. IDENTIFIQUE O LADRÃO. EMITA O MANDADO ANTES DO ENCONTRO FINAL.`} speed={8} oncharacter={playTypewriter} />
             <PixelButton label="INICIAR INVESTIGAÇÃO" onactivate={() => actions.go('city')} />
           </div>
         </section>
@@ -446,7 +469,7 @@
                 <h2>{placeById(selectedPlaceId)?.name ?? 'DEPOIMENTO'}</h2>
                 <div class="witness-row">
                   <img class="witness" src={asset(witness?.assetId ?? 'agency-clerk-portrait')} alt={witness?.name ?? 'Testemunha'} />
-                  <div class="speech"><b class="witness-name">{witness?.name ?? 'TESTEMUNHA'}</b><TypewriterText text={eventText($uiState.event)} speed={30} oninteract={() => { witnessTextComplete = true; }} onadvance={() => actions.go('places')} /></div>
+                  <div class="speech"><b class="witness-name">{witness?.name ?? 'TESTEMUNHA'}</b><TypewriterText text={eventText($uiState.event)} speed={30} oncharacter={playTypewriter} oninteract={() => { witnessTextComplete = true; }} onadvance={() => actions.go('places')} /></div>
                 </div>
                 <PixelButton label="OUTRO LOCAL" onactivate={() => actions.go('places')} />
               {:else if $uiState.screen === 'travel'}
@@ -493,7 +516,13 @@
                         </label>
                       {/each}
                     </div>
-                    <div class="warrant-result">{eventText($uiState.event) || 'PREENCHA SÓ OS TRAÇOS CONFIRMADOS. CONSULTA: 2 HORAS.'}</div>
+                    <div class="warrant-result">
+                      {#if eventText($uiState.event)}
+                        <TypewriterText text={eventText($uiState.event)} speed={18} oncharacter={playTypewriter} />
+                      {:else}
+                        PREENCHA SÓ OS TRAÇOS CONFIRMADOS. CONSULTA: 2 HORAS.
+                      {/if}
+                    </div>
                     <div class="warrant-submit"><PixelButton label={warrantBusy ? 'CALCULANDO...' : 'COMPUTAR MANDADO'} disabled={warrantBusy} onactivate={computeWarrant} /></div>
                   </div>
                 </div>
@@ -568,8 +597,11 @@
   .terminal { display: grid; place-items: center; color: #21df50; background-color: #041006; }
   .terminal-frame { position: relative; z-index: 1; width: 500px; min-height: 240px; padding: 20px; border: 4px double #25a94b; background: #041006; box-shadow: inset 0 0 0 2px #020; font-size: 13px; }
   .terminal-frame.paper { color: #111; background: #ddd6b2; border-color: #fff #555 #555 #fff; box-shadow: inset 0 0 0 2px #888; }
+  .terminal-frame.personnel-lookup { width: 560px; min-height: 310px; }
   .terminal-title { margin: -12px -12px 20px; padding: 5px 8px; color: #020; background: #25d857; font-weight: 700; }
-  .clerk { float: right; width: 74px; height: 108px; margin: 20px 0 4px 12px; object-fit: contain; }
+  .personnel-lookup .terminal-title { margin-bottom: 10px; }
+  .lookup-body { display: grid; grid-template-columns: minmax(0, 1fr) 150px; align-items: center; gap: 14px; min-height: 204px; }
+  .clerk { width: 128px; height: 184px; justify-self: center; object-fit: contain; object-position: center bottom; }
   form { display: flex; align-items: center; gap: 8px; margin-top: 28px; }
   input { width: 245px; padding: 5px; color: #26f055; background: #000; border: 2px solid #2a6; text-transform: uppercase; }
   .narrative-screen { color: #fff; }

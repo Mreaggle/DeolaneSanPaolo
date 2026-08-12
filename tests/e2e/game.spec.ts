@@ -31,7 +31,7 @@ test('abre o prólogo e entra no primeiro caso', async ({ page }, testInfo) => {
   await expect(page.locator('.scene > img')).toBeVisible();
   await expect(page.locator('.city-brief')).toBeVisible();
   await expect(page.locator('.city-brief li')).toHaveCount(0);
-  await expect(page.getByRole('contentinfo')).toHaveText('Developed & Powered-By @Mreaggle');
+  await expect(page.locator('.site-credit')).toHaveText('Developed & Powered-By @Mreaggle');
   await expect(page.getByRole('contentinfo').getByRole('link', { name: '@Mreaggle' })).toHaveAttribute('href', 'https://instagram.com/mreaggle');
   await page.getByRole('button', { name: 'DOSSIÊS' }).click();
   await expect(page.getByText(/ARQUIVO T\.C\.C\./)).toBeVisible();
@@ -39,6 +39,17 @@ test('abre o prólogo e entra no primeiro caso', async ({ page }, testInfo) => {
   await page.getByRole('button', { name: '▶' }).click();
   await expectAudioCue(page, 'DOSSIERS');
   await page.screenshot({ path: `test-results/gameplay-${testInfo.project.name}.png` });
+});
+
+test('informa o prazo completo na ordem de serviço', async ({ page }) => {
+  await page.goto('./');
+  await page.getByRole('button', { name: 'NOVO JOGO' }).click();
+  await page.getByLabel('NOME').fill('Detetive Bia');
+  await page.getByRole('button', { name: 'TRANSMITIR' }).click();
+  await page.getByRole('button', { name: 'AGUARDAR BOLETIM' }).click();
+  await page.getByRole('button', { name: 'RECEBER MISSÃO' }).click();
+
+  await expect(page.getByText(/PRAZO: SÁBADO, 09:00 \(120 HORAS\)/)).toBeVisible();
 });
 
 test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ page }) => {
@@ -139,6 +150,21 @@ test('bloqueia o menu de contexto do botão direito', async ({ page }) => {
     return event.defaultPrevented;
   });
   expect(contextMenuPrevented).toBe(true);
+});
+
+test('bloqueia atalhos de inspeção e seleção de texto', async ({ page }) => {
+  await page.goto('./');
+  const blocked = await page.evaluate(() => {
+    const f12 = new KeyboardEvent('keydown', { key: 'F12', bubbles: true, cancelable: true });
+    const inspect = new KeyboardEvent('keydown', { key: 'I', ctrlKey: true, shiftKey: true, bubbles: true, cancelable: true });
+    const selection = new Event('selectstart', { bubbles: true, cancelable: true });
+    window.dispatchEvent(f12);
+    window.dispatchEvent(inspect);
+    document.querySelector('.game-stage')?.dispatchEvent(selection);
+    return { f12: f12.defaultPrevented, inspect: inspect.defaultPrevented, selection: selection.defaultPrevented };
+  });
+  expect(blocked).toEqual({ f12: true, inspect: true, selection: true });
+  await expect(page.locator('.game-stage')).toHaveCSS('user-select', 'none');
 });
 
 test('percorre um caso funcional e mantém as novas animações legíveis', async ({ page }) => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AudioManager, type AudioLike } from '../../src/audio/AudioManager';
-import { ambientTrack, audioRegistry } from '../../src/audio/audioRegistry';
+import { ambientTrack, audioRegistry, uiSoundRegistry } from '../../src/audio/audioRegistry';
 
 class FakeAudio implements AudioLike {
   currentTime = 0;
@@ -66,5 +66,26 @@ describe('trilha sonora', () => {
     expect(hot.paused).toBe(true);
     expect(manager.snapshot.currentCue).toBe('COLD_TRAIL');
     expect(created[0]!.paused).toBe(true);
+  });
+
+  it('toca a máquina de escrever sobre o cue atual sem interrompê-lo', async () => {
+    const created: FakeAudio[] = [];
+    const manager = new AudioManager({ createAudio: (src) => {
+      const audio = new FakeAudio(src);
+      created.push(audio);
+      return audio;
+    } });
+    await manager.unlock();
+    manager.request('DETECTIVE_UNKNOWN');
+    await Promise.resolve();
+    const cue = created[1]!;
+
+    manager.playUiSound('TYPEWRITER');
+    const typewriter = created[2]!;
+
+    expect(typewriter.src).toContain(`/audio/sfx/${uiSoundRegistry.TYPEWRITER}`);
+    expect(typewriter.paused).toBe(false);
+    expect(cue.paused).toBe(false);
+    expect(manager.snapshot.currentCue).toBe('DETECTIVE_UNKNOWN');
   });
 });

@@ -101,7 +101,7 @@ A Agência Federal responde:
 DETETIVE: {playerName}
 POSTO: {rankName}
 PARTIDA: {startCityName}
-PRAZO: SÁBADO, 09:00
+PRAZO: SÁBADO, 09:00 (120 HORAS)
 
 SIGA A ROTA.
 IDENTIFIQUE O CULPADO.

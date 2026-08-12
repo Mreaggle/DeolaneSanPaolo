@@ -5,6 +5,7 @@
   export let oncomplete: () => void = () => undefined;
   export let onadvance: () => void = () => undefined;
   export let oninteract: () => void = () => undefined;
+  export let oncharacter: (character: string) => void = () => undefined;
   let shown = '';
   let done = false;
   let timer: number | undefined;
@@ -15,7 +16,9 @@
     done = false;
     let index = 0;
     timer = window.setInterval(() => {
+      const character = text[index] ?? '';
       shown = text.slice(0, ++index);
+      if (/\S/.test(character)) oncharacter(character);
       if (index >= text.length) {
         done = true;
         if (timer) window.clearInterval(timer);
