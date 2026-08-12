@@ -57,14 +57,14 @@ Those elements belong to the code/UI layer and must not silently turn into baked
 
 ## 3. Asset count summary
 
-**Total assets in this manifest: 161**
+**Total assets in this manifest: 162**
 
 ### Category breakdown
 - `animation-sheet`: **5**
 - `badge`: **5**
 - `city-scene`: **30**
 - `emblem`: **2**
-- `narrative-screen`: **17**
+- `narrative-screen`: **18**
 - `place-background`: **12**
 - `stolen-item`: **20**
 - `suspect-dossier`: **10**
@@ -189,7 +189,8 @@ Each catalog row contains:
 | # | id | filename | category | purpose | native_size | transparency | reuse | status |
 |---:|---|---|---|---|---|---|---|---|
 | 001 | `title-logo` | `public/assets/title/title-logo.png` | `narrative-screen` | Auxiliary decorative title frame retained for credits or later reuse. | `320x96` | `transparent` | `GLOBAL_SHARED` | `APPROVED` |
-| 161 | `title-wordmark` | `public/assets/title/deolane-logo.png` | `narrative-screen` | Official “Where is Deolane San Paolo?” wordmark supplied by the project owner, shown on the title screen and at the top of the README. | `1254x1254` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
+| 161 | `title-wordmark` | `public/assets/title/deolane-logo.png` | `narrative-screen` | Official square “Where is Deolane San Paolo?” wordmark supplied by the project owner and retained at the top of the README. | `1254x1254` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
+| 162 | `title-wordmark-retro` | `public/assets/title/deolane-retro.png` | `narrative-screen` | Wide retro wordmark supplied by the project owner, used exclusively on the in-game title screen. | `1536x1024` | `transparent` | `UNIQUE_SCREEN` | `IMPLEMENTED` |
 | 002 | `title-background` | `public/assets/title/title-background.png` | `narrative-screen` | Full title-screen background artwork. | `640x400` | `opaque` | `UNIQUE_SCREEN` | `IMPLEMENTED` |
 | 003 | `hq-background` | `public/assets/narrative/hq-background.png` | `narrative-screen` | Headquarters backdrop for sign-in, returning-detective and agency hub scenes. | `640x400` | `opaque` | `UNIQUE_SCREEN` | `IMPLEMENTED` |
 | 004 | `news-flash-background` | `public/assets/narrative/news-flash-background.png` | `narrative-screen` | Backdrop for News Flash / case briefing announcement. | `640x400` | `opaque` | `UNIQUE_SCREEN` | `IMPLEMENTED` |

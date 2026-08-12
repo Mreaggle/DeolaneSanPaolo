@@ -3,6 +3,7 @@ import { cities, places, stolenItems, suspects } from '../content';
 const staticAssets: Record<string, string> = {
   'title-logo': 'assets/title/title-logo.png',
   'title-wordmark': 'assets/title/deolane-logo.png',
+  'title-wordmark-retro': 'assets/title/deolane-retro.png',
   'title-background': 'assets/title/title-background.png',
   'hq-background': 'assets/narrative/hq-background.png',
   'news-flash-background': 'assets/narrative/news-flash-background.png',
