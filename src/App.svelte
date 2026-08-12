@@ -37,6 +37,7 @@
   const supportPixCode = '00020126540014BR.GOV.BCB.PIX0111470052348470217DEOLANE-SAN-PAOLO5204000053039865802BR5916Kauan Crema Dias6009SAO PAULO62140510K1EVZGAMpp63044A02';
   const supportPaymentUrl = 'https://nubank.com.br/cobrar/18cvy/6a7bd4b6-3ce0-4c59-9431-5f49cd51dd9d';
   const supportQrCodeUrl = `${import.meta.env.BASE_URL}pix-qrcode.png`;
+  const footerVerticalClearance = 80;
 
   const cityById = (id?: string) => actions.content.cities.find((city) => city.id === id);
   const placeById = (id?: string) => actions.content.places.find((place) => place.id === id);
@@ -47,11 +48,12 @@
   const asset = resolveAsset;
 
   const updateScale = () => {
-    const fit = Math.min((window.innerWidth - 8) / 640, (window.innerHeight - 28) / 400);
+    const fit = Math.min((window.innerWidth - 8) / 640, (window.innerHeight - footerVerticalClearance) / 400);
     const coarse = window.matchMedia('(pointer: coarse)').matches;
     if (coarse || fit < 2) scale = Math.max(.35, Math.floor(fit * 20) / 20);
     else scale = Math.max(2, Math.floor(fit));
     document.documentElement.style.setProperty('--stage-scale', String(scale));
+    document.documentElement.style.setProperty('--footer-stage-offset', `${100 * scale}px`);
   };
 
   const fullscreen = async () => {
@@ -723,7 +725,7 @@
   .promotion-screen h1 { color: #9f0d13; font-size: 28px; text-transform: uppercase; }
   .rank-badge { float: right; width: 72px; height: 72px; margin: 0 10px; image-rendering: pixelated; }
   .hall-screen .result-card { color: #fff; background: #111; border-color: #ffd42a; }
-  .site-footer { position: absolute; left: 50%; bottom: max(3px, env(safe-area-inset-bottom)); z-index: 8; display: flex; align-items: center; gap: 8px; color: #8e8e8e; font-size: clamp(8px, calc(8px * var(--stage-scale)), 14px); line-height: 16px; text-align: center; white-space: nowrap; transform: translateX(-50%); }
+  .site-footer { position: absolute; left: 50%; top: calc(75% + var(--footer-stage-offset)); z-index: 8; display: flex; align-items: center; gap: 8px; color: #8e8e8e; font-size: clamp(8px, calc(8px * var(--stage-scale)), 14px); line-height: 16px; text-align: center; white-space: nowrap; transform: translate(-50%, -50%); }
   .site-credit a { color: #dedede; text-decoration: none; }
   .site-credit a:hover, .site-credit a:focus-visible { color: #ffd92a; text-decoration: underline; }
   .support-toggle { padding: 1px 6px; color: #050505; background: #dedede; border: 2px solid; border-color: #fff #444 #444 #fff; font-size: inherit; line-height: 14px; }

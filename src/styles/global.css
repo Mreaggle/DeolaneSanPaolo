@@ -15,6 +15,7 @@
   font-smooth: never;
   image-rendering: pixelated;
   --stage-scale: 1;
+  --footer-stage-offset: 100px;
 }
 
 * { box-sizing: border-box; }
