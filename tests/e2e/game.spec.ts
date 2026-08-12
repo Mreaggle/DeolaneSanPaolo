@@ -142,6 +142,26 @@ test('mantém uma única superfície 640×400 escalada para o visor', async ({ p
   }
 });
 
+test('centraliza o rodapé sem colidir com o jogo ou a página', async ({ page }) => {
+  await page.goto('./');
+  const stageBox = await page.locator('.game-stage').boundingBox();
+  const footerBox = await page.locator('.site-footer').boundingBox();
+  const viewport = page.viewportSize();
+
+  expect(stageBox).not.toBeNull();
+  expect(footerBox).not.toBeNull();
+  expect(viewport).not.toBeNull();
+
+  const stageBottom = stageBox!.y + stageBox!.height;
+  const footerBottom = footerBox!.y + footerBox!.height;
+  const footerCenter = footerBox!.y + footerBox!.height / 2;
+  const availableSpaceCenter = (stageBottom + viewport!.height) / 2;
+
+  expect(footerBox!.y).toBeGreaterThan(stageBottom);
+  expect(footerBottom).toBeLessThan(viewport!.height);
+  expect(Math.abs(footerCenter - availableSpaceCenter)).toBeLessThanOrEqual(1);
+});
+
 test('bloqueia o menu de contexto do botão direito', async ({ page }) => {
   await page.goto('./');
   const contextMenuPrevented = await page.locator('.app-shell').evaluate((element) => {
