@@ -126,6 +126,7 @@
       play('NEWS_FLASH_STARTED');
     }
     else if ($uiState.screen === 'assignment') play(active?.definition.caseType === 'FINAL_DEOLANE' ? 'DEOLANE_THEME_REQUESTED' : 'CASE_ASSIGNMENT_SHOWN');
+    else if ($uiState.screen === 'dossiers') play('DOSSIERS_OPENED');
     else if ($uiState.screen === 'traveling' && event?.type === 'ARRIVED') play('TRAVEL_STARTED');
     else if ($uiState.screen === 'warrant' && !event) play('WARRANT_COMPUTER_OPENED');
     else if ($uiState.screen === 'warrant' && event?.type === 'WARRANT_ISSUED') play('WARRANT_ISSUED');

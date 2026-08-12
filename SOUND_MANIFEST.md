@@ -6,7 +6,7 @@ This document is the canonical soundtrack and runtime-audio manifest for **Deola
 
 It defines:
 
-- the 25 canonical generated MP3 files;
+- the 26 canonical event-cue MP3 files;
 - stable runtime IDs;
 - exact filenames;
 - production paths;
@@ -47,7 +47,7 @@ Never scatter MP3 filenames through gameplay code.
 
 ## 2. Important production reality
 
-The 25 generated files were originally conceived as a mixture of:
+The 26 event-cue files were originally conceived as a mixture of:
 
 - stingers;
 - short fanfares;
@@ -90,7 +90,7 @@ In short:
 
 ### 3.1 Project addendum — ambient bed 26
 
-`public/audio/music/26_ambient_background.mp3` is the one production track outside the canonical numbered set of 25 event cues. It is a low-volume looping bed and follows the explicit runtime sequence below:
+`public/audio/music/26_ambient_background.mp3` is the one production track outside the canonical numbered set of 26 event cues. It is a low-volume looping bed and follows the explicit runtime sequence below:
 
 ```text
 AMBIENT BED (loop)
@@ -157,7 +157,7 @@ Baseline:
 loop = false
 ```
 
-for all 25 canonical tracks.
+for all 26 canonical event tracks.
 
 ---
 
@@ -353,6 +353,7 @@ The generated soundtrack files use the exact naming convention visible in the pr
 23_final_deolane_reveal.mp3
 24_final_capture_of_Deolane.mp3
 25_hall_of_fame.mp3
+27_dossiers.mp3
 ```
 
 These exact filenames are canonical unless intentionally renamed in a dedicated migration.
@@ -373,7 +374,7 @@ must be referenced with the exact uppercase `D` if that remains the committed fi
 
 ## 14. Runtime location
 
-Copy the 25 canonical files to:
+Copy the 26 canonical event files to:
 
 ```text
 public/
@@ -403,8 +404,13 @@ public/
         ├── 22_deolane_san_paolo_leitmotif.mp3
         ├── 23_final_deolane_reveal.mp3
         ├── 24_final_capture_of_Deolane.mp3
-        └── 25_hall_of_fame.mp3
+        ├── 25_hall_of_fame.mp3
+        ├── 26_ambient_background.mp3
+        └── 27_dossiers.mp3
 ```
+
+The former opening theme is preserved beside the runtime files as
+`1_title_theme.mp3.old`. It is an archival backup only: do not register or play it.
 
 ---
 
@@ -480,7 +486,8 @@ export type MusicCueId =
   | "DEOLANE_LEITMOTIF"
   | "FINAL_DEOLANE_REVEAL"
   | "FINAL_CAPTURE_DEOLANE"
-  | "HALL_OF_FAME";
+  | "HALL_OF_FAME"
+  | "DOSSIERS";
 ```
 
 ---
@@ -516,6 +523,7 @@ export type MusicCueId =
 | 23 | `FINAL_DEOLANE_REVEAL` | `23_final_deolane_reveal.mp3` | `FINAL_DEOLANE_FOUND` | 10 |
 | 24 | `FINAL_CAPTURE_DEOLANE` | `24_final_capture_of_Deolane.mp3` | `DEOLANE_CAPTURED` | 10 |
 | 25 | `HALL_OF_FAME` | `25_hall_of_fame.mp3` | `HALL_OF_FAME_ENTERED` | 10 |
+| 27 | `DOSSIERS` | `27_dossiers.mp3` | `DOSSIERS_OPENED` | 3 |
 
 All:
 
@@ -908,6 +916,19 @@ silence
 
 Do not loop automatically.
 
+### 35.1 Dossiers
+
+```text
+DOSSIERS_OPENED
+→ track 27
+```
+
+Opening the T.C.C. dossiers immediately replaces the current event cue with
+`27_dossiers.mp3`. Moving between suspect pages while the dossiers remain open
+must not restart it. If the player leaves and later opens the dossiers again,
+the semantic event may request track 27 again; ordinary same-track suppression
+still applies while that file is already playing.
+
 ---
 
 # PART X — AUDIO REGISTRY
@@ -1053,7 +1074,6 @@ Components request tracks.
 
 Opening:
 
-- dossiers;
 - options;
 - case notes;
 - menus;
@@ -1066,7 +1086,9 @@ Unless the modal itself triggers a canonical soundtrack event:
 music continues underneath
 ```
 
-The P.C. is the explicit exception: opening the warrant computer produces
+The Dossiês screen is an explicit event-bearing panel: opening it produces
+`DOSSIERS_OPENED` and immediately requests track 27. The P.C. is the other
+explicit exception: opening the warrant computer produces
 `WARRANT_COMPUTER_OPENED` and immediately requests track 13.
 
 ---
@@ -1212,7 +1234,7 @@ After first valid user interaction, preload:
 After case generation begins, progressively preload:
 
 ```text
-7–21
+7–21 and 27
 ```
 
 ---
@@ -1352,9 +1374,9 @@ Mechanics run independently.
 Require:
 
 ```text
-25 registered tracks
-25 unique IDs
-25 canonical MP3 paths
+26 registered event tracks
+26 unique IDs
+26 canonical event MP3 paths
 all files exist
 ```
 
@@ -1421,6 +1443,7 @@ Deolane theme → 22
 Deolane reveal → 23 instead of 18
 Deolane capture → 24 instead of 20
 Hall of Fame → 25
+Dossiers opened → 27
 ```
 
 ---
@@ -1480,7 +1503,7 @@ This is particularly useful because the generated tracks have very different len
 
 ## 63. Music is separate from sound effects
 
-The 25 canonical MP3s are soundtrack music.
+The 26 canonical event MP3s are soundtrack music.
 
 Future effects should use:
 
@@ -1511,7 +1534,7 @@ Music tracks may not overlap with each other.
 
 ## 64. Release gate
 
-- [ ] exactly 25 canonical soundtrack tracks are registered;
+- [ ] exactly 26 canonical event soundtrack tracks are registered;
 - [ ] exact filenames match committed files;
 - [ ] GitHub Pages case-sensitive paths work;
 - [ ] music continues across screen transitions when no replacement cue occurs;
@@ -1526,6 +1549,7 @@ Music tracks may not overlap with each other.
 - [ ] final Deolane reveal replaces generic culprit reveal;
 - [ ] final Deolane capture replaces ordinary case-closed track;
 - [ ] Hall of Fame replaces final capture music when its screen begins;
+- [ ] opening Dossiês immediately requests track 27 without restarting it while paging;
 - [ ] `Gold of Deolane.mp3` is not registered;
 - [ ] `22_deolane_leitmotif.old` is not shipped;
 - [ ] user mute/volume settings work;
