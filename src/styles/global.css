@@ -72,7 +72,3 @@ img { image-rendering: pixelated; }
 @media (orientation: portrait) and (max-width: 700px) {
   .rotate-notice { display: grid; }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
-}

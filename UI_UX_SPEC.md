@@ -990,6 +990,15 @@ action buttons disabled
 
 The animation itself does not consume additional simulated time.
 
+Every committed trip remounts its presentation sequence with a unique run key.
+The city-scene image is bound directly to the committed `currentCityId` and must
+change before the arrival state is displayed, including on backtracking and
+repeated visits.
+
+When the browser requests reduced motion, essential travel, pursuit and result
+sequences remain visible in a shorter stepped form. They must not collapse into
+an imperceptible single frame because they communicate gameplay state.
+
 ---
 
 # PART XVII — MAP
