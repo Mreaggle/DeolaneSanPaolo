@@ -10,6 +10,15 @@
   <a href="https://mreaggle.github.io/DeolaneSanPaolo/"><strong>▶ JOGUE AGORA NO SEU COMPUTADOR OU CELULAR ◀</strong></a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/Mreaggle/DeolaneSanPaolo/actions/workflows/pages.yml"><img alt="Deploy GitHub Pages" src="https://github.com/Mreaggle/DeolaneSanPaolo/actions/workflows/pages.yml/badge.svg"></a>
+  <a href="https://github.com/Mreaggle/DeolaneSanPaolo/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Mreaggle/DeolaneSanPaolo/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-ff3e00?logo=svelte&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-6-3178c6?logo=typescript&logoColor=white">
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white">
+  <a href="LICENSE.md"><img alt="License" src="https://img.shields.io/badge/license-custom%20%2F%20all%20rights%20reserved-lightgrey"></a>
+</p>
+
 ---
 
 ## A grande caçada mundial chegou ao seu computador
@@ -49,7 +58,7 @@ npm run build
 
 As artes de produção são arquivos locais catalogados em [ASSET_MANIFEST.md](ASSET_MANIFEST.md). O material gerado durante o desenvolvimento usa referências do período apenas para gramática visual — pixels duros, paleta limitada, contornos e dithering — sem copiar personagens ou telas. A pesquisa histórica e seus limites estão documentados em [ORIGINAL_GAME_ANALYSIS.md](ORIGINAL_GAME_ANALYSIS.md).
 
-A interface usa localmente a fonte bitmap **Silkscreen**, sob a SIL Open Font License 1.1. Ficção, personagens, T.C.C., Agência Federal, textos, código e artes finais pertencem a este projeto independente.
+A interface usa localmente a fonte bitmap **Silkscreen**, sob a SIL Open Font License 1.1. Código, assets, música, personagens, narrativa e identidade visual seguem os termos específicos em [LICENSE.md](LICENSE.md).
 
 ---
 
