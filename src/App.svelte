@@ -30,7 +30,12 @@
   let sceneAssetId = 'agency-emblem';
   let sceneAlt = 'Cena da investigação';
   let scenePresentationKey = 'initial';
+  let showSupport = false;
+  let pixCopied = false;
   const categories: TraitCategory[] = ['sex', 'hair', 'hobby', 'feature', 'vehicle'];
+  const supportPixCode = '00020126540014BR.GOV.BCB.PIX0111470052348470217DEOLANE-SAN-PAOLO5204000053039865802BR5916Kauan Crema Dias6009SAO PAULO62140510K1EVZGAMpp63044A02';
+  const supportPaymentUrl = 'https://nubank.com.br/cobrar/18cvy/6a7bd4b6-3ce0-4c59-9431-5f49cd51dd9d';
+  const supportQrCodeUrl = `${import.meta.env.BASE_URL}pix-qrcode.png`;
 
   const cityById = (id?: string) => actions.content.cities.find((city) => city.id === id);
   const placeById = (id?: string) => actions.content.places.find((place) => place.id === id);
@@ -218,6 +223,24 @@
 
   const setWarrant = (category: TraitCategory, value: string) => {
     warrant = { ...warrant, [category]: value || undefined };
+  };
+
+  const copyPixCode = async () => {
+    try {
+      await navigator.clipboard?.writeText(supportPixCode);
+    } catch {
+      const scratch = document.createElement('textarea');
+      scratch.value = supportPixCode;
+      scratch.setAttribute('readonly', 'true');
+      scratch.style.position = 'fixed';
+      scratch.style.left = '-9999px';
+      document.body.appendChild(scratch);
+      scratch.select();
+      document.execCommand('copy');
+      scratch.remove();
+    }
+    pixCopied = true;
+    window.setTimeout(() => { pixCopied = false; }, 1800);
   };
 
   const keyboard = (event: KeyboardEvent) => {
@@ -509,7 +532,23 @@
       {/if}
     </main>
   </div>
-  <footer class="site-credit">Developed &amp; Powered-By <a href="https://instagram.com/mreaggle" target="_blank" rel="noopener noreferrer">@Mreaggle</a></footer>
+  <footer class="site-footer">
+    <div class="site-credit">Developed &amp; Powered-By <a href="https://instagram.com/mreaggle" target="_blank" rel="noopener noreferrer">@Mreaggle</a></div>
+    <button class="support-toggle" type="button" aria-expanded={showSupport} aria-controls="support-panel" on:click={() => showSupport = !showSupport}>APOIAR</button>
+  </footer>
+  {#if showSupport}
+    <aside id="support-panel" class="support-panel" aria-label="Apoiar Deolane San Paolo">
+      <button class="support-close" type="button" aria-label="Fechar apoio" on:click={() => showSupport = false}>×</button>
+      <strong>APOIE O JOGO</strong>
+      <p>Deolane San Paolo é um jogo gratuito e independente. Apoie com quanto quiser!</p>
+      <img src={supportQrCodeUrl} alt="QR Code Pix para apoiar Deolane San Paolo" />
+      <textarea readonly aria-label="Código Pix copia e cola" value={supportPixCode}></textarea>
+      <div class="support-actions">
+        <button type="button" on:click={copyPixCode}>{pixCopied ? 'COPIADO' : 'COPIAR PIX'}</button>
+        <a href={supportPaymentUrl} target="_blank" rel="noopener noreferrer">PAGAR</a>
+      </div>
+    </aside>
+  {/if}
   <div class="rotate-notice">GIRE O CELULAR PARA JOGAR EM PAISAGEM<br />DEPOIS TOQUE EM “TELA CHEIA”.</div>
 </div>
 
@@ -651,9 +690,21 @@
   .promotion-screen h1 { color: #9f0d13; font-size: 28px; text-transform: uppercase; }
   .rank-badge { float: right; width: 72px; height: 72px; margin: 0 10px; image-rendering: pixelated; }
   .hall-screen .result-card { color: #fff; background: #111; border-color: #ffd42a; }
-  .site-credit { position: absolute; left: 50%; bottom: max(3px, env(safe-area-inset-bottom)); z-index: 8; margin: 0; color: #8e8e8e; font-size: clamp(8px, calc(8px * var(--stage-scale)), 14px); line-height: 16px; text-align: center; white-space: nowrap; transform: translateX(-50%); }
+  .site-footer { position: absolute; left: 50%; bottom: max(3px, env(safe-area-inset-bottom)); z-index: 8; display: flex; align-items: center; gap: 8px; color: #8e8e8e; font-size: clamp(8px, calc(8px * var(--stage-scale)), 14px); line-height: 16px; text-align: center; white-space: nowrap; transform: translateX(-50%); }
   .site-credit a { color: #dedede; text-decoration: none; }
   .site-credit a:hover, .site-credit a:focus-visible { color: #ffd92a; text-decoration: underline; }
+  .support-toggle { padding: 1px 6px; color: #050505; background: #dedede; border: 2px solid; border-color: #fff #444 #444 #fff; font-size: inherit; line-height: 14px; }
+  .support-toggle:active, .support-toggle[aria-expanded="true"] { border-color: #444 #fff #fff #444; background: #bbb; }
+  .support-panel { position: absolute; right: max(8px, env(safe-area-inset-right)); bottom: calc(max(26px, env(safe-area-inset-bottom)) + 8px); z-index: 9; width: min(318px, calc(100vw - 16px)); padding: 10px; color: #050505; background: #dedede; border: 3px solid; border-color: #fff #333 #333 #fff; box-shadow: 4px 4px 0 #000; font-size: 10px; line-height: 1.35; }
+  .support-panel strong { display: block; margin: -10px -10px 8px; padding: 5px 24px 5px 7px; color: #fff; background: #111; font-size: 11px; }
+  .support-panel p { margin: 0 0 8px; }
+  .support-panel img { float: left; width: 104px; height: 104px; margin: 0 8px 8px 0; background: #fff; border: 2px solid #111; object-fit: contain; image-rendering: pixelated; }
+  .support-panel textarea { width: calc(100% - 112px); height: 104px; min-width: 150px; margin: 0 0 8px; padding: 5px; color: #21df50; background: #000; border: 2px inset #777; resize: none; font-size: 7px; line-height: 1.35; word-break: break-all; }
+  .support-actions { clear: both; display: flex; gap: 6px; justify-content: flex-end; }
+  .support-actions button, .support-actions a, .support-close { color: #050505; background: #efefef; border: 2px solid; border-color: #fff #444 #444 #fff; text-decoration: none; }
+  .support-actions button, .support-actions a { min-width: 80px; padding: 5px 8px; text-align: center; }
+  .support-actions button:active, .support-actions a:active, .support-close:active { border-color: #444 #fff #fff #444; background: #bbb; }
+  .support-close { position: absolute; top: 3px; right: 4px; width: 18px; height: 18px; padding: 0; line-height: 12px; }
   @media (prefers-reduced-motion: reduce) {
     .map-box i { animation: none; }
     .travel-animation::before { animation: cloud-scroll 1.6s steps(8) forwards !important; }
