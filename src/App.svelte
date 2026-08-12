@@ -583,10 +583,6 @@
 </div>
 
 <style>
-  @media (pointer: fine) {
-    .app-shell, .app-shell * { cursor: var(--game-cursor-up), auto; }
-    .app-shell:active, .app-shell:active * { cursor: var(--game-cursor-down), auto; }
-  }
   .full-screen { position: absolute; inset: 0; overflow: hidden; background: #111; }
   .full-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
   .dither-shade { position: absolute; inset: 0; background-color: rgba(0,0,0,.28); }

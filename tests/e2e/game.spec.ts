@@ -200,19 +200,23 @@ test('cadencia textos automáticos e respeita cada entrada do nome', async ({ pa
 test('usa cursores de mouse solto e pressionado somente no PC', async ({ page }, testInfo) => {
   await page.goto('./');
   const shell = page.locator('.app-shell');
-  const cursor = () => shell.evaluate((element) => getComputedStyle(element).cursor);
+  const button = page.getByRole('button', { name: 'NOVO JOGO' });
+  const shellCursor = () => shell.evaluate((element) => getComputedStyle(element).cursor);
+  const buttonCursor = () => button.evaluate((element) => getComputedStyle(element).cursor);
 
   if (testInfo.project.name === 'desktop') {
-    await expect.poll(cursor).toContain('mouse-up.png');
-    const button = await page.getByRole('button', { name: 'NOVO JOGO' }).boundingBox();
-    expect(button).not.toBeNull();
-    await page.mouse.move(button!.x + button!.width / 2, button!.y + button!.height / 2);
+    await expect.poll(buttonCursor).toContain('mouse-up.png');
+    const box = await button.boundingBox();
+    expect(box).not.toBeNull();
+    await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
     await page.mouse.down();
-    await expect.poll(cursor).toContain('mouse-down.png');
+    await expect.poll(buttonCursor).toContain('mouse-down.png');
+    await page.mouse.move(1, 1);
     await page.mouse.up();
-    await expect.poll(cursor).toContain('mouse-up.png');
+    await expect.poll(buttonCursor).toContain('mouse-up.png');
   } else {
-    expect(await cursor()).not.toContain('mouse-up.png');
+    expect(await shellCursor()).not.toContain('mouse-up.png');
+    expect(await buttonCursor()).not.toContain('mouse-up.png');
   }
 });
 
