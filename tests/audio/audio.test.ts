@@ -68,6 +68,27 @@ describe('trilha sonora', () => {
     expect(created[0]!.paused).toBe(true);
   });
 
+  it('mantém o tema da tela inicial em loop somente até ela ser encerrada', async () => {
+    const created: FakeAudio[] = [];
+    const manager = new AudioManager({ createAudio: (src) => {
+      const audio = new FakeAudio(src);
+      created.push(audio);
+      return audio;
+    } });
+    manager.request('TITLE_THEME');
+    await manager.unlock();
+    const title = created.find((audio) => audio.src.endsWith('/1_title_theme.mp3'))!;
+
+    expect(title.loop).toBe(true);
+    expect(title.paused).toBe(false);
+
+    manager.stop('TITLE_THEME');
+    await Promise.resolve();
+
+    expect(title.paused).toBe(true);
+    expect(manager.snapshot.currentCue).toBeUndefined();
+  });
+
   it('toca a máquina de escrever sobre o cue atual sem interrompê-lo', async () => {
     const created: FakeAudio[] = [];
     const manager = new AudioManager({ createAudio: (src) => {

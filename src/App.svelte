@@ -138,6 +138,7 @@
       requestedEvent = audioEvent;
       requestAudioEvent(audioEvent);
     };
+    if ($uiState.screen !== 'title') audioManager.stop('TITLE_THEME');
     if ($uiState.screen === 'title') play('TITLE_ENTERED');
     else if ($uiState.screen === 'signin') play('HEADQUARTERS_ENTERED');
     else if ($uiState.screen === 'new-player') play('DETECTIVE_NOT_FOUND');
@@ -593,7 +594,8 @@
   .agency-title-emblem { width: 46px; height: 46px; margin-bottom: 2px; object-fit: contain; image-rendering: pixelated; }
   h1, h2, h3, p { margin-top: 0; }
   .visual-title { width: 184px; height: 126px; margin: 3px 0 1px; }
-  .title-wordmark { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
+  .title-wordmark { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; animation: title-wordmark-fade 2.8s ease-in-out infinite alternate; }
+  @keyframes title-wordmark-fade { from { opacity: 1; } to { opacity: .18; } }
   .tcc-line { margin-bottom: 8px; padding: 3px 12px; color: #ffd92a; border: 2px solid #ffd92a; font-weight: 700; }
   .title-actions { display: grid; gap: 4px; width: 150px; }
   .title-copy p { position: absolute; bottom: -7px; margin: 0; font-size: 7px; }

@@ -3,6 +3,7 @@ import {
   audioRegistry,
   audioUrl,
   hardCutCues,
+  loopingCues,
   uiSoundRegistry,
   uiSoundUrl,
   type AudioCueId,
@@ -117,6 +118,15 @@ export class AudioManager {
     void this.startCue(cue);
   }
 
+  stop(cue: AudioCueId): void {
+    if (this.pendingCue === cue) this.pendingCue = undefined;
+    if (this.current?.cue !== cue) return;
+    this.transitionToken += 1;
+    this.stopCurrent();
+    void this.resumeAmbient();
+    this.emit();
+  }
+
   playUiSound(sound: UiSoundId): void {
     if (!this.unlocked || !this.settings.enabled) return;
     const audio = this.uiSounds.get(sound);
@@ -188,7 +198,7 @@ export class AudioManager {
     if (token !== this.transitionToken || !this.settings.enabled) return;
     const audio = this.preloaded.get(cue) ?? this.createAudio(audioUrl(audioRegistry[cue]));
     this.preloaded.delete(cue);
-    audio.loop = false;
+    audio.loop = loopingCues.has(cue);
     audio.preload = 'auto';
     audio.volume = this.settings.volume;
     const ended = () => {
