@@ -26,6 +26,10 @@
   let warrantBusy = false;
   let resultAnimationComplete = true;
   let actionsAreDisabled = false;
+  let travelAnimationRun = 0;
+  let sceneAssetId = 'agency-emblem';
+  let sceneAlt = 'Cena da investigação';
+  let scenePresentationKey = 'initial';
   const categories: TraitCategory[] = ['sex', 'hair', 'hobby', 'feature', 'vehicle'];
 
   const cityById = (id?: string) => actions.content.cities.find((city) => city.id === id);
@@ -37,7 +41,7 @@
   const asset = resolveAsset;
 
   const updateScale = () => {
-    const fit = Math.min((window.innerWidth - 8) / 640, (window.innerHeight - 8) / 400);
+    const fit = Math.min((window.innerWidth - 8) / 640, (window.innerHeight - 28) / 400);
     const coarse = window.matchMedia('(pointer: coarse)').matches;
     if (coarse || fit < 2) scale = Math.max(.35, Math.floor(fit * 20) / 20);
     else scale = Math.max(2, Math.floor(fit));
@@ -81,6 +85,7 @@
   };
 
   const beginTravel = (cityId: string) => {
+    travelAnimationRun += 1;
     requestAudioEvent('TRAVEL_STARTED');
     actions.travel(cityId);
   };
@@ -188,12 +193,6 @@
     try { return actions.currentCityDefinition(); } catch { return undefined; }
   };
 
-  const leftSceneAsset = (): string => {
-    if ($uiState.screen === 'witness' && selectedPlaceId) return placeById(selectedPlaceId)?.backgroundAssetId ?? 'agency-emblem';
-    if ($uiState.screen === 'dossiers') return 'dossier-cabinet-illustration';
-    return cityById($gameState?.activeCase?.runtime.currentCityId)?.artworkAssetId ?? 'agency-emblem';
-  };
-
   const visit = (placeId: string) => {
     selectedPlaceId = placeId;
     witnessTextComplete = false;
@@ -232,6 +231,23 @@
   };
 
   $: actionsAreDisabled = $uiState.screen === 'traveling' || ($uiState.screen === 'witness' && !witnessTextComplete);
+  $: sceneAssetId = $uiState.screen === 'witness' && selectedPlaceId
+    ? placeById(selectedPlaceId)?.backgroundAssetId ?? 'agency-emblem'
+    : $uiState.screen === 'dossiers'
+      ? 'dossier-cabinet-illustration'
+      : cityById($gameState?.activeCase?.runtime.currentCityId)?.artworkAssetId ?? 'agency-emblem';
+  $: sceneAlt = $uiState.screen === 'witness'
+    ? placeById(selectedPlaceId)?.name ?? 'Local da investigação'
+    : $uiState.screen === 'dossiers'
+      ? 'Arquivo de dossiês'
+      : cityById($gameState?.activeCase?.runtime.currentCityId)?.name ?? 'Cidade';
+  $: scenePresentationKey = [
+    $uiState.screen,
+    $gameState?.activeCase?.runtime.currentCityId ?? 'none',
+    selectedPlaceId,
+    $uiState.event?.type === 'ARRIVED' ? `${$uiState.event.cityId}:${$uiState.event.classification}:${$uiState.event.henchmanAppeared}` : $uiState.event?.type ?? 'none',
+    travelAnimationRun
+  ].join(':');
 
   onMount(() => {
     audioManager = new AudioManager();
@@ -354,10 +370,12 @@
               <time>{displayCaseTime($gameState.activeCase.runtime.elapsedHours)}</time>
             </header>
             <div class="scene">
-              <img src={asset(leftSceneAsset())} alt={$uiState.screen === 'witness' ? placeById(selectedPlaceId)?.name ?? 'Local' : $uiState.screen === 'dossiers' ? 'Arquivo de dossiês' : cityById($gameState.activeCase.runtime.currentCityId)?.name ?? 'Cidade'} />
-              {#if $uiState.screen === 'city' && $uiState.event?.type === 'ARRIVED' && $uiState.event.henchmanAppeared}
-                <div class="henchman-crossing" aria-label="Um capanga listrado da T.C.C. cruza a cidade correndo"><i style={`background-image:url(${asset('henchman-run-spritesheet')})`}></i></div>
-              {/if}
+              {#key scenePresentationKey}
+                <img data-scene-asset={sceneAssetId} data-city-id={$gameState.activeCase.runtime.currentCityId} src={asset(sceneAssetId)} alt={sceneAlt} />
+                {#if $uiState.screen === 'city' && $uiState.event?.type === 'ARRIVED' && $uiState.event.henchmanAppeared}
+                  <div class="henchman-crossing" data-animation-run={travelAnimationRun} aria-label="Um capanga listrado da T.C.C. cruza a cidade correndo"><i style={`background-image:url(${asset('henchman-run-spritesheet')})`}></i></div>
+                {/if}
+              {/key}
               <div class="scene-label">{$gameState.activeCase.runtime.elapsedHours}/120 HORAS</div>
             </div>
           </div>
@@ -365,13 +383,15 @@
             <section class:warrant-panel={$uiState.screen === 'warrant'} class="info-panel">
               {#if $uiState.screen === 'traveling'}
                 <h2>EM TRÂNSITO</h2>
-                <div class="travel-animation"><i style={`background-image:url(${asset('travel-airplane-spritesheet')})`}></i></div>
+                {#key travelAnimationRun}
+                  <div class="travel-animation" data-animation-run={travelAnimationRun}><i style={`background-image:url(${asset('travel-airplane-spritesheet')})`}></i></div>
+                {/key}
                 <p>O avião da Agência Federal cruza o mapa. O relógio do caso já está correndo.</p>
               {:else if $uiState.screen === 'city'}
                 {@const currentCity = cityById($gameState.activeCase.runtime.currentCityId)}
                 <h2>{currentCity?.name} · {currentCity?.country}</h2>
                 {#if $uiState.event?.type === 'ARRIVED' && ['CORRECT_FORWARD', 'FINAL_CITY'].includes($uiState.event.classification)}
-                  <div class="trail-animation-cue" aria-label="Pista quente"><i style={`background-image:url(${asset('trail-alert-spritesheet')})`}></i></div>
+                  <div class="trail-animation-cue" data-animation-run={travelAnimationRun} aria-label="Pista quente"><i style={`background-image:url(${asset('trail-alert-spritesheet')})`}></i></div>
                 {/if}
                 <p class="city-intro">A Agência Federal registra sua chegada a {currentCity?.name}, em {currentCity?.country}. A fotografia oficial da cidade está exibida ao lado.</p>
                 {#if $uiState.event?.type === 'ARRIVED'}<p class="trail-note">{eventText($uiState.event)}</p>{/if}
@@ -486,6 +506,7 @@
       {/if}
     </main>
   </div>
+  <footer class="site-credit">Developed &amp; Powered-By <a href="https://instagram.com/mreaggle" target="_blank" rel="noopener noreferrer">@Mreaggle</a></footer>
   <div class="rotate-notice">GIRE O CELULAR PARA JOGAR EM PAISAGEM<br />DEPOIS TOQUE EM “TELA CHEIA”.</div>
 </div>
 
@@ -627,5 +648,16 @@
   .promotion-screen h1 { color: #9f0d13; font-size: 28px; text-transform: uppercase; }
   .rank-badge { float: right; width: 72px; height: 72px; margin: 0 10px; image-rendering: pixelated; }
   .hall-screen .result-card { color: #fff; background: #111; border-color: #ffd42a; }
-  @media (prefers-reduced-motion: reduce) { .map-box i { animation: none; } }
+  .site-credit { position: absolute; left: 50%; bottom: max(3px, env(safe-area-inset-bottom)); z-index: 8; margin: 0; color: #8e8e8e; font-size: clamp(8px, calc(8px * var(--stage-scale)), 14px); line-height: 16px; text-align: center; white-space: nowrap; transform: translateX(-50%); }
+  .site-credit a { color: #dedede; text-decoration: none; }
+  .site-credit a:hover, .site-credit a:focus-visible { color: #ffd92a; text-decoration: underline; }
+  @media (prefers-reduced-motion: reduce) {
+    .map-box i { animation: none; }
+    .travel-animation::before { animation: cloud-scroll 1.6s steps(8) forwards !important; }
+    .travel-animation i { animation: plane-frames .8s steps(4) 2, plane-takeoff 1.6s steps(8) forwards !important; }
+    .trail-animation-cue i { animation: trail-frames .72s steps(4) 3 !important; }
+    .henchman-crossing::after { animation: getaway-dust 2.6s steps(4) forwards !important; }
+    .henchman-crossing i { animation: henchman-frames .64s steps(8) 4, henchman-path 2.6s steps(12) forwards !important; }
+    .result-animation i { animation: result-frames .9s steps(4) 2 !important; }
+  }
 </style>

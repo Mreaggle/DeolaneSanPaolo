@@ -29,6 +29,8 @@ test('abre o prólogo e entra no primeiro caso', async ({ page }, testInfo) => {
   await expect(page.locator('.scene > img')).toBeVisible();
   await expect(page.locator('.city-brief')).toBeVisible();
   await expect(page.locator('.city-brief li')).toHaveCount(0);
+  await expect(page.getByRole('contentinfo')).toHaveText('Developed & Powered-By @Mreaggle');
+  await expect(page.getByRole('contentinfo').getByRole('link', { name: '@Mreaggle' })).toHaveAttribute('href', 'https://instagram.com/mreaggle');
   await page.screenshot({ path: `test-results/gameplay-${testInfo.project.name}.png` });
 });
 
@@ -153,16 +155,29 @@ test('percorre um caso funcional e mantém as novas animações legíveis', asyn
 
   for (let index = 1; index < definition.route.length; index += 1) {
     const city = content.cities.find((candidate) => candidate.id === definition.route[index])!;
+    const sceneBeforeTravel = await page.locator('.scene > img').getAttribute('src');
     await page.getByRole('button', { name: /PARTIR/ }).click();
     await page.locator('.destination-list button').filter({ hasText: city.name }).click();
     await expect(page.getByText('EM TRÂNSITO')).toBeVisible();
     await expectAudioCue(page, 'AIRPLANE_TRAVEL');
+    const plane = page.locator('.travel-animation i');
+    const planeStart = await plane.evaluate((element) => parseFloat(getComputedStyle(element).left));
     await page.waitForTimeout(1_150);
+    const planeLater = await plane.evaluate((element) => parseFloat(getComputedStyle(element).left));
+    expect(planeLater).toBeGreaterThan(planeStart + 20);
     await expect(page.getByText('EM TRÂNSITO')).toBeVisible();
     await expect(page.locator('.city-brief')).toBeVisible({ timeout: 5_000 });
+    await expect(page.locator('.scene > img')).toHaveAttribute('data-city-id', city.id);
+    await expect(page.locator('.scene > img')).toHaveAttribute('src', new RegExp(`/assets/cities/${city.id}\\.png$`));
+    expect(await page.locator('.scene > img').getAttribute('src')).not.toBe(sceneBeforeTravel);
     if (index === definition.route.length - 2) {
       await expectAudioCue(page, 'SUSPICIOUS_HENCHMAN');
-      await expect(page.locator('.henchman-crossing')).toBeVisible();
+      const henchman = page.locator('.henchman-crossing i');
+      await expect(henchman).toBeVisible();
+      const henchmanStart = await henchman.evaluate((element) => parseFloat(getComputedStyle(element).left));
+      await page.waitForTimeout(500);
+      const henchmanLater = await henchman.evaluate((element) => parseFloat(getComputedStyle(element).left));
+      expect(henchmanLater).toBeGreaterThan(henchmanStart + 10);
       await expect(page.getByText(/CAPANGA DA T\.C\.C\./)).toBeVisible();
       await page.getByRole('button', { name: /BUSCAR/ }).click();
       await page.locator('.place-list button').first().click();
@@ -201,4 +216,50 @@ test('troca imediatamente a viagem por pista fria ao chegar a uma cidade errada'
   await expect(page.locator('.city-brief')).toBeVisible({ timeout: 5_000 });
   await expect(page.getByText(/Pista fria/)).toBeVisible();
   await expectAudioCue(page, 'COLD_TRAIL');
+});
+
+test('mantém viagens, perseguição e fotos visíveis com redução de movimento', async ({ page }) => {
+  test.setTimeout(45_000);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const seed = 'reduced-motion-presentation';
+  const definition = generateCase(createProfile('Detetive Bia'), seed, content);
+  await enterFirstCase(page, `./?caseSeed=${seed}`);
+
+  for (let index = 1; index <= definition.route.length - 2; index += 1) {
+    const city = content.cities.find((candidate) => candidate.id === definition.route[index])!;
+    const previousSrc = await page.locator('.scene > img').getAttribute('src');
+    await page.getByRole('button', { name: /PARTIR/ }).click();
+    await page.locator('.destination-list button').filter({ hasText: city.name }).click();
+
+    const plane = page.locator('.travel-animation i');
+    await expect(plane).toBeVisible();
+    const planeStart = await plane.evaluate((element) => ({
+      left: parseFloat(getComputedStyle(element).left),
+      duration: getComputedStyle(element).animationDuration
+    }));
+    expect(planeStart.duration).toContain('1.6s');
+    await page.waitForTimeout(500);
+    const planeLater = await plane.evaluate((element) => parseFloat(getComputedStyle(element).left));
+    expect(planeLater).toBeGreaterThan(planeStart.left + 20);
+
+    await expect(page.locator('.city-brief')).toBeVisible({ timeout: 5_000 });
+    await expect(page.locator('.scene > img')).toHaveAttribute('src', new RegExp(`/assets/cities/${city.id}\\.png$`));
+    expect(await page.locator('.scene > img').getAttribute('src')).not.toBe(previousSrc);
+
+    if (index === definition.route.length - 2) {
+      const runner = page.locator('.henchman-crossing i');
+      await expect(runner).toBeVisible();
+      const runnerStart = await runner.evaluate((element) => ({
+        left: parseFloat(getComputedStyle(element).left),
+        duration: getComputedStyle(element).animationDuration
+      }));
+      expect(runnerStart.duration).toContain('2.6s');
+      await page.waitForTimeout(500);
+      const runnerLater = await runner.evaluate((element) => parseFloat(getComputedStyle(element).left));
+      expect(runnerLater).toBeGreaterThan(runnerStart.left + 10);
+    } else {
+      const trailDuration = await page.locator('.trail-animation-cue i').evaluate((element) => getComputedStyle(element).animationDuration);
+      expect(trailDuration).toBe('0.72s');
+    }
+  }
 });
