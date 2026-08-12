@@ -348,7 +348,7 @@
               <PixelButton label="CONTINUAR" disabled={!$hasSave} onactivate={actions.continueGame} />
               <PixelButton label="TELA CHEIA" onactivate={() => void fullscreen()} />
             </div>
-            <p>© 1991/2026 FEDERAL SOFTWARE · CLIQUE OU USE O TECLADO</p>
+            <p>© 1991/2026 MREAGGLE SOFTWARE · CLIQUE OU USE O TECLADO</p>
           </div>
         </section>
       {:else if $uiState.screen === 'signin'}
