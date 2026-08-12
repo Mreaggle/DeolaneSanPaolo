@@ -86,17 +86,15 @@
   const requestAudioEvent = (event: AudioEventId) => requestCue(cueForAudioEvent(event));
   const playTypewriter = () => audioManager?.playUiSound('TYPEWRITER');
 
+  const handlePointerDown = (event: PointerEvent) => {
+    if (event.button !== 0) return;
+    void audioManager?.unlock();
+    audioManager?.playUiSound('MOUSE_CLICK');
+  };
+
   const handlePlayerNameInput = (event: Event) => {
     const nextName = (event.currentTarget as HTMLInputElement).value;
-    const inputEvent = event as InputEvent;
-    const insertedText = inputEvent.data ?? (
-      nextName.length > lastAudiblePlayerName.length
-        ? nextName.slice(lastAudiblePlayerName.length)
-        : ''
-    );
-    for (const character of insertedText) {
-      if (/\S/.test(character)) playTypewriter();
-    }
+    if (nextName !== lastAudiblePlayerName) playTypewriter();
     lastAudiblePlayerName = nextName;
   };
 
@@ -299,7 +297,6 @@
     audioManager.preload(preloadGroups.opening);
     const unsubscribeAudio = audioManager.subscribe((snapshot) => { audioSnapshot = snapshot; });
     const unlockAudio = () => { void audioManager?.unlock(); };
-    window.addEventListener('pointerdown', unlockAudio, { once: true });
     window.addEventListener('keydown', unlockAudio, { once: true });
     syncScreenAudio();
     updateScale();
@@ -310,7 +307,6 @@
       window.removeEventListener('resize', updateScale);
       window.removeEventListener('keydown', keyboard);
       document.removeEventListener('fullscreenchange', updateScale);
-      window.removeEventListener('pointerdown', unlockAudio);
       window.removeEventListener('keydown', unlockAudio);
       unsubscribeAudio();
       audioManager?.dispose();
@@ -324,9 +320,14 @@
   <meta name="description" content="Jogo de investigação geográfica com alma de DOS." />
 </svelte:head>
 
-<svelte:window on:contextmenu|preventDefault />
+<svelte:window on:contextmenu|preventDefault on:pointerdown={handlePointerDown} />
 
-<div class="app-shell" bind:this={root} on:selectstart|preventDefault>
+<div
+  class="app-shell"
+  bind:this={root}
+  style={`--game-cursor-up: url("${asset('cursor-mouse-up')}") 3 1; --game-cursor-down: url("${asset('cursor-mouse-down')}") 7 7;`}
+  on:selectstart|preventDefault
+>
   <div class="scale-box">
     <main class="game-stage" aria-label="Deolane San Paolo" data-audio-cue={audioSnapshot.currentCue ?? (audioSnapshot.ambientPlaying ? 'AMBIENT' : 'NONE')}>
       {#if $uiState.screen === 'title'}
@@ -353,7 +354,7 @@
           <img class="full-art" src={asset('hq-background')} alt="Sede da Agência Federal" />
           <div class="terminal-frame">
             <div class="terminal-title">TERMINAL CENTRAL · AGÊNCIA FEDERAL</div>
-            <TypewriterText text={'IDENTIFICAÇÃO OBRIGATÓRIA.\nDIGITE SEU NOME, INVESTIGADOR:'} speed={20} oncharacter={playTypewriter} />
+            <TypewriterText text={'IDENTIFICAÇÃO OBRIGATÓRIA.\nDIGITE SEU NOME, INVESTIGADOR:'} speed={20} onaudiopulse={playTypewriter} />
             <form on:submit|preventDefault={submitName}>
               <label for="player-name">NOME</label>
               <input id="player-name" bind:value={playerName} maxlength="14" autocomplete="off" on:input={handlePlayerNameInput} />
@@ -367,7 +368,7 @@
           <div class="terminal-frame paper personnel-lookup">
             <div class="terminal-title">CONSULTA AO ARQUIVO DE PESSOAL</div>
             <div class="lookup-body">
-              <TypewriterText text={`PROCURANDO: ${$gameState?.profile.name.toUpperCase()}...\n\nNUNCA VI VOCÊ POR AQUI.\nNENHUMA FICHA. NENHUMA PROMOÇÃO.\n\nISSO MUDA AGORA.`} speed={18} oncharacter={playTypewriter} />
+              <TypewriterText text={`PROCURANDO: ${$gameState?.profile.name.toUpperCase()}...\n\nNUNCA VI VOCÊ POR AQUI.\nNENHUMA FICHA. NENHUMA PROMOÇÃO.\n\nISSO MUDA AGORA.`} speed={18} onaudiopulse={playTypewriter} />
               <img class="clerk" src={asset('agency-clerk-portrait')} alt="Atendente da Agência Federal" />
             </div>
             <PixelButton label="AGUARDAR BOLETIM" onactivate={actions.prepareCase} />
@@ -390,7 +391,7 @@
           <img class="full-art" src={asset('assignment-background')} alt="Sala de briefing" />
           <div class="briefing">
             <h2>ORDEM DE SERVIÇO {$gameState.activeCase.definition.id.slice(-6).toUpperCase()}</h2>
-            <TypewriterText text={`AGENTE: ${$gameState.profile.name}\nPATENTE: ${rankById($gameState.activeCase.definition.rankId)?.name}\nPARTIDA: ${cityById($gameState.activeCase.definition.route[0])?.name}\nOBJETO: ${itemById($gameState.activeCase.definition.stolenItemId)?.name}\nPRAZO: SÁBADO, 09:00 (${$gameState.activeCase.definition.deadlineHour} HORAS)\n\nSIGA AS PISTAS GEOGRÁFICAS. IDENTIFIQUE O LADRÃO. EMITA O MANDADO ANTES DO ENCONTRO FINAL.`} speed={8} oncharacter={playTypewriter} />
+            <TypewriterText text={`AGENTE: ${$gameState.profile.name}\nPATENTE: ${rankById($gameState.activeCase.definition.rankId)?.name}\nPARTIDA: ${cityById($gameState.activeCase.definition.route[0])?.name}\nOBJETO: ${itemById($gameState.activeCase.definition.stolenItemId)?.name}\nPRAZO: SÁBADO, 09:00 (${$gameState.activeCase.definition.deadlineHour} HORAS)\n\nSIGA AS PISTAS GEOGRÁFICAS. IDENTIFIQUE O LADRÃO. EMITA O MANDADO ANTES DO ENCONTRO FINAL.`} speed={8} onaudiopulse={playTypewriter} />
             <PixelButton label="INICIAR INVESTIGAÇÃO" onactivate={() => actions.go('city')} />
           </div>
         </section>
@@ -469,7 +470,7 @@
                 <h2>{placeById(selectedPlaceId)?.name ?? 'DEPOIMENTO'}</h2>
                 <div class="witness-row">
                   <img class="witness" src={asset(witness?.assetId ?? 'agency-clerk-portrait')} alt={witness?.name ?? 'Testemunha'} />
-                  <div class="speech"><b class="witness-name">{witness?.name ?? 'TESTEMUNHA'}</b><TypewriterText text={eventText($uiState.event)} speed={30} oncharacter={playTypewriter} oninteract={() => { witnessTextComplete = true; }} onadvance={() => actions.go('places')} /></div>
+                  <div class="speech"><b class="witness-name">{witness?.name ?? 'TESTEMUNHA'}</b><TypewriterText text={eventText($uiState.event)} speed={30} onaudiopulse={playTypewriter} oninteract={() => { witnessTextComplete = true; }} onadvance={() => actions.go('places')} /></div>
                 </div>
                 <PixelButton label="OUTRO LOCAL" onactivate={() => actions.go('places')} />
               {:else if $uiState.screen === 'travel'}
@@ -518,7 +519,7 @@
                     </div>
                     <div class="warrant-result">
                       {#if eventText($uiState.event)}
-                        <TypewriterText text={eventText($uiState.event)} speed={18} oncharacter={playTypewriter} />
+                        <TypewriterText text={eventText($uiState.event)} speed={18} onaudiopulse={playTypewriter} />
                       {:else}
                         PREENCHA SÓ OS TRAÇOS CONFIRMADOS. CONSULTA: 2 HORAS.
                       {/if}
@@ -582,6 +583,10 @@
 </div>
 
 <style>
+  @media (pointer: fine) {
+    .app-shell, .app-shell * { cursor: var(--game-cursor-up), auto; }
+    .app-shell:active, .app-shell:active * { cursor: var(--game-cursor-down), auto; }
+  }
   .full-screen { position: absolute; inset: 0; overflow: hidden; background: #111; }
   .full-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
   .dither-shade { position: absolute; inset: 0; background-color: rgba(0,0,0,.28); }

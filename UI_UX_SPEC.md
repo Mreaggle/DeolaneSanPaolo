@@ -1767,10 +1767,11 @@ promotion
 
 Sound availability does not change interaction timing.
 
-`typewriter.mp3` is a parallel UI sound layer: each visible character typed by
-the player or progressively rendered for personnel lookup, witness statements
-and warrant-computer responses triggers it without stopping or replacing the
-active music, cue or sting.
+`typewriter.mp3` is a parallel UI sound layer. Name entry triggers one play for
+each input change made by the player. Progressively rendered personnel lookup,
+assignment, witness and warrant-computer text uses a fixed 150 ms playback
+cadence, independent of character speed. It never stops or replaces the active
+music, cue or sting. `mouse_click.mp3` plays on each primary pointer press.
 
 ---
 
@@ -1778,7 +1779,9 @@ active music, cue or sting.
 
 ## 105. Cursor style
 
-The gameplay viewport may use a custom period-authentic pointer.
+On desktop with a fine pointer, the gameplay viewport uses `mouse-up.png` as
+the default cursor and `mouse-down.png` while the primary pointer is pressed.
+Touch/coarse-pointer layouts retain the platform cursor behavior.
 
 The cursor must remain precise enough for UI selection.
 

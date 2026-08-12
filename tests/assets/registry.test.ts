@@ -3,12 +3,11 @@ import { assetRegistry } from '../../src/assets/registry';
 import manifest from '../../ASSET_MANIFEST.md?raw';
 
 describe('assetRegistry', () => {
-  it('corresponde integralmente aos 162 IDs e caminhos do manifesto', () => {
+  it('corresponde integralmente aos IDs e caminhos de imagem do manifesto', () => {
     const entries = manifest.split('\n').flatMap((line) => {
-      const match = line.match(/^\|\s*\d{3}\s*\|\s*`([^`]+)`\s*\|\s*`public\/([^`]+)`/);
+      const match = line.match(/^\|\s*(?:\d{3}\s*\|\s*)?`([^`]+)`\s*\|\s*`public\/(assets\/[^`]+)`/);
       return match ? [[match[1]!, match[2]!] as const] : [];
     });
-    expect(Object.keys(assetRegistry)).toHaveLength(162);
-    for (const [id, path] of entries) expect(assetRegistry[id], id).toBe(path);
+    expect(assetRegistry).toEqual(Object.fromEntries(entries));
   });
 });

@@ -40,6 +40,8 @@ const staticAssets: Record<string, string> = {
   'icon-warning': 'assets/icons/icon-warning.png',
   'icon-sound-on': 'assets/icons/icon-sound-on.png',
   'icon-sound-off': 'assets/icons/icon-sound-off.png',
+  'cursor-mouse-up': 'assets/cursors/mouse-up.png',
+  'cursor-mouse-down': 'assets/cursors/mouse-down.png',
   'travel-airplane-spritesheet': 'assets/animations/travel-airplane-spritesheet.png',
   'trail-alert-spritesheet': 'assets/animations/trail-alert-spritesheet.png',
   'capture-spritesheet': 'assets/animations/capture-spritesheet.png',

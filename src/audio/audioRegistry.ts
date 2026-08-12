@@ -33,7 +33,8 @@ export const ambientTrack = '26_ambient_background.mp3';
 export const audioUrl = (filename: string): string => `${import.meta.env.BASE_URL}audio/music/${filename}`;
 
 export const uiSoundRegistry = {
-  TYPEWRITER: 'typewriter.mp3'
+  TYPEWRITER: 'typewriter.mp3',
+  MOUSE_CLICK: 'mouse_click.mp3'
 } as const;
 
 export type UiSoundId = keyof typeof uiSoundRegistry;

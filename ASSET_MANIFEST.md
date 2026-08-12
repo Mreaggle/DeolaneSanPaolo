@@ -188,7 +188,15 @@ Each catalog row contains:
 
 | id | filename | category | purpose | status |
 |---|---|---|---|---|
-| `sfx-typewriter` | `public/audio/sfx/typewriter.mp3` | `ui-sfx` | Parallel keystroke sound for name entry, personnel lookup, witnesses and computer responses. | `IMPLEMENTED` |
+| `sfx-typewriter` | `public/audio/sfx/typewriter.mp3` | `ui-sfx` | Parallel per-input feedback for name entry and fixed-cadence feedback for progressively rendered text. | `IMPLEMENTED` |
+| `sfx-mouse-click` | `public/audio/sfx/mouse_click.mp3` | `ui-sfx` | Parallel feedback for primary pointer presses. | `IMPLEMENTED` |
+
+### Bundled cursor resources
+
+| id | filename | category | purpose | native_size | transparency | status |
+|---|---|---|---|---|---|---|
+| `cursor-mouse-up` | `public/assets/cursors/mouse-up.png` | `cursor` | Default desktop fine-pointer cursor, downscaled from the supplied source with nearest-neighbor sampling. | `32x35` | `transparent` | `IMPLEMENTED` |
+| `cursor-mouse-down` | `public/assets/cursors/mouse-down.png` | `cursor` | Pressed desktop fine-pointer cursor, downscaled from the supplied source with nearest-neighbor sampling. | `32x35` | `transparent` | `IMPLEMENTED` |
 
 ### A. Narrative / Meta / UI-Support / Icons / Animation (001–040)
 
