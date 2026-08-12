@@ -20,12 +20,13 @@ class FakeAudio implements AudioLike {
 }
 
 describe('trilha sonora', () => {
-  it('registra exatamente os 25 cues canônicos e o ambiente separado', () => {
-    expect(Object.keys(audioRegistry)).toHaveLength(25);
+  it('registra exatamente os 26 cues canônicos e o ambiente separado', () => {
+    expect(Object.keys(audioRegistry)).toHaveLength(26);
     const files = [...Object.values(audioRegistry), ambientTrack];
-    expect(files).toHaveLength(26);
-    expect(new Set(files).size).toBe(26);
+    expect(files).toHaveLength(27);
+    expect(new Set(files).size).toBe(27);
     expect(files).not.toContain('22_deolane_leitmotif.old.mp3');
+    expect(audioRegistry.DOSSIERS).toBe('27_dossiers.mp3');
   });
 
   it('pausa o ambiente durante um cue e o retoma do mesmo ponto no término', async () => {

@@ -26,7 +26,8 @@ export const audioEventMap = {
   DEOLANE_THEME_REQUESTED: 'DEOLANE_LEITMOTIF',
   FINAL_DEOLANE_FOUND: 'FINAL_DEOLANE_REVEAL',
   DEOLANE_CAPTURED: 'FINAL_CAPTURE_DEOLANE',
-  HALL_OF_FAME_ENTERED: 'HALL_OF_FAME'
+  HALL_OF_FAME_ENTERED: 'HALL_OF_FAME',
+  DOSSIERS_OPENED: 'DOSSIERS'
 } as const satisfies Record<string, AudioCueId>;
 
 export type AudioEventId = keyof typeof audioEventMap;
@@ -44,4 +45,3 @@ export const arrivalAudioEvent = (
   if (classification === 'WRONG_CITY' || classification === 'OLD_ROUTE_CITY') return 'COLD_TRAIL_CONFIRMED';
   return undefined;
 };
-

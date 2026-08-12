@@ -33,6 +33,11 @@ test('abre o prólogo e entra no primeiro caso', async ({ page }, testInfo) => {
   await expect(page.locator('.city-brief li')).toHaveCount(0);
   await expect(page.getByRole('contentinfo')).toHaveText('Developed & Powered-By @Mreaggle');
   await expect(page.getByRole('contentinfo').getByRole('link', { name: '@Mreaggle' })).toHaveAttribute('href', 'https://instagram.com/mreaggle');
+  await page.getByRole('button', { name: 'DOSSIÊS' }).click();
+  await expect(page.getByText(/ARQUIVO T\.C\.C\./)).toBeVisible();
+  await expectAudioCue(page, 'DOSSIERS');
+  await page.getByRole('button', { name: '▶' }).click();
+  await expectAudioCue(page, 'DOSSIERS');
   await page.screenshot({ path: `test-results/gameplay-${testInfo.project.name}.png` });
 });
 

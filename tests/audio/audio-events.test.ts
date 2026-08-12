@@ -3,7 +3,7 @@ import { arrivalAudioEvent, audioEventMap } from '../../src/audio/audioEvents';
 import { audioRegistry } from '../../src/audio/audioRegistry';
 
 describe('mapeamento semântico da trilha', () => {
-  it('correlaciona exatamente um evento de jogo a cada um dos 25 cues', () => {
+  it('correlaciona exatamente um evento de jogo a cada um dos 26 cues', () => {
     expect(audioEventMap).toEqual({
       TITLE_ENTERED: 'TITLE_THEME',
       HEADQUARTERS_ENTERED: 'HEADQUARTERS_AGENCY',
@@ -29,7 +29,8 @@ describe('mapeamento semântico da trilha', () => {
       DEOLANE_THEME_REQUESTED: 'DEOLANE_LEITMOTIF',
       FINAL_DEOLANE_FOUND: 'FINAL_DEOLANE_REVEAL',
       DEOLANE_CAPTURED: 'FINAL_CAPTURE_DEOLANE',
-      HALL_OF_FAME_ENTERED: 'HALL_OF_FAME'
+      HALL_OF_FAME_ENTERED: 'HALL_OF_FAME',
+      DOSSIERS_OPENED: 'DOSSIERS'
     });
     expect(new Set(Object.values(audioEventMap))).toEqual(new Set(Object.keys(audioRegistry)));
   });
@@ -44,4 +45,3 @@ describe('mapeamento semântico da trilha', () => {
     expect(arrivalAudioEvent('FINAL_CITY', false, true)).toBeUndefined();
   });
 });
-
