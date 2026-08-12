@@ -1767,6 +1767,11 @@ promotion
 
 Sound availability does not change interaction timing.
 
+`typewriter.mp3` is a parallel UI sound layer: each visible character typed by
+the player or progressively rendered for personnel lookup, witness statements
+and warrant-computer responses triggers it without stopping or replacing the
+active music, cue or sting.
+
 ---
 
 # PART XXXIX — CURSOR

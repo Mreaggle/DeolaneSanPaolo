@@ -1,4 +1,13 @@
-import { ambientTrack, audioRegistry, audioUrl, hardCutCues, type AudioCueId } from './audioRegistry';
+import {
+  ambientTrack,
+  audioRegistry,
+  audioUrl,
+  hardCutCues,
+  uiSoundRegistry,
+  uiSoundUrl,
+  type AudioCueId,
+  type UiSoundId
+} from './audioRegistry';
 
 const SETTINGS_KEY = 'deolane-san-paolo.audio';
 
@@ -47,6 +56,7 @@ export class AudioManager {
   private readonly ambient: AudioLike;
   private current: { cue: AudioCueId; audio: AudioLike; ended: () => void } | undefined;
   private pendingCue: AudioCueId | undefined;
+  private uiSounds = new Map<UiSoundId, AudioLike>();
   private unlocked = false;
   private transitionToken = 0;
   private preloaded = new Map<AudioCueId, AudioLike>();
@@ -100,6 +110,19 @@ export class AudioManager {
     void this.startCue(cue);
   }
 
+  playUiSound(sound: UiSoundId): void {
+    if (!this.unlocked || !this.settings.enabled) return;
+    let audio = this.uiSounds.get(sound);
+    if (!audio) {
+      audio = this.createAudio(uiSoundUrl(uiSoundRegistry[sound]));
+      audio.preload = 'auto';
+      this.uiSounds.set(sound, audio);
+    }
+    audio.currentTime = 0;
+    audio.volume = this.settings.volume;
+    void audio.play().catch(() => undefined);
+  }
+
   preload(cues: readonly AudioCueId[]): void {
     for (const cue of cues) {
       if (this.preloaded.has(cue) || this.current?.cue === cue) continue;
@@ -118,6 +141,7 @@ export class AudioManager {
       this.transitionToken += 1;
       this.current?.audio.pause();
       this.ambient.pause();
+      for (const audio of this.uiSounds.values()) audio.pause();
     } else if (this.unlocked) {
       if (this.current) void this.current.audio.play().catch(() => undefined);
       else if (this.pendingCue) void this.startCue(this.pendingCue);
@@ -130,6 +154,7 @@ export class AudioManager {
     this.settings.volume = clampVolume(volume);
     if (this.current) this.current.audio.volume = this.settings.volume;
     this.ambient.volume = this.settings.volume * 0.28;
+    for (const audio of this.uiSounds.values()) audio.volume = this.settings.volume;
     this.persist();
     this.emit();
   }
@@ -140,6 +165,8 @@ export class AudioManager {
     this.ambient.pause();
     for (const audio of this.preloaded.values()) audio.pause();
     this.preloaded.clear();
+    for (const audio of this.uiSounds.values()) audio.pause();
+    this.uiSounds.clear();
     this.listeners.clear();
   }
 

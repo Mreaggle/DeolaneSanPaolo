@@ -184,6 +184,12 @@ Each catalog row contains:
 |---|---|---|---|---|---|
 | `font-atlas-bitmap` | `public/fonts/silkscreen-regular.ttf` | `bitmap-font` | Canonical game-surface typography, exposed in CSS as `AtlasBitmap`. | SIL Open Font License 1.1 (`public/fonts/OFL.txt`) | `IMPLEMENTED` |
 
+### Bundled UI sound resource
+
+| id | filename | category | purpose | status |
+|---|---|---|---|---|
+| `sfx-typewriter` | `public/audio/sfx/typewriter.mp3` | `ui-sfx` | Parallel keystroke sound for name entry, personnel lookup, witnesses and computer responses. | `IMPLEMENTED` |
+
 ### A. Narrative / Meta / UI-Support / Icons / Animation (001–040)
 
 | # | id | filename | category | purpose | native_size | transparency | reuse | status |

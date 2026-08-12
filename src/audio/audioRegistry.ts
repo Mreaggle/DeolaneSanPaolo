@@ -32,6 +32,13 @@ export type AudioCueId = keyof typeof audioRegistry;
 export const ambientTrack = '26_ambient_background.mp3';
 export const audioUrl = (filename: string): string => `${import.meta.env.BASE_URL}audio/music/${filename}`;
 
+export const uiSoundRegistry = {
+  TYPEWRITER: 'typewriter.mp3'
+} as const;
+
+export type UiSoundId = keyof typeof uiSoundRegistry;
+export const uiSoundUrl = (filename: string): string => `${import.meta.env.BASE_URL}audio/sfx/${filename}`;
+
 export const hardCutCues = new Set<AudioCueId>([
   'DETECTIVE_UNKNOWN', 'COLD_TRAIL', 'TIME_ALMOST_EXPIRED',
   'WARRANT_INCONCLUSIVE', 'WRONG_FINAL_HIDEOUT'
