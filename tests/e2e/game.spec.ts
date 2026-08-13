@@ -52,9 +52,14 @@ test('apresenta a vinheta Mreaggle antes do título e respeita os marcos do stin
   await page.locator('.publisher-sting').evaluate((audio) => audio.dispatchEvent(new Event('ended')));
   await expect(splash).toHaveAttribute('data-publisher-phase', 'fading');
   await expect(page.getByRole('heading', { name: 'Where is Deolane San Paolo?' })).toHaveCount(0);
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(250);
+  const fadingOpacity = await complete.evaluate((logo) => Number.parseFloat(getComputedStyle(logo).opacity));
+  expect(fadingOpacity).toBeGreaterThan(0);
+  expect(fadingOpacity).toBeLessThan(1);
+  await page.waitForTimeout(250);
   await expect(splash).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Where is Deolane San Paolo?' })).toBeVisible({ timeout: 1_000 });
+  await expectAudioCue(page, 'TITLE_THEME');
 });
 
 test('abre o prólogo e entra no primeiro caso', async ({ page }, testInfo) => {

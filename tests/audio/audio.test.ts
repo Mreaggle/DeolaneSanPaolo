@@ -34,6 +34,28 @@ describe('trilha sonora', () => {
     expect(audioRegistry.DOSSIERS).toBe('27_dossiers.mp3');
   });
 
+  it('autoriza o tema após o sting sem iniciar ambiente durante a vinheta', async () => {
+    const created: FakeAudio[] = [];
+    const manager = new AudioManager({ createAudio: (src) => {
+      const audio = new FakeAudio(src);
+      created.push(audio);
+      return audio;
+    } });
+    const ambient = created[0]!;
+
+    manager.unlockWithoutPlayback();
+    expect(manager.snapshot.unlocked).toBe(true);
+    expect(ambient.paused).toBe(true);
+
+    manager.request('TITLE_THEME');
+    await Promise.resolve();
+
+    const title = created.find((audio) => audio.src.endsWith('/1_title_theme.mp3'))!;
+    expect(title.plays).toBe(1);
+    expect(manager.snapshot.currentCue).toBe('TITLE_THEME');
+    expect(ambient.paused).toBe(true);
+  });
+
   it('pausa o ambiente durante um cue e o retoma do mesmo ponto no término', async () => {
     const created: FakeAudio[] = [];
     const manager = new AudioManager({ createAudio: (src) => {

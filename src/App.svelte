@@ -121,6 +121,7 @@
     publisherStingAudio.currentTime = 0;
     publisherStingAudio.volume = audioSnapshot.enabled ? audioSnapshot.volume : 0;
     try {
+      audioManager?.unlockWithoutPlayback();
       await publisherStingAudio.play();
       publisherSplashStarted = true;
       publisherRevealTimer = window.setTimeout(() => { publisherLogoComplete = true; }, 800);
@@ -702,10 +703,11 @@
   .publisher-splash.awaiting .publisher-logo-mark { opacity: 1; }
   .publisher-splash.complete .publisher-logo-mark { opacity: 0; }
   .publisher-splash.complete .publisher-logo-full { opacity: 1; animation: publisher-full-reveal .06s linear both; }
-  .publisher-splash.fading .publisher-logo-full { opacity: 0; transition: opacity 1s linear; }
+  .publisher-splash.fading .publisher-logo-full { animation: publisher-full-fade 1s linear both; }
   .publisher-splash p { position: absolute; bottom: 26px; margin: 0; color: #ddd; font-size: 8px; letter-spacing: 1px; }
   @keyframes publisher-mark-reveal { 0% { opacity: 0; } 7% { opacity: 1; } 100% { opacity: 0; } }
   @keyframes publisher-full-reveal { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes publisher-full-fade { from { opacity: 1; } to { opacity: 0; } }
   .dither-shade { position: absolute; inset: 0; background-color: rgba(0,0,0,.28); }
   .title-copy { position: absolute; inset: 22px 28px 18px 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; text-shadow: 2px 2px #000; }
   .tiny-kicker { padding: 3px 7px; color: #050505; background: #f6d21d; text-shadow: none; letter-spacing: 1px; }

@@ -27,7 +27,7 @@ O texto é econômico, levemente teatral e seco, como software de investigação
 5. Quando o sting termina, a marca completa realiza um fade-out linear de exatamente 1 segundo.
 6. Somente depois desse fade-out aparece o título **DEOLANE SAN PAOLO**.
 
-O sting tenta iniciar automaticamente. Quando a política de autoplay do navegador impedir áudio sem gesto, a tela permanece na marca inicial e solicita clique ou tecla; a cronologia começa junto com a reprodução autorizada. O estado é exclusivamente de apresentação e não cria nem altera perfil, save ou caso.
+O sting tenta iniciar automaticamente. Quando a política de autoplay do navegador impedir áudio sem gesto, a tela permanece na marca inicial e solicita clique ou tecla; a cronologia começa junto com a reprodução autorizada. Essa autorização sonora é preservada silenciosamente durante a vinheta: ao terminar o fade da marca completa, o tema da tela de título começa automaticamente, sem exigir outro clique e sem tocar ambiente por baixo do sting. O estado é exclusivamente de apresentação e não cria nem altera perfil, save ou caso.
 
 ### 4.2 Título
 
