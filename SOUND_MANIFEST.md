@@ -1550,9 +1550,9 @@ The canonical movement SFX is `public/audio/sfx/footsteps.mp3`, with stable runt
 
 ### 63.3 Mreaggle Software sting
 
-The publisher opening uses the project-owner-supplied file `public/audio/sfx/mreaggle_software_sting.mp3`, with stable presentation ID `PUBLISHER_STING`. Playback begins before `TITLE`; at 800 ms the complete publisher logo replaces the mark-only image. The audio never loops. Its `ended` boundary starts the complete logo's final 1-second fade, after which `TITLE_ENTERED` may request the title theme.
+The publisher opening uses the project-owner-supplied file `public/audio/sfx/mreaggle_software_sting.mp3`, with stable presentation ID `PUBLISHER_STING`. Playback begins before `TITLE`; at 800 ms the complete publisher logo replaces the mark-only image. The audio never loops. Its `ended` boundary starts a visibly interpolated complete-logo fade from opacity 1 to 0 over exactly 1 second. Once that fade completes, `TITLE_ENTERED` immediately starts `TITLE_THEME` without requiring a second user gesture.
 
-If browser autoplay policy rejects the initial attempt, playback and visual timing wait for the first click or key. The publisher sting is presentation-only and is not an engine event or music cue.
+If browser autoplay policy rejects the initial attempt, playback and visual timing wait for the first click or key. That successful gesture silently unlocks the soundtrack manager without starting ambient audio during the publisher sequence, so the title theme can begin automatically after the fade. The publisher sting is presentation-only and is not an engine event or music cue.
 
 ---
 

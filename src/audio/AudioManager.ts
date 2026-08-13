@@ -98,14 +98,19 @@ export class AudioManager {
     return () => this.listeners.delete(listener);
   }
 
-  async unlock(): Promise<void> {
+  unlockWithoutPlayback(): void {
     if (this.unlocked) return;
     this.unlocked = true;
+    this.emit();
+  }
+
+  async unlock(): Promise<void> {
+    if (this.unlocked) return;
+    this.unlockWithoutPlayback();
     if (this.settings.enabled) {
       if (this.pendingCue) await this.startCue(this.pendingCue);
       else await this.resumeAmbient();
     }
-    this.emit();
   }
 
   request(cue: AudioCueId): void {
