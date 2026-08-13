@@ -193,6 +193,11 @@
       requestAudioEvent(audioEvent);
     };
     if ($uiState.screen !== 'title') audioManager.stop('TITLE_THEME');
+    if ($uiState.screen !== 'warrant') {
+      audioManager.stop('CRIME_COMPUTER_CALCULATING');
+      audioManager.stop('WARRANT_ISSUED');
+      audioManager.stop('WARRANT_INCONCLUSIVE');
+    }
     if ($uiState.screen === 'title') play('TITLE_ENTERED');
     else if ($uiState.screen === 'signin') play('HEADQUARTERS_ENTERED');
     else if ($uiState.screen === 'new-player') play('DETECTIVE_NOT_FOUND');

@@ -1051,6 +1051,8 @@ Exactly one destination must remain.
 
 At least one geographic clue in each route city must remain compatible with multiple displayed candidates. A second, more specific factual clue may be decisive, as in the original manual examples. Difficulty comes from clue order, specificity and the choice between spending time or travelling with partial confidence; generated text must never enumerate competing candidate clues as an artificial `A or B` statement.
 
+Every useful geographic clue must eliminate at least one displayed candidate. A clue whose compatible set equals the complete `DEPART` list is invalid on the correct trail; generic statements such as crossing an international border provide no information in this world-spanning route and are reserved for neither normal nor broad clue slots. Broad reports use meaningful region, hemisphere, latitude or relative-direction information. The city-specific currency, landmark, cuisine and physical-geography reports remain the more decisive layer.
+
 ---
 
 ## 51. Minimum useful geographic clues
@@ -1148,7 +1150,7 @@ Every identity clue describes exactly one actual trait of the culprit.
 
 No generated identity clue may describe a different suspect.
 
-Identity text must read as an eyewitness observation or report, not as information voluntarily disclosed by the culprit. Appearance and vehicle clues describe what the witness saw; hobby clues describe a remark the witness overheard or relevant behavior. Generic constructions such as `A pessoa revelou cabelo: raspado` are forbidden. Each legal trait value has curated clue prose so grammatical articles and context remain natural.
+Identity text is spoken by the witness in first person, not narrated about the witness and not presented as information voluntarily disclosed by the culprit. Appearance and vehicle clues describe what the speaker saw; hobby clues describe a remark the speaker overheard or relevant behavior. Generic constructions such as `A pessoa revelou cabelo: raspado` and `A testemunha viu...` are forbidden. Each legal trait value has curated clue prose so grammatical articles and context remain natural.
 
 ---
 
@@ -1197,6 +1199,8 @@ available before final city.
 ## 58. Identity-clue scheduling
 
 Identity clues should be distributed across the route rather than all appearing immediately.
+
+The generator prefers categories whose current value is shared by multiple suspects. If a distinctive value matching only the culprit is required for mathematical identification, at most one such clue is selected and it is scheduled after the shared clues. Across the normal case pool these isolated strong clues must remain a minority of all identity reports.
 
 Canonical scheduling target:
 

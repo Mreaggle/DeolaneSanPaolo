@@ -307,14 +307,14 @@ vehicle = limousine
 
 ---
 
-## 15. Single-clue identification restriction
+## 15. Single-clue identification balance
 
-No single identity trait may uniquely identify any suspect, including Deolane.
+Most identity traits must be shared, but a limited set of distinctive values may identify one suspect alone. Such strong identity clues are deliberately rare in generated cases, appear only after less-conclusive evidence when needed, and never replace the requirement to investigate across multiple route cities.
 
 Preferred design:
 
 ```text
-one identity clue   → normally 3 or more candidates
+one identity clue   → normally 2 or more candidates
 two identity clues  → usually 2–4 candidates
 three clues         → often unique
 ```
@@ -2287,7 +2287,7 @@ The implementation must eventually include automated coverage for at least these
 ### Identity clues
 
 - all describe actual culprit;
-- no isolated trait identifies one suspect;
+- isolated unique traits are exceptional and scheduled after shared evidence;
 - enough clues exist before final city;
 - full exposed evidence can identify culprit uniquely.
 

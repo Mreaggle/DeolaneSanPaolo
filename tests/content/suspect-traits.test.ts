@@ -10,12 +10,11 @@ const combinations = <T>(values: readonly T[], count: number): T[][] => {
 };
 
 describe('matriz de traits dos suspeitos', () => {
-  it('nenhum trait isolado identifica uma única pessoa', () => {
-    for (const category of categories) {
-      for (const value of new Set(content.suspects.map((suspect) => suspect.traits[category]))) {
-        expect(matchSuspects(content.suspects, { [category]: value }), `${category}=${value}`).not.toHaveLength(1);
-      }
-    }
+  it('mantém um vocabulário rico de opções no computador de mandados', () => {
+    expect(new Set(content.suspects.map((suspect) => suspect.traits.hair)).size).toBeGreaterThanOrEqual(6);
+    expect(new Set(content.suspects.map((suspect) => suspect.traits.hobby)).size).toBeGreaterThanOrEqual(5);
+    expect(new Set(content.suspects.map((suspect) => suspect.traits.feature)).size).toBeGreaterThanOrEqual(7);
+    expect(new Set(content.suspects.map((suspect) => suspect.traits.vehicle)).size).toBeGreaterThanOrEqual(7);
   });
 
   it('cada suspeito é identificável por uma combinação válida de traits', () => {
@@ -31,11 +30,12 @@ describe('matriz de traits dos suspeitos', () => {
   it('todo valor de trait possui relato testemunhal natural e não consentido', () => {
     const values = new Set(content.suspects.flatMap((suspect) => categories.map((category) => suspect.traits[category])));
     for (const value of values) {
-      expect(traitClueTexts[value], value).toMatch(/^A testemunha /);
+      expect(traitClueTexts[value], value).toMatch(/^(Eu|Notei|Ouvi|Lembro)\b/);
       expect(traitClueTexts[value], value).not.toMatch(/revel/i);
+      expect(traitClueTexts[value], value).not.toContain('A testemunha');
     }
     for (const hair of new Set(content.suspects.map((suspect) => suspect.traits.hair))) {
-      expect(traitClueTexts[hair], hair).toContain('possuía cabelo');
+      expect(traitClueTexts[hair], hair).toMatch(/cabelo|calv/);
     }
   });
 });

@@ -14,13 +14,27 @@ const combinations = <T>(values: readonly T[], count: number): T[][] => {
 
 const identityCategoriesFor = (culpritId: string, content: GameContent): readonly TraitCategory[] => {
   const culprit = content.suspects.find((suspect) => suspect.id === culpritId)!;
+  const matchCount = (category: TraitCategory): number => content.suspects.filter((suspect) => suspect.traits[category] === culprit.traits[category]).length;
+  const identifying: TraitCategory[][] = [];
   for (let size = 3; size <= categories.length; size += 1) {
     for (const candidate of combinations(categories, size)) {
       const matches = content.suspects.filter((suspect) => candidate.every((category) => suspect.traits[category] === culprit.traits[category]));
-      if (matches.length === 1) return candidate;
+      if (matches.length === 1) identifying.push(candidate);
     }
+    if (identifying.length) break;
   }
-  return categories;
+  const rankCandidates = (candidates: TraitCategory[][]) => candidates.sort((left, right) => {
+    const uniqueDifference = left.filter((category) => matchCount(category) === 1).length - right.filter((category) => matchCount(category) === 1).length;
+    if (uniqueDifference) return uniqueDifference;
+    return right.reduce((total, category) => total + matchCount(category), 0) - left.reduce((total, category) => total + matchCount(category), 0);
+  });
+  const sharedOnly = rankCandidates(identifying.filter((candidate) => candidate.every((category) => matchCount(category) > 1)))[0];
+  const shorterShared = combinations(categories, 2).find((candidate) =>
+    candidate.every((category) => matchCount(category) > 1)
+    && content.suspects.filter((suspect) => candidate.every((category) => suspect.traits[category] === culprit.traits[category])).length === 1
+  );
+  const selected = sharedOnly ?? shorterShared ?? rankCandidates(identifying)[0] ?? [...categories];
+  return [...selected].sort((left, right) => matchCount(right) - matchCount(left));
 };
 
 const buildAdjacency = (content: GameContent): Map<string, readonly string[]> => {
@@ -61,20 +75,40 @@ interface BroadGeographicClue {
 }
 
 const broadGeographicClue = (
+  currentCityId: string,
   targetCityId: string,
   travelCandidates: readonly string[],
-  content: GameContent
+  content: GameContent,
+  rng: SeededRng
 ): BroadGeographicClue => {
+  const current = content.cities.find((city) => city.id === currentCityId)!;
   const target = content.cities.find((city) => city.id === targetCityId)!;
   const candidates = travelCandidates.map((cityId) => content.cities.find((city) => city.id === cityId)!);
-  const sameRegion = candidates.filter((city) => city.region === target.region).map((city) => city.id);
-  return sameRegion.length >= 2 ? {
-    text: `Comentaram que a próxima parada ficava ${regionLabels[target.region]}.`,
-    compatibleCityIds: sameRegion
-  } : {
-    text: 'A pessoa confirmou que cruzaria uma fronteira internacional antes da próxima parada.',
-    compatibleCityIds: travelCandidates
+  const clues: BroadGeographicClue[] = [];
+  const add = (text: string, matching: readonly typeof candidates[number][]) => {
+    const compatibleCityIds = matching.map((city) => city.id);
+    if (compatibleCityIds.includes(targetCityId) && compatibleCityIds.length >= 2 && compatibleCityIds.length < travelCandidates.length) {
+      clues.push({ text, compatibleCityIds });
+    }
   };
+
+  add(`Comentaram que a próxima parada ficava ${regionLabels[target.region]}.`, candidates.filter((city) => city.region === target.region));
+  const targetNorth = target.coordinates.y < .5;
+  add(`O itinerário mencionava uma cidade ${targetNorth ? 'ao norte' : 'ao sul'} da linha do Equador.`, candidates.filter((city) => (city.coordinates.y < .5) === targetNorth));
+  const targetEastward = target.coordinates.x > current.coordinates.x;
+  add(`A rota aérea seguia para ${targetEastward ? 'leste' : 'oeste'} a partir de ${current.name}.`, candidates.filter((city) => (city.coordinates.x > current.coordinates.x) === targetEastward));
+  const targetSouthward = target.coordinates.y > current.coordinates.y;
+  add(`O próximo trecho seguia para ${targetSouthward ? 'sul' : 'norte'} a partir de ${current.name}.`, candidates.filter((city) => (city.coordinates.y > current.coordinates.y) === targetSouthward));
+
+  for (const pivot of candidates.filter((city) => city.id !== targetCityId)) {
+    const targetEastOfPivot = target.coordinates.x > pivot.coordinates.x;
+    add(`Um mapa anotado indicava uma cidade mais a ${targetEastOfPivot ? 'leste' : 'oeste'} que ${pivot.name}.`, candidates.filter((city) => (city.coordinates.x > pivot.coordinates.x) === targetEastOfPivot));
+    const targetSouthOfPivot = target.coordinates.y > pivot.coordinates.y;
+    add(`A anotação situava a parada mais ao ${targetSouthOfPivot ? 'sul' : 'norte'} que ${pivot.name}.`, candidates.filter((city) => (city.coordinates.y > pivot.coordinates.y) === targetSouthOfPivot));
+  }
+
+  if (!clues.length) throw new Error(`GENERATION_FAILED: no meaningful broad clue for ${currentCityId}->${targetCityId}`);
+  return rng.pick(clues);
 };
 
 const factIndexesByRank: Readonly<Record<RankId, readonly number[]>> = {
@@ -126,10 +160,10 @@ export const generateCase = (profile: DetectiveProfile, seed: string, content: G
     }
     const targetCityId = route[routeIndex + 1]!;
     const neighbours = adjacency.get(cityId) ?? [];
-    const decoys = rng.shuffle(neighbours.filter((candidate) => candidate !== targetCityId));
+    const decoys = rng.shuffle(neighbours.filter((candidate) => candidate !== targetCityId && candidate !== route.at(-1)));
     const travelCandidates = rng.shuffle([targetCityId, ...decoys.slice(0, Math.max(0, rank.travelChoices - 1))]);
     const targetCity = content.cities.find((candidate) => candidate.id === targetCityId)!;
-    const broadClue = broadGeographicClue(targetCityId, travelCandidates, content);
+    const broadClue = broadGeographicClue(cityId, targetCityId, travelCandidates, content, rng);
     const category = identityCursor < identityCategories.length ? identityCategories[identityCursor++] : undefined;
     const trait = category ? culprit.traits[category] : undefined;
     const cluePayloads: GeneratedClue[] = [
@@ -156,7 +190,7 @@ export const generateCase = (profile: DetectiveProfile, seed: string, content: G
       cluePayloads.push({
         id: '',
         family: 'identity',
-        text: traitClueTexts[trait] ?? `A testemunha observou ${traitLabels[category].toLowerCase()}: ${traitValueLabels[trait]?.toLowerCase() ?? trait.replaceAll('-', ' ')}.`,
+        text: traitClueTexts[trait] ?? `Eu observei ${traitLabels[category].toLowerCase()}: ${traitValueLabels[trait]?.toLowerCase() ?? trait.replaceAll('-', ' ')}.`,
         targetTraitCategory: category,
         targetTraitValue: trait
       });
@@ -186,7 +220,7 @@ export const generateCase = (profile: DetectiveProfile, seed: string, content: G
   const definition: CaseDefinition = {
     id: `DSP-${seed}`,
     seed,
-    generationVersion: 2,
+    generationVersion: 3,
     contentVersion: content.contentVersion,
     caseType,
     rankId: rank.id as RankId,
