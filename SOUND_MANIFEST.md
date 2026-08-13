@@ -1548,7 +1548,7 @@ The runtime MP3 is gain-normalized from the supplied source so its short transie
 
 ### 63.2 Footsteps
 
-The canonical movement SFX is `public/audio/sfx/footsteps.mp3`, with stable runtime ID `FOOTSTEPS`. The runtime copy is gain-normalized from the supplied source because the original recording's peak was approximately 0.08. It accompanies the short approach-to-location transition and the staged successful-capture pursuit. It is a presentation-only SFX and never changes investigation or capture timing in the engine.
+The canonical movement SFX is `public/audio/sfx/footsteps.mp3`, with stable runtime ID `FOOTSTEPS`. The runtime copy is gain-normalized from the supplied source because the original recording's peak was approximately 0.08. The approach-to-location presentation lasts 2.2 seconds to match this recording; only after it ends may hour presentation and `CLOCK_TICK` begin, so the two SFX never overlap. The same sound also accompanies the staged successful-capture pursuit. It is a presentation-only SFX and never changes investigation or capture timing in the engine.
 
 ### 63.3 Mreaggle Software sting
 
