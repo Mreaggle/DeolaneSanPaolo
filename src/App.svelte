@@ -866,14 +866,15 @@
   @keyframes result-frames { to { background-position: -192px 0; } }
   .capture-sequence { position: relative; width: 360px; height: 82px; margin: 3px auto; overflow: hidden; background: #315765; border: 2px inset #777; }
   .capture-sequence::before { content: ''; position: absolute; left: 0; right: 0; bottom: 7px; height: 3px; background: #d9d0b5; box-shadow: 0 3px #171a1d; }
-  .capture-actor { position: absolute; bottom: 9px; width: 64px; height: 64px; background-size: 256px 64px; background-repeat: no-repeat; image-rendering: pixelated; opacity: 0; }
+  .capture-actor { position: absolute; bottom: 9px; width: 64px; height: 64px; background-size: 320px 64px; background-repeat: no-repeat; image-rendering: pixelated; opacity: 0; }
   .capture-fugitive { left: -66px; background-position: 0 0; animation: dramatic-fugitive-frames .36s step-end infinite, fugitive-cross 1.45s linear forwards; }
-  .capture-agent { left: -66px; background-position: -128px 0; animation-name: agents-cross; animation-duration: 1.35s; animation-timing-function: linear; animation-fill-mode: both; }
-  .capture-escort { right: -66px; background-position: -192px 0; animation: escort-cross 1.85s steps(14) 3.25s both; }
+  .capture-agent { left: -66px; background-position: -128px 0; animation-name: dramatic-agent-frames, agents-cross; animation-duration: .32s, 1.35s; animation-timing-function: step-end, linear; animation-iteration-count: infinite, 1; animation-fill-mode: none, both; }
+  .capture-escort { right: -66px; background-position: -256px 0; animation: escort-cross 1.85s steps(14) 3.25s both; }
   @keyframes dramatic-fugitive-frames { 0%, 49% { background-position: 0 0; } 50%, 100% { background-position: -64px 0; } }
+  @keyframes dramatic-agent-frames { 0%, 49% { background-position: -128px 0; } 50%, 100% { background-position: -192px 0; } }
   @keyframes fugitive-cross { 0% { left: -66px; opacity: 1; } 96% { opacity: 1; } 100% { left: 365px; opacity: 0; } }
   @keyframes agents-cross { 0% { left: -66px; opacity: 1; } 96% { opacity: 1; } 100% { left: 365px; opacity: 0; } }
-  @keyframes escort-cross { 0% { right: -66px; opacity: 1; } 96% { opacity: 1; } 100% { right: 365px; opacity: 0; } }
+  @keyframes escort-cross { from { right: -66px; opacity: 1; } to { right: 148px; opacity: 1; } }
   .result-card h2 { margin: -14px -14px 15px; padding: 7px; color: #fff; background: #a30b12; }
   .result-card.success h2, .result-card.success > h2 { background: #196c31; }
   .retry-actions { display: flex; justify-content: center; gap: 12px; }

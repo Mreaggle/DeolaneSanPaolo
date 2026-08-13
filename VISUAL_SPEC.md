@@ -1793,7 +1793,7 @@ Capture imagery should use:
 - limited frames;
 - no violent realism.
 
-The `capture-dramatic-spritesheet` is presented as three sequential crossings rather than a stationary loop: culprit escape attempt, three-agent pursuit, then controlled escort in the opposite direction.
+The `capture-dramatic-spritesheet` is presented as three sequential beats: culprit escape attempt, three-agent pursuit, then controlled escort entering in the opposite direction. Pursuing agents face right and alternate between two leg poses—extended stride and bent knee—so their body direction and run cycle agree with their rightward movement. The escort stops centered and persists as the final still frame; the capture panel never resolves to an empty background.
 
 ---
 

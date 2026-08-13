@@ -1434,7 +1434,7 @@ culprit encounter
 
 The player cannot interact during the capture sequence except to advance text after mandatory animation.
 
-The canonical `capture-dramatic-spritesheet` is staged in three readable beats: the disguised culprit crosses the frame, three federal agents follow, and a final right-to-left escort pose shows the arrested culprit with hands raised. The sequence changes presentation only; the engine has already resolved warrant, time and hideout validity.
+The canonical `capture-dramatic-spritesheet` is staged in three readable beats: the disguised culprit crosses the frame, three federal agents follow while alternating two right-facing running poses, and a final right-to-left escort pose shows the arrested culprit with hands raised. The agents' stride alternates an extended leg and a bent-knee pose; they must face the same direction in which they cross. The escort enters from the right, stops centered and remains visible as the final capture tableau after controls are released; the animation window must not become empty. The sequence changes presentation only; the engine has already resolved warrant, time and hideout validity.
 
 ---
 
