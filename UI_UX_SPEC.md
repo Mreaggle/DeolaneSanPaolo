@@ -760,6 +760,8 @@ The News Flash must present at minimum:
 - target description if narratively appropriate;
 - deadline/assignment context.
 
+The assignment presents the canonical deadline as `SUNDAY, 17:00`. It must not append `154 HOURS`: that value is an internal elapsed-time ceiling which includes the two-hour briefing before the first player-controlled action.
+
 It must not reveal culprit identity.
 
 ---

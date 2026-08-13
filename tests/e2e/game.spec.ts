@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import sharp from 'sharp';
 import { content, traitLabels } from '../../src/content';
 import { createProfile } from '../../src/engine/CaseEngine';
 import { generateCase } from '../../src/generation/CaseGenerator';
@@ -28,6 +29,23 @@ const enterFirstCase = async (page: import('@playwright/test').Page, url = './')
 
 const expectAudioCue = async (page: import('@playwright/test').Page, cue: string) => {
   await expect(page.locator('.game-stage')).toHaveAttribute('data-audio-cue', cue);
+};
+
+const changedPixelCount = async (before: Buffer, after: Buffer): Promise<number> => {
+  const [first, second] = await Promise.all([
+    sharp(before).ensureAlpha().raw().toBuffer({ resolveWithObject: true }),
+    sharp(after).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
+  ]);
+  expect(second.info.width).toBe(first.info.width);
+  expect(second.info.height).toBe(first.info.height);
+  let changed = 0;
+  for (let offset = 0; offset < first.data.length; offset += first.info.channels) {
+    const different = Array.from({ length: first.info.channels }, (_, channel) =>
+      Math.abs(first.data[offset + channel]! - second.data[offset + channel]!)
+    ).some((difference) => difference > 16);
+    if (different) changed += 1;
+  }
+  return changed;
 };
 
 test('apresenta a vinheta Mreaggle antes do título e respeita os marcos do sting', async ({ page }) => {
@@ -86,7 +104,7 @@ test('abre o prólogo e entra no primeiro caso', async ({ page }, testInfo) => {
   await page.screenshot({ path: `test-results/gameplay-${testInfo.project.name}.png` });
 });
 
-test('informa o prazo completo na ordem de serviço', async ({ page }) => {
+test('informa o prazo civil na ordem de serviço sem expor o contador interno', async ({ page }) => {
   await openTitle(page);
   await page.getByRole('button', { name: 'NOVO JOGO' }).click();
   await page.getByLabel('NOME').fill('Detetive Bia');
@@ -94,7 +112,8 @@ test('informa o prazo completo na ordem de serviço', async ({ page }) => {
   await page.getByRole('button', { name: 'AGUARDAR BOLETIM' }).click();
   await page.getByRole('button', { name: 'RECEBER MISSÃO' }).click();
 
-  await expect(page.getByText(/PRAZO: DOMINGO, 17:00 \(154 HORAS\)/)).toBeVisible();
+  await expect(page.getByText(/PRAZO: DOMINGO, 17:00/)).toBeVisible();
+  await expect(page.getByText(/PRAZO:.*154 HORAS/)).toHaveCount(0);
 });
 
 test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ page }) => {
@@ -176,7 +195,11 @@ test('reproduz passos ao escolher um local e tick a cada hora apresentada', asyn
   const footsteps = page.locator('.footstep-path .footprint');
   await expect(footsteps).toHaveCount(8);
   await expect(page.locator('.approach-footprints')).toHaveCount(0);
-  await page.waitForTimeout(1_200);
+  await page.waitForTimeout(350);
+  const earlyTrail = await page.locator('.scene').screenshot({ animations: 'allow' });
+  await page.waitForTimeout(850);
+  const laterTrail = await page.locator('.scene').screenshot({ animations: 'allow' });
+  expect(await changedPixelCount(earlyTrail, laterTrail)).toBeGreaterThan(50);
   const visibleFootsteps = await footsteps.evaluateAll((prints) => prints.filter((print) => Number.parseFloat(getComputedStyle(print).opacity) > .5).length);
   expect(visibleFootsteps).toBeGreaterThanOrEqual(4);
   expect(visibleFootsteps).toBeLessThanOrEqual(5);

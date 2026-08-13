@@ -1676,6 +1676,8 @@ Sunday, 5:00 p.m.
 
 This is 154 chronological elapsed hours from the case start.
 
+`154` is the internal elapsed-time ceiling, not player-facing remaining-time copy. Assignment and deadline presentations show `Sunday, 17:00` without appending an hour total, because the internal interval includes the two-hour briefing before player control begins.
+
 Therefore:
 
 ```text

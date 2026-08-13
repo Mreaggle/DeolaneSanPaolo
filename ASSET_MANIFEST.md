@@ -72,6 +72,8 @@ Those elements belong to the code/UI layer and must not silently turn into baked
 - `ui-icon`: **15**
 - `witness-sprite`: **36**
 
+Every new `animation-sheet` must declare a stable frame count in `scripts/validate-assets.ts` and add a deterministic E2E visual-progress test. Asset validation rejects transparent or duplicated declared frames; the E2E test must additionally prove that the runtime crop produces visible pixel changes.
+
 
 ---
 

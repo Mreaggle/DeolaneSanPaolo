@@ -2320,6 +2320,10 @@ Once the UI is stable, capture deterministic screenshots at:
 
 for important screens.
 
+Every newly implemented animation also requires a deterministic visual-progress test. The test must capture at least two meaningful moments while browser animation remains enabled and prove that rendered pixels change inside the intended viewport. DOM presence, CSS animation names, opacity and background URLs alone are insufficient because a transparent or incorrect spritesheet crop can satisfy all of them without displaying artwork.
+
+Animation spritesheets must additionally pass asset validation proving that every declared frame contains opaque pixels and that sequential frames are not byte-identical.
+
 ---
 
 ## 134. Golden UI states

@@ -484,7 +484,7 @@
           <img class="full-art" src={asset('assignment-background')} alt="Sala de briefing" />
           <div class="briefing">
             <h2>ORDEM DE SERVIÇO {$gameState.activeCase.definition.id.slice(-6).toUpperCase()}</h2>
-            <TypewriterText text={`AGENTE: ${$gameState.profile.name}\nPATENTE: ${rankById($gameState.activeCase.definition.rankId)?.name}\nPARTIDA: ${cityById($gameState.activeCase.definition.route[0])?.name}\nOBJETO: ${itemById($gameState.activeCase.definition.stolenItemId)?.name}\nPRAZO: ${displayCaseTime($gameState.activeCase.definition.deadlineHour).toUpperCase()} (${$gameState.activeCase.definition.deadlineHour} HORAS)\n\nSIGA AS PISTAS GEOGRÁFICAS. IDENTIFIQUE O LADRÃO. EMITA O MANDADO ANTES DO ENCONTRO FINAL.`} speed={8} onaudiopulse={playTypewriter} />
+            <TypewriterText text={`AGENTE: ${$gameState.profile.name}\nPATENTE: ${rankById($gameState.activeCase.definition.rankId)?.name}\nPARTIDA: ${cityById($gameState.activeCase.definition.route[0])?.name}\nOBJETO: ${itemById($gameState.activeCase.definition.stolenItemId)?.name}\nPRAZO: ${displayCaseTime($gameState.activeCase.definition.deadlineHour).toUpperCase()}\n\nSIGA AS PISTAS GEOGRÁFICAS. IDENTIFIQUE O LADRÃO. EMITA O MANDADO ANTES DO ENCONTRO FINAL.`} speed={8} onaudiopulse={playTypewriter} />
             <PixelButton label="INICIAR INVESTIGAÇÃO" onactivate={() => actions.go('city')} />
           </div>
         </section>
@@ -785,7 +785,7 @@
   .henchman-crossing.sneak i { bottom: 54px; animation: henchman-frames .96s steps(8) infinite, henchman-sneak-path 4.8s linear forwards; }
   @keyframes henchman-sneak-path { from { left: -68px; } to { left: 304px; } }
   .footstep-path { position: absolute; z-index: 4; inset: 0; overflow: hidden; pointer-events: none; }
-  .footstep-path .footprint { position: absolute; width: 30px; height: 22px; background-position: 0 0; background-size: 1024px 128px; background-repeat: no-repeat; image-rendering: pixelated; opacity: 0; animation: footprint-reveal 1ms step-end var(--footstep-delay) forwards; }
+  .footstep-path .footprint { position: absolute; width: 30px; height: 22px; background-position: -14px -92px; background-size: 1024px 128px; background-repeat: no-repeat; image-rendering: pixelated; opacity: 0; animation: footprint-reveal 1ms step-end var(--footstep-delay) forwards; }
   .footstep-path .footprint:nth-child(1) { left: 34px; bottom: 24px; }
   .footstep-path .footprint:nth-child(2) { left: 52px; bottom: 31px; transform: scaleX(-1); }
   .footstep-path .footprint:nth-child(3) { left: 84px; bottom: 55px; }

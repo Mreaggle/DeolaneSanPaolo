@@ -25,7 +25,7 @@
 
 Um patrimônio desapareceu. Uma testemunha fala demais — ou de menos. Um avião parte para o outro lado do planeta. Por trás de cada pista está a **T.C.C. — Tríade Chapa-Coco**, uma organização de criminosos espalhada pelo mundo e comandada pela inconfundível Deolane San Paolo.
 
-Você acaba de entrar para a **Agência Federal**. Sua missão é seguir o rastro por aeroportos, mercados, hotéis, portos e monumentos; separar fatos de despistes; identificar o capanga responsável; emitir o mandado correto; e chegar ao esconderijo antes que as 120 horas se esgotem.
+Você acaba de entrar para a **Agência Federal**. Sua missão é seguir o rastro por aeroportos, mercados, hotéis, portos e monumentos; separar fatos de despistes; identificar o capanga responsável; emitir o mandado correto; e chegar ao esconderijo antes do prazo de domingo, 17:00.
 
 Não espere setas luminosas, respostas prontas ou caminhos seguros. Neste jogo, uma passagem comprada para a cidade errada custa tempo. Um detalhe ignorado pode inocentar o culpado. E encontrar o esconderijo sem um mandado válido ainda significa voltar para casa de mãos vazias.
 
@@ -64,5 +64,5 @@ A interface usa localmente a fonte bitmap **Silkscreen**, sob a SIL Open Font Li
 
 <p align="center">
   <strong>DEVELOPED &amp; POWERED-BY <a href="https://instagram.com/mreaggle">@Mreaggle</a></strong><br>
-  <em>Você tem 120 horas. A próxima pista já está esfriando.</em>
+  <em>Você tem até domingo, 17:00. A próxima pista já está esfriando.</em>
 </p>

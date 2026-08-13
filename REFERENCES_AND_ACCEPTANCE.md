@@ -1931,6 +1931,8 @@ Any of these blocks release:
 - Deolane visual inconsistency;
 - non-manifest production PNG;
 - wrong native asset size.
+- an animation whose DOM/CSS runs but whose intended artwork produces no visible pixel change;
+- a new animation without deterministic rendered-frame validation.
 
 ---
 
