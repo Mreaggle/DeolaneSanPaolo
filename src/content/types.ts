@@ -47,6 +47,8 @@ export interface Place {
   id: string;
   name: string;
   backgroundAssetId: string;
+  iconAssetId: string;
+  iconAtlasIndex: number;
   witnesses: readonly Witness[];
 }
 

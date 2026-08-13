@@ -59,6 +59,11 @@
   const rankById = (id?: string) => actions.content.ranks.find((rank) => rank.id === id);
   const rankAssetId = (id?: string) => id ? `rank-${id}-badge` : 'rank-rookie-badge';
   const asset = resolveAsset;
+  const placeIconStyle = (placeId?: string): string => {
+    const place = placeById(placeId);
+    const index = place?.iconAtlasIndex ?? 0;
+    return `background-image:url(${asset(place?.iconAssetId ?? 'place-icon-atlas')});background-position:${-(index % 4) * 32}px ${-Math.floor(index / 4) * 32}px`;
+  };
 
   const updateScale = () => {
     const fit = Math.min((window.innerWidth - 8) / 640, (window.innerHeight - footerVerticalClearance) / 400);
@@ -508,7 +513,7 @@
                 {/if}
                 {#if walkingToPlace}
                   <div class="footstep-path" aria-label={`Pegadas seguindo até ${placeById(selectedPlaceId)?.name ?? 'o local escolhido'}`}>
-                    {#each Array.from({ length: 8 }) as _, step}<i style={`left:${18 + step * 34}px;bottom:${23 + step * 24}px;transform:rotate(${-28 + step * 8}deg);animation-delay:${step * .1}s`}></i>{/each}
+                    <i class="footsteps-sprite" style={`background-image:url(${asset('footsteps-spritesheet')})`}></i>
                   </div>
                 {/if}
               {/key}
@@ -519,7 +524,7 @@
             <section class:warrant-panel={$uiState.screen === 'warrant'} class="info-panel">
               {#if walkingToPlace}
                 <h2>A CAMINHO DE {placeById(selectedPlaceId)?.name?.toUpperCase()}</h2>
-                <div class="approach-panel"><img src={asset(placeById(selectedPlaceId)?.backgroundAssetId ?? 'agency-emblem')} alt="" /><div class="approach-footprints">•• •• •• ••</div></div>
+                <div class="approach-panel"><img src={asset(placeById(selectedPlaceId)?.backgroundAssetId ?? 'agency-emblem')} alt="" /><i class="approach-footprints" style={`background-image:url(${asset('footsteps-spritesheet')})`}></i></div>
                 <p>O investigador segue até o local escolhido.</p>
               {:else if $uiState.screen === 'traveling'}
                 <h2>EM TRÂNSITO</h2>
@@ -550,7 +555,7 @@
                 <h2>ONDE INVESTIGAR?</h2>
                 <div class="place-list">
                   {#each currentGeneratedCity()?.places ?? [] as generated, index}
-                    <button class:visited={placeVisited(generated.placeId)} on:click={() => visit(generated.placeId)}><span>{index + 1}</span><img class="place-icon" src={asset(placeById(generated.placeId)?.backgroundAssetId ?? 'agency-emblem')} alt="" /><b>{placeById(generated.placeId)?.name}</b><small>{placeVisited(generated.placeId) ? 'VISITADO' : 'CONSULTAR'}</small></button>
+                    <button class:visited={placeVisited(generated.placeId)} on:click={() => visit(generated.placeId)}><span>{index + 1}</span><i class="place-icon" style={placeIconStyle(generated.placeId)} aria-hidden="true"></i><b>{placeById(generated.placeId)?.name}</b><small>{placeVisited(generated.placeId) ? 'VISITADO' : 'CONSULTAR'}</small></button>
                   {/each}
                 </div>
                 <p>Reconsultar um local exibe o mesmo depoimento e ocupa novo tempo de campo.</p>
@@ -771,8 +776,8 @@
   .henchman-crossing.sneak i { bottom: 54px; animation: henchman-frames .96s steps(8) infinite, henchman-sneak-path 4.8s linear forwards; }
   @keyframes henchman-sneak-path { from { left: -68px; } to { left: 304px; } }
   .footstep-path { position: absolute; z-index: 4; inset: 0; overflow: hidden; pointer-events: none; }
-  .footstep-path i { position: absolute; width: 8px; height: 12px; opacity: 0; border: 2px solid #fff; border-radius: 50% 50% 35% 35%; box-shadow: 4px -5px 0 -2px #fff; animation: footprint-appear .95s steps(2) forwards; }
-  @keyframes footprint-appear { 0% { opacity: 0; } 35%, 82% { opacity: 1; } 100% { opacity: .2; } }
+  .footstep-path .footsteps-sprite { position: absolute; left: 86px; bottom: 58px; width: 128px; height: 128px; background-size: 1024px 128px; background-repeat: no-repeat; image-rendering: pixelated; animation: footsteps-scene .95s steps(7, end) forwards; }
+  @keyframes footsteps-scene { to { background-position: -896px 0; } }
   .scene-label { position: absolute; left: 5px; bottom: 5px; padding: 3px 5px; color: #fff; background: #111; border: 1px solid #fff; }
   .right-panel { display: grid; grid-template-rows: 306px 72px; }
   .info-panel { position: relative; overflow: hidden; padding: 10px 12px; color: #fff; background-color: #050505; border-bottom: 2px solid #111; }
@@ -807,13 +812,12 @@
   .place-list button.visited { background: #d4d4d4; }
   .place-list button span { display: grid; place-items: center; width: 19px; height: 19px; color: #fff; background: #111; }
   .place-list button b { font-size: 8px; }
-  .place-icon { width: 30px; height: 34px; object-fit: cover; border: 1px solid #111; image-rendering: pixelated; }
+  .place-icon { display: block; width: 32px; height: 32px; background-size: 128px 96px; background-repeat: no-repeat; border: 1px solid #111; image-rendering: pixelated; }
   .place-list button small { font-size: 7px; text-align: right; }
   .place-list button.visited small { font-weight: 700; }
   .approach-panel { position: relative; width: 230px; height: 160px; margin: 13px auto; overflow: hidden; background: #111; border: 3px ridge #999; }
   .approach-panel img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; opacity: .65; }
-  .approach-footprints { position: absolute; left: -20px; bottom: 19px; width: 280px; color: #fff; font-size: 22px; letter-spacing: 14px; white-space: nowrap; transform: rotate(-17deg); animation: approach-steps 1s steps(8) forwards; }
-  @keyframes approach-steps { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+  .approach-footprints { position: absolute; left: 51px; bottom: 16px; width: 128px; height: 128px; background-size: 1024px 128px; background-repeat: no-repeat; image-rendering: pixelated; animation: footsteps-scene .95s steps(7, end) forwards; }
   .witness-row { display: grid; grid-template-columns: 112px 1fr; gap: 9px; min-height: 205px; }
   .witness { width: 112px; height: 176px; object-fit: contain; object-position: center bottom; background: #142743; border: 2px solid #111; }
   .speech { position: relative; height: 170px; padding: 12px; color: #000; background: #fff; border: 2px solid #111; font-size: 11px; line-height: 1.5; }
@@ -898,8 +902,7 @@
     .henchman-crossing::after { animation: getaway-dust 2.6s steps(4) forwards !important; }
     .henchman-crossing i { animation: henchman-frames .64s steps(8) 4, henchman-path 2.6s steps(12) forwards !important; }
     .henchman-crossing.sneak i { animation: henchman-frames .96s steps(8) 3, henchman-sneak-path 2.8s steps(12) forwards !important; }
-    .footstep-path i { animation-duration: .6s !important; }
-    .approach-footprints { animation-duration: .65s !important; }
+    .footstep-path .footsteps-sprite, .approach-footprints { animation-duration: .65s !important; }
     .capture-fugitive { animation-duration: .8s !important; }
     .capture-agent { animation-duration: .7s !important; animation-delay: .85s !important; }
     .capture-escort { animation-duration: 1s !important; animation-delay: 1.8s !important; }

@@ -1544,9 +1544,11 @@ CLOCK_TICK
 
 `TimeEngine` emits ordered hour-boundary data without depending on audio APIs. The presentation layer advances the visible clock one hour at a time and requests one `CLOCK_TICK` per displayed boundary, including sleep hours. Large advances must be presented sequentially; ticks must not be started simultaneously.
 
+The runtime MP3 is gain-normalized from the supplied source so its short transient remains audible at the configured SFX volume; timing and duration are not extended.
+
 ### 63.2 Footsteps
 
-The canonical movement SFX is `public/audio/sfx/footsteps.mp3`, with stable runtime ID `FOOTSTEPS`. It accompanies the short approach-to-location transition and the staged successful-capture pursuit. It is a presentation-only SFX and never changes investigation or capture timing in the engine.
+The canonical movement SFX is `public/audio/sfx/footsteps.mp3`, with stable runtime ID `FOOTSTEPS`. The runtime copy is gain-normalized from the supplied source because the original recording's peak was approximately 0.08. It accompanies the short approach-to-location transition and the staged successful-capture pursuit. It is a presentation-only SFX and never changes investigation or capture timing in the engine.
 
 ### 63.3 Mreaggle Software sting
 

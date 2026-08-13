@@ -15,8 +15,8 @@ const rows = [
   ['stock-exchange', 'Bolsa de Valores', [['broker', 'Correa Tor'], ['runner', 'Mário Mercado'], ['analyst', 'Ana Lista']]]
 ] as const;
 
-export const places: readonly Place[] = rows.map(([id, name, witnessNames]) => ({
-  id, name, backgroundAssetId: `place-${id}`,
+export const places: readonly Place[] = rows.map(([id, name, witnessNames], iconAtlasIndex) => ({
+  id, name, backgroundAssetId: `place-${id}`, iconAssetId: 'place-icon-atlas', iconAtlasIndex,
   witnesses: witnessNames.map(([role, witnessName]) => {
     return { id: `${id}-${role}`, name: witnessName, assetId: `witness-${id}-${role}` };
   })
