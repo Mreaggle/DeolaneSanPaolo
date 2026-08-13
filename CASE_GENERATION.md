@@ -1148,6 +1148,8 @@ Every identity clue describes exactly one actual trait of the culprit.
 
 No generated identity clue may describe a different suspect.
 
+Identity text must read as an eyewitness observation or report, not as information voluntarily disclosed by the culprit. Appearance and vehicle clues describe what the witness saw; hobby clues describe a remark the witness overheard or relevant behavior. Generic constructions such as `A pessoa revelou cabelo: raspado` are forbidden. Each legal trait value has curated clue prose so grammatical articles and context remain natural.
+
 ---
 
 ## 56. Identity information requirement

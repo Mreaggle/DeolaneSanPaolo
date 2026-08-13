@@ -36,3 +36,20 @@ export const traitValueLabels: Record<string, string> = {
   'joias-exageradas': 'Joias exageradas', 'olhar-intenso': 'Olhar intenso', 'rosto-marcante': 'Rosto marcante',
   'carro-de-luxo': 'Carro de luxo', moto: 'Motocicleta', 'veiculo-customizado': 'Veículo customizado'
 };
+
+export const traitClueTexts: Record<string, string> = {
+  feminino: 'A testemunha viu que a pessoa era uma mulher.',
+  masculino: 'A testemunha viu que a pessoa era um homem.',
+  loiro: 'A testemunha notou que a pessoa possuía cabelo loiro.',
+  preto: 'A testemunha notou que a pessoa possuía cabelo preto.',
+  raspado: 'A testemunha notou que a pessoa possuía cabelo raspado.',
+  colecionismo: 'A testemunha ouviu a pessoa falar sobre sua coleção.',
+  'vida-noturna': 'A testemunha ouviu a pessoa falar sobre a vida noturna.',
+  musica: 'A testemunha ouviu a pessoa falar sobre música.',
+  'joias-exageradas': 'A testemunha viu que a pessoa usava joias exageradas.',
+  'olhar-intenso': 'A testemunha se recorda do olhar intenso da pessoa.',
+  'rosto-marcante': 'A testemunha se recorda do rosto marcante da pessoa.',
+  'carro-de-luxo': 'A testemunha viu a pessoa partir em um carro de luxo.',
+  moto: 'A testemunha viu a pessoa partir em uma motocicleta.',
+  'veiculo-customizado': 'A testemunha viu a pessoa partir em um veículo customizado.'
+};
