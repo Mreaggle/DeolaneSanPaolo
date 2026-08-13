@@ -14,6 +14,9 @@ export interface UiState {
   event?: GameEvent;
   selectedDossierIndex: number;
   message?: string;
+  timeAdvancing?: boolean;
+  displayedElapsedHours?: number;
+  hourTickSerial?: number;
 }
 
 const repository = typeof window !== 'undefined' ? new SaveRepository(new BrowserStorageAdapter()) : undefined;
@@ -29,6 +32,50 @@ const sync = (event: GameEvent, screen?: UiScreen): void => {
   gameState.set(state);
   repository?.save(state);
   uiState.update((ui) => ({ ...ui, ...(screen ? { screen } : {}), event }));
+};
+
+const HOUR_PRESENTATION_MS = 180;
+let timePresentationToken = 0;
+
+const syncTimed = (result: ReturnType<GameEngine['investigate']>, interimScreen: UiScreen, finalScreen: UiScreen, minimumDuration = 0): void => {
+  const state = engine!.state as GameState;
+  gameState.set(state);
+  repository?.save(state);
+  const advance = result.timeAdvance;
+  if (!advance?.hourBoundaries.length) {
+    uiState.update((ui) => ({ ...ui, screen: finalScreen, event: result.event, timeAdvancing: false }));
+    return;
+  }
+
+  const token = ++timePresentationToken;
+  uiState.update((ui) => {
+    const next = {
+      ...ui,
+      screen: interimScreen,
+      timeAdvancing: true,
+      displayedElapsedHours: advance.fromElapsedHours
+    };
+    delete next.event;
+    return next;
+  });
+  advance.hourBoundaries.forEach((boundary, index) => {
+    window.setTimeout(() => {
+      if (token !== timePresentationToken) return;
+      uiState.update((ui) => ({
+        ...ui,
+        displayedElapsedHours: boundary.elapsedHours,
+        hourTickSerial: (ui.hourTickSerial ?? 0) + 1
+      }));
+    }, (index + 1) * HOUR_PRESENTATION_MS);
+  });
+  window.setTimeout(() => {
+    if (token !== timePresentationToken) return;
+    uiState.update((ui) => {
+      const next = { ...ui, screen: finalScreen, event: result.event, timeAdvancing: false };
+      delete next.displayedElapsedHours;
+      return next;
+    });
+  }, Math.max(advance.hourBoundaries.length * HOUR_PRESENTATION_MS, minimumDuration));
 };
 
 const seed = (): string => {
@@ -72,18 +119,17 @@ export const actions = {
     if (!engine) return;
     const result = engine.investigate(placeId);
     const screen = result.event.type === 'CASE_SOLVED' || result.event.type === 'CASE_FAILED' ? 'result' : 'witness';
-    sync(result.event, screen);
+    syncTimed(result, 'places', screen);
   },
   travel(cityId: string): void {
     if (!engine) return;
     const result = engine.travel(cityId);
-    sync(result.event, result.event.type === 'CASE_FAILED' ? 'result' : 'traveling');
-    if (result.event.type !== 'CASE_FAILED') window.setTimeout(() => actions.go('city'), 3_400);
+    syncTimed(result, 'traveling', result.event.type === 'CASE_FAILED' ? 'result' : 'city', 3_400);
   },
   warrant(input: WarrantInput): void {
     if (!engine) return;
     const result = engine.computeWarrant(input);
-    sync(result.event, result.event.type === 'CASE_FAILED' ? 'result' : 'warrant');
+    syncTimed(result, 'warrant', result.event.type === 'CASE_FAILED' ? 'result' : 'warrant');
   },
   abandon(): void {
     if (!engine) return;
@@ -92,9 +138,20 @@ export const actions = {
   },
   afterResult(): void {
     const ui = get(uiState);
+    if (ui.event?.type !== 'CASE_SOLVED') return;
     if (ui.event?.type === 'CASE_SOLVED' && ui.event.promoted) uiState.update((value) => ({ ...value, screen: 'promotion' }));
     else if (get(gameState)?.profile.hallOfFame) uiState.update((value) => ({ ...value, screen: 'hall-of-fame' }));
     else actions.prepareCase();
+  },
+  retry(): void {
+    if (!engine) return;
+    const result = engine.retryCase(seed());
+    sync(result.event, 'news');
+  },
+  declineRetry(): void {
+    if (!engine) return;
+    const result = engine.returnToHeadquarters();
+    sync(result.event, 'title');
   },
   dossier(index: number): void { uiState.update((ui) => ({ ...ui, screen: 'dossiers', selectedDossierIndex: index })); },
   markAudioFlag(flag: 'timeWarningPlayed' | 'finalCityPlayed'): void {
@@ -105,6 +162,7 @@ export const actions = {
     repository?.save(state);
   },
   reset(): void {
+    timePresentationToken += 1;
     repository?.clear();
     engine = undefined;
     gameState.set(undefined);

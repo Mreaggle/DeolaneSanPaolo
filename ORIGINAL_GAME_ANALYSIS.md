@@ -465,6 +465,14 @@ NEXT DESTINATION
 
 This distinction is fundamental and must survive into Deolane San Paolo.
 
+### Finding OG-009A — Difficulty preserves factual, sometimes decisive clues
+
+**Status:** `CONFIRMED_MANUAL`
+
+The manual's worked examples first narrow the problem to the connections shown by the travel desk and then interpret a natural factual clue. Its examples include a currency clue leading from the available connections to Oslo and a king-cobra clue leading to Bangkok. A single well-understood clue can therefore be decisive after comparison with the constrained destination list.
+
+The faithful way to increase difficulty is to vary clue specificity, distribute geographic and identity evidence across witnesses, and preserve the time-versus-certainty decision. Synthesizing a statement that explicitly lists two candidate clues as alternatives is not supported by this evidence and must not replace the original factual-report style. Exact rank-by-rank clue allocation remains `UNKNOWN` under OG-016.
+
 ---
 
 ## 12. Two simultaneous investigations

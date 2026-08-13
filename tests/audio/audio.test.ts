@@ -132,4 +132,21 @@ describe('trilha sonora', () => {
     expect(typewriter.paused).toBe(false);
     expect(cue.paused).toBe(false);
   });
+
+  it('registra o tick horário como SFX e permite apresentá-lo sequencialmente', async () => {
+    const created: FakeAudio[] = [];
+    const manager = new AudioManager({ createAudio: (src) => {
+      const audio = new FakeAudio(src);
+      created.push(audio);
+      return audio;
+    } });
+    await manager.unlock();
+    const tick = created.find((audio) => audio.src.endsWith(`/${uiSoundRegistry.CLOCK_TICK}`))!;
+
+    manager.playUiSound('CLOCK_TICK');
+    manager.playUiSound('CLOCK_TICK');
+
+    expect(tick.src).toContain('/audio/sfx/clock_tick.mp3');
+    expect(tick.plays).toBe(2);
+  });
 });

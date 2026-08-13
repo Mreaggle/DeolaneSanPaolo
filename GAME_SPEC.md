@@ -309,12 +309,12 @@ vehicle = limousine
 
 ## 15. Single-clue identification restriction
 
-Ordinary content should be balanced so that no single identity trait uniquely identifies the culprit unless explicitly required by late-game content.
+No single identity trait may uniquely identify any suspect, including Deolane.
 
 Preferred design:
 
 ```text
-one identity clue   → multiple candidates
+one identity clue   → normally 3 or more candidates
 two identity clues  → usually 2–4 candidates
 three clues         → often unique
 ```
@@ -805,7 +805,7 @@ Airport:
 
 All three may point toward the same destination.
 
-This redundancy is intentional.
+At least one geographic clue in each correct route city remains compatible with a displayed decoy, while another can be a more specific factual clue. Geographic and identity reports are delivered separately and assigned to locations deterministically by the case seed. The complete geographic set must identify only the correct destination; clues retain the original natural-report style and never list candidate facts as an artificial alternative.
 
 The player may leave after one clue if confident.
 
@@ -983,12 +983,10 @@ Selecting it again performs a **review**, not a new investigation.
 Review behavior:
 
 - redisplays the previously obtained witness statement;
-- costs 0 game hours;
+- costs 2 game hours again;
 - does not reroll the witness;
 - does not reroll the clue;
 - does not increment the investigation counter.
-
-This avoids accidental time loss caused merely by rereading evidence.
 
 ---
 
@@ -1237,7 +1235,7 @@ When the player returns to the trail anchor:
 - correct clue state becomes available again;
 - already visited anchor locations remain visited;
 - previously collected clues remain the same;
-- investigation review remains free;
+- investigation review remains available for 2 hours;
 - any still-unvisited anchor locations may be investigated with a new city-visit counter beginning at 2 hours.
 
 ---
@@ -1278,7 +1276,7 @@ It is not itself a clue that names the next destination.
 
 ## 66. Feedback timing
 
-Trail feedback may occur after arriving at a correct-route city or during the first investigation there.
+Suspicious-presence feedback occurs only after the player commits an investigation in a live hot-trail city. Arrival alone never emits henchman feedback, and a cold/old-trail investigation never emits it.
 
 The exact presentation sequence belongs in `NARRATIVE_WALKTHROUGH.md`.
 
@@ -1287,6 +1285,8 @@ Mechanically:
 - it costs 0 game hours;
 - it cannot alter route state;
 - it cannot provide false information.
+
+The existing henchman animation precedes the witness statement. Player-facing text must not explicitly label the state as `HOT TRAIL`, `COLD TRAIL`, `PISTA QUENTE`, `PISTA FRIA` or an equivalent mechanical answer.
 
 ---
 
@@ -1585,6 +1585,8 @@ after an action advances the clock.
 
 The culprit escapes.
 
+After the escape presentation, the player chooses whether to try again. `YES` preserves the detective profile and starts a fresh valid case after clearing transient case state. `NO` returns to headquarters/title without deleting career progress.
+
 ---
 
 ## 87. Exact-deadline rule
@@ -1649,28 +1651,30 @@ according to the narrative calendar.
 Every standard case begins at:
 
 ```text
-Monday, 9:00 a.m.
+Monday, 7:00 a.m.
 ```
 
 This is a fictional case clock, not the user's real calendar.
+
+Because 07:00 falls inside mandatory sleep, briefing occupies the opening interval and the first player-controlled action is available at Monday 09:00. Those two chronological hours already count toward the deadline.
 
 ---
 
 ## 91. Standard deadline
 
-Every standard case has:
+Every standard case has an exclusive deadline at:
 
 ```text
-120 hours
+Sunday, 5:00 p.m.
 ```
 
-from the case start.
+This is 154 chronological elapsed hours from the case start.
 
 Therefore:
 
 ```text
-start:    Monday 09:00
-deadline: Saturday 09:00
+start:    Monday 07:00
+deadline: Sunday 17:00
 ```
 
 The deadline is identical across ranks in the baseline rules.
@@ -1684,7 +1688,7 @@ Difficulty increases primarily because higher ranks require longer routes and ha
 The final Deolane case also uses:
 
 ```text
-120 hours
+the same Sunday 17:00 deadline
 ```
 
 No extra time is granted.
@@ -1696,7 +1700,6 @@ No extra time is granted.
 The following actions cost 0 game hours:
 
 - reading current city description;
-- reading previously revealed clue;
 - opening/closing menus;
 - viewing map before committing travel;
 - viewing destination list;
@@ -1721,28 +1724,26 @@ Canonical time costs:
 | Third new investigation in current visit | 4 h |
 | Warrant compute | 2 h |
 | Travel | connection-specific, 3–7 h |
-| Re-read visited location | 0 h |
+| Re-read visited location | 2 h |
 | Dossier browsing | 0 h |
+
+The UI does not append these costs to location buttons or expose them before the action. The player learns them by observing the hour-by-hour clock presentation.
 
 ---
 
-## 95. No forced sleep mechanic in baseline
+## 95. Mandatory sleep
 
-The baseline game does not force the player to stop investigating at night.
-
-The clock may cross midnight continuously.
+Every day from `00:00` through `08:59`, the detective is asleep and cannot begin an action. At midnight, `TimeEngine` inserts exactly 9 chronological hours of sleep and resumes the current action at `09:00` without cancelling or restarting it.
 
 Example:
 
 ```text
 Monday 23:00
-+ 4h
-→ Tuesday 03:00
++ 4h action
+→ Tuesday 12:00
 ```
 
-No automatic sleep period is inserted.
-
-If later reverse engineering justifies a historical sleeping rule and the project owner chooses to adopt it, this section must be revised first.
+Sleep consumes the case deadline. Sleep and action hours are processed one hour at a time for deadline detection and clock presentation. `TimeEngine` emits hour-boundary data and never calls browser audio APIs.
 
 ---
 
@@ -1808,7 +1809,7 @@ A correct player must be able to:
 - compute at least one correct warrant;
 - reach the final hideout;
 
-before the 120-hour deadline.
+before the Sunday 17:00 deadline.
 
 ---
 
@@ -2093,7 +2094,7 @@ Final hideout:
 Tokyo / Hotel
 
 Deadline:
-Saturday 09:00
+Sunday 17:00
 ```
 
 ### São Paulo
@@ -2262,7 +2263,7 @@ The implementation must eventually include automated coverage for at least these
 - first investigation costs 2h;
 - second costs 3h;
 - third costs 4h;
-- review costs 0h;
+- review costs 2h;
 - leaving and returning resets visit cost sequence;
 - clues do not reroll.
 
@@ -2277,12 +2278,16 @@ The implementation must eventually include automated coverage for at least these
 ### Geographic clues
 
 - all truthful;
+- at least one geographic clue per route city leaves multiple displayed destinations plausible;
+- specific clues may be decisive after interpretation against the available connections;
+- clue text preserves natural factual reports and does not enumerate candidate answers;
 - correct-route clue plan points to next city;
 - combined useful clues uniquely distinguish target among candidates.
 
 ### Identity clues
 
 - all describe actual culprit;
+- no isolated trait identifies one suspect;
 - enough clues exist before final city;
 - full exposed evidence can identify culprit uniquely.
 
@@ -2299,6 +2304,9 @@ The implementation must eventually include automated coverage for at least these
 
 - actions advance clock;
 - free actions do not;
+- sleep from 00:00 through 09:00 advances the deadline;
+- an action crossing midnight resumes after sleep;
+- hour boundaries are exposed in chronological order;
 - exactly-at-deadline is failure;
 - after-deadline is failure;
 - clock does not tick from real-world waiting.
@@ -2336,7 +2344,7 @@ Examples:
 3 locations
 2/3/4 investigation hours
 2h warrant computation
-120h deadline
+Sunday 17:00 deadline (154 chronological hours)
 rank thresholds
 route lengths
 10 suspects

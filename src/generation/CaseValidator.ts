@@ -1,6 +1,7 @@
 import type { GameContent } from '../content';
 import { matchSuspects } from '../engine/WarrantEngine';
 import type { CaseDefinition, WarrantInput } from '../engine/types';
+import { advanceTime, FIRST_ACTION_ELAPSED_HOURS } from '../engine/TimeEngine';
 
 export const validateCase = (definition: CaseDefinition, content: GameContent): readonly string[] => {
   const failures: string[] = [];
@@ -15,8 +16,15 @@ export const validateCase = (definition: CaseDefinition, content: GameContent): 
     if (!city || city.places.length !== 3) failures.push(`places:${cityId}`);
     if (!city?.travelCandidates.includes(nextId)) failures.push(`candidate:${cityId}`);
     if (city && city.travelCandidates.length !== rank.travelChoices) failures.push(`candidate-count:${cityId}`);
-    const geo = city?.places.filter((place) => place.clue.targetCityId === nextId).length ?? 0;
+    const geographicClues = city?.places.filter((place) => place.clue.targetCityId === nextId) ?? [];
+    const geo = geographicClues.length;
     if (geo < 2) failures.push(`geo:${cityId}`);
+    if (geographicClues.some((place) => !place.clue.compatibleCityIds?.includes(nextId))) failures.push(`geo-truth:${cityId}`);
+    if (!geographicClues.some((place) => (place.clue.compatibleCityIds?.length ?? 0) >= 2)) failures.push(`geo-no-broad-clue:${cityId}`);
+    const combined = city?.travelCandidates.filter((candidate) =>
+      geographicClues.every((place) => place.clue.compatibleCityIds?.includes(candidate))
+    ) ?? [];
+    if (combined.length !== 1 || combined[0] !== nextId) failures.push(`geo-ambiguous:${cityId}`);
   }
   const evidence: WarrantInput = {};
   for (const city of Object.values(definition.cities)) {
@@ -35,7 +43,7 @@ export const validateCase = (definition: CaseDefinition, content: GameContent): 
     return total + (content.connections.find((edge) => edge.fromCityId === from && edge.toCityId === to)?.travelHours ?? 999);
   }, 0);
   const bestReasonableHours = (definition.route.length - 1) * 2 + travel + 2 + 2;
-  const maximum = definition.rankId === 'ace-detective' ? 105 : 100;
-  if (bestReasonableHours > maximum) failures.push(`time-margin:${bestReasonableHours}`);
+  const timeline = advanceTime(FIRST_ACTION_ELAPSED_HOURS, bestReasonableHours, definition.deadlineHour);
+  if (timeline.expired || timeline.elapsedHours > definition.deadlineHour - 12) failures.push(`time-margin:${timeline.elapsedHours}`);
   return failures;
 };
