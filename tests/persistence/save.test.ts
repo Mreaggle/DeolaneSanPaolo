@@ -54,7 +54,7 @@ describe('SaveRepository', () => {
     const engine = new GameEngine(initialState({ ...createProfile('Nina'), solvedCases: 6 }));
     engine.startCase('traits-antigos');
     const legacy = structuredClone(engine.state);
-    legacy.activeCase!.definition.contentVersion = 2;
+    legacy.activeCase!.definition.contentVersion = 4;
     storage.value = JSON.stringify(legacy);
 
     expect(repository.load()).toMatchObject({ profile: { name: 'Nina', solvedCases: 6 } });

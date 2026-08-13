@@ -712,10 +712,16 @@ It may reference attributes such as:
 - cultural practice;
 - flag;
 - political or historical institution;
+- government form;
+- commodity or export;
+- book topic;
+- sought artifact;
 - transportation clue;
 - region-specific object.
 
 Exact clue categories belong in the content model.
+
+The shipped city catalogue systematically covers all thirteen runtime families defined by `CONTENT_MODEL.md`; generation varies which family appears rather than reducing the investigation to a few repeated clue types.
 
 ---
 

@@ -858,7 +858,7 @@ Do not display all twelve global place types.
 
 Only the three generated locations are shown.
 
-Each entry includes a small dedicated bitmap icon showing a concise exterior view of that building or location. It must not crop or reuse the witness/interior background. Selecting an entry locks controls and plays the canonical eight-frame shoeprint spritesheet, placing one new alternating print per discrete frame for the full duration of the footsteps SFX; frames jump into place and must never slide continuously. Only after that approach finishes may the existing clock/investigation presentation begin; footsteps and hourly ticks must never overlap. This transition is presentation-only and adds no simulated hours.
+Each entry includes a small dedicated bitmap icon showing a concise exterior view of that building or location. It must not crop or reuse the witness/interior background. Selecting an entry locks controls and uses the canonical footprint glyph to place eight alternating prints as one continuous trail, in four close left/right pairs, for the full duration of the footsteps SFX. The trail exists only over the city scene: it must not be duplicated over the destination-interior preview and must not restart from a second corner. Only after that approach finishes may the existing clock/investigation presentation begin; footsteps and hourly ticks must never overlap. This transition is presentation-only and adds no simulated hours.
 
 ---
 
@@ -920,6 +920,8 @@ Exact flow should minimize accidental extra investigations.
 ## 50A. SEE route preview
 
 Selecting `SEE` displays the legal generated candidate cities as plain text.
+
+Each entry displays only the city name. Country names are omitted from this read-only preview so the list does not add an unintended geographic hint; `DEPART` remains the actionable destination view.
 
 The preview is strictly read-only:
 
@@ -1434,7 +1436,7 @@ culprit encounter
 
 The player cannot interact during the capture sequence except to advance text after mandatory animation.
 
-The canonical `capture-dramatic-spritesheet` is staged in three readable beats: the disguised culprit crosses the frame, three federal agents follow while alternating two right-facing running poses, and a final right-to-left escort pose shows the arrested culprit with hands raised. The agents' stride alternates an extended leg and a bent-knee pose; they must face the same direction in which they cross. The escort enters from the right, stops centered and remains visible as the final capture tableau after controls are released; the animation window must not become empty. The sequence changes presentation only; the engine has already resolved warrant, time and hideout validity.
+The canonical `capture-dramatic-spritesheet` is staged in three readable beats: the disguised culprit crosses the frame, three federal agents follow while alternating two running poses, and a final right-to-left escort pose shows the arrested culprit with hands raised. Only the pursuing-agent render is mirrored horizontally so the agents face the same rightward direction in which they cross; the source asset and escort are unchanged. Their stride alternates an extended leg and a bent-knee pose. The escort enters from the right, stops centered and remains visible as the final capture tableau after controls are released; the animation window must not become empty. The sequence changes presentation only; the engine has already resolved warrant, time and hideout validity.
 
 ---
 

@@ -469,6 +469,8 @@ The canonical balanced runtime matrix is:
 
 This expanded matrix restores the cast-specific detail of the earlier warrant directions while retaining shared evidence across sex, hair, hobby, feature and vehicle. Some distinctive values are isolated strong discriminators, but generation makes those clues uncommon, uses no more than one per case and presents shared traits first. Multi-trait intersections identify all ten suspects.
 
+The runtime keeps these five canonical fields and 28 selectable values. Every value has at least two curated first-person eyewitness formulations, so richer testimony does not alter filtering, deterministic trait selection or warrant mathematics.
+
 ### 5.5 Deolane supremacy rule
 Deolane is the iconic central villain.
 She must remain the most visually dominant and memorable suspect in the roster.

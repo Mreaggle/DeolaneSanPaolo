@@ -81,6 +81,8 @@ test('abre o prólogo e entra no primeiro caso', async ({ page }, testInfo) => {
   await expectAudioCue(page, 'DOSSIERS');
   await page.getByRole('button', { name: '▶' }).click();
   await expectAudioCue(page, 'DOSSIERS');
+  await page.getByRole('button', { name: 'JOGO' }).click();
+  await expect(page.locator('.game-stage')).not.toHaveAttribute('data-audio-cue', 'DOSSIERS');
   await page.screenshot({ path: `test-results/gameplay-${testInfo.project.name}.png` });
 });
 
@@ -100,6 +102,7 @@ test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ 
   await page.getByRole('button', { name: /VER/ }).click();
   await expect(page.locator('.route-list li')).toHaveCount(3);
   await expect(page.locator('.route-list button')).toHaveCount(0);
+  await expect(page.locator('.route-list small')).toHaveCount(0);
   await page.getByRole('button', { name: /BUSCAR/ }).click();
   const places = page.locator('.place-list button');
   await expect(places).toHaveCount(3);
@@ -108,7 +111,9 @@ test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ 
   await expect(page.locator('.place-icon').first()).not.toHaveCSS('background-image', /assets\/places/);
   await places.first().click();
   await expect(page.locator('.footstep-path')).toBeVisible();
-  await expect(page.locator('.footsteps-sprite')).toHaveCSS('background-image', /footsteps-spritesheet\.png/);
+  await expect(page.locator('.footstep-path .footprint')).toHaveCount(8);
+  await expect(page.locator('.footstep-path .footprint').first()).toHaveCSS('background-image', /footsteps-spritesheet\.png/);
+  await expect(page.locator('.approach-footprints')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'OUTRO LOCAL' })).toBeVisible();
   await expect(page.locator('.witness')).toBeVisible();
   await expect(page.getByRole('button', { name: /P\.C/ })).toBeDisabled();
@@ -168,20 +173,19 @@ test('reproduz passos ao escolher um local e tick a cada hora apresentada', asyn
   await enterFirstCase(page);
   await page.getByRole('button', { name: /BUSCAR/ }).click();
   await page.locator('.place-list button').first().click();
-  const footsteps = page.locator('.footsteps-sprite');
-  await expect(footsteps).toBeVisible();
-  await expect(footsteps).toHaveCSS('animation-duration', '2.2s');
+  const footsteps = page.locator('.footstep-path .footprint');
+  await expect(footsteps).toHaveCount(8);
+  await expect(page.locator('.approach-footprints')).toHaveCount(0);
   await page.waitForTimeout(1_200);
-  await expect(footsteps).toBeVisible();
-  const footstepFrame = await footsteps.evaluate((sprite) => {
-    const style = getComputedStyle(sprite);
-    return {
-      positionX: Number.parseFloat(style.backgroundPositionX),
-      timing: style.animationTimingFunction
-    };
-  });
-  expect(footstepFrame.timing).toContain('steps(7');
-  expect(Math.abs(footstepFrame.positionX) % 128).toBeLessThan(.01);
+  const visibleFootsteps = await footsteps.evaluateAll((prints) => prints.filter((print) => Number.parseFloat(getComputedStyle(print).opacity) > .5).length);
+  expect(visibleFootsteps).toBeGreaterThanOrEqual(4);
+  expect(visibleFootsteps).toBeLessThanOrEqual(5);
+  const trailPositions = await footsteps.evaluateAll((prints) => prints.map((print) => ({
+    left: Number.parseFloat(getComputedStyle(print).left),
+    bottom: Number.parseFloat(getComputedStyle(print).bottom)
+  })));
+  expect(new Set(trailPositions.map(({ left, bottom }) => `${left}:${bottom}`)).size).toBe(8);
+  expect(trailPositions.every((position, index) => index === 0 || position.left > trailPositions[index - 1]!.left)).toBe(true);
   const duringApproach = await page.evaluate(() => (window as typeof window & { __movementSoundPlays: Array<{ sound: string; at: number }> }).__movementSoundPlays);
   expect(duringApproach.map(({ sound }) => sound)).toEqual(['FOOTSTEPS']);
   await expect(page.locator('.witness')).toBeVisible();
@@ -399,6 +403,7 @@ test('percorre um caso funcional e mantém as novas animações legíveis', asyn
   await expect(page.locator('.capture-escort')).toHaveCount(1);
   await expect(page.locator('.capture-agent').first()).toHaveCSS('background-size', '320px 64px');
   await expect(page.locator('.capture-agent').first()).toHaveCSS('animation-name', /dramatic-agent-frames.*agents-cross/);
+  await expect(page.locator('.capture-agent').first()).toHaveCSS('transform', 'matrix(-1, 0, 0, 1, 0, 0)');
   await expectAudioCue(page, 'CRIMINAL_REVEALED');
   await expect(page.getByRole('button', { name: 'AGUARDE A SEQUÊNCIA...' })).toBeDisabled();
   await expect(page.getByRole('button', { name: 'RELATÓRIO À SEDE' })).toBeEnabled({ timeout: 5_000 });

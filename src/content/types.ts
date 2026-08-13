@@ -1,8 +1,23 @@
 export type RankId = 'rookie' | 'sleuth' | 'private-eye' | 'investigator' | 'ace-detective';
 export type TraitCategory = 'sex' | 'hair' | 'hobby' | 'feature' | 'vehicle';
+export type GeographicClueCategory =
+  | 'currency'
+  | 'landmark'
+  | 'culture'
+  | 'flag'
+  | 'language'
+  | 'history'
+  | 'geography'
+  | 'fauna-flora'
+  | 'food'
+  | 'government'
+  | 'commodity'
+  | 'book-topic'
+  | 'artifact';
 
 export interface ClueFact {
   id: string;
+  category: GeographicClueCategory;
   text: string;
   compatibleCityIds: readonly string[];
   difficulty: 'easy' | 'medium' | 'hard';
