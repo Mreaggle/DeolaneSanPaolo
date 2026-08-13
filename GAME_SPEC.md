@@ -630,6 +630,8 @@ Witnesses are information-delivery characters.
 
 They are not full conversational NPCs.
 
+They are identified to the player only by their local occupation/title. Personal names and name-based puns are not displayed, avoiding a mismatch between a generated character image and a gendered proper name.
+
 The player does not select dialogue topics.
 
 Interaction is:
@@ -662,7 +664,7 @@ Bank:
 - manager/executive
 ```
 
-Exact witness identities belong in `CONTENT_MODEL.md`.
+Exact witness roles and localized titles belong in `CONTENT_MODEL.md`.
 
 ---
 
@@ -1675,6 +1677,8 @@ Sunday, 5:00 p.m.
 ```
 
 This is 154 chronological elapsed hours from the case start.
+
+`154` is the internal elapsed-time ceiling, not player-facing remaining-time copy. Assignment and deadline presentations show `Sunday, 17:00` without appending an hour total, because the internal interval includes the two-hour briefing before player control begins.
 
 Therefore:
 

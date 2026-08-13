@@ -1778,7 +1778,7 @@ Do not generate a unique chase animation for every city.
 
 The striped henchman has two reusable 8-frame states: a rightward run and a rightward tiptoe balance across a simple parapet. Both preserve the same silhouette, palette and 64-pixel frame footprint.
 
-Investigation-location buttons use the dedicated twelve-cell `place-icon-atlas`: each cell is an exterior architectural shorthand, never a crop of the interior witness scene. The approach transition samples the canonical footprint glyph from `footsteps-spritesheet` and places eight prints, one at a time, as a single four-pair human trail across the city scene. It never renders a duplicate trail in the information panel or exposes the sheet's later cumulative restart. The sequence lasts 2.2 seconds, matching the canonical footsteps MP3, and completes before clock advancement is presented.
+Investigation-location buttons use the dedicated twelve-cell `place-icon-atlas`: each cell is an exterior architectural shorthand, never a crop of the interior witness scene. The approach transition samples the canonical 15×11 footprint glyph from `footsteps-spritesheet` and places eight prints, one at a time, as a single four-pair human trail across the central floor area of the city scene. The dark sole receives a hard one-pixel gold sprite contour for contrast across light and dark backgrounds; blur and soft shadow remain forbidden. It never collides with the clock label, renders a duplicate trail in the information panel or exposes the sheet's later cumulative restart. The sequence lasts 2.2 seconds, matching the canonical footsteps MP3, and completes before clock advancement is presented.
 
 ---
 
@@ -2319,6 +2319,10 @@ Once the UI is stable, capture deterministic screenshots at:
 ```
 
 for important screens.
+
+Every newly implemented animation also requires a deterministic visual-progress test. The test must capture at least two meaningful moments while browser animation remains enabled and prove that rendered pixels change inside the intended viewport. DOM presence, CSS animation names, opacity and background URLs alone are insufficient because a transparent or incorrect spritesheet crop can satisfy all of them without displaying artwork.
+
+Animation spritesheets must additionally pass asset validation proving that every declared frame contains opaque pixels and that sequential frames are not byte-identical.
 
 ---
 

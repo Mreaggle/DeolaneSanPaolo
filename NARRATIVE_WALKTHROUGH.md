@@ -102,7 +102,7 @@ A Agência Federal responde:
 DETETIVE: {playerName}
 POSTO: {rankName}
 PARTIDA: {startCityName}
-PRAZO: SÁBADO, 09:00 (120 HORAS)
+PRAZO: DOMINGO, 17:00
 
 SIGA A ROTA.
 IDENTIFIQUE O CULPADO.
@@ -120,7 +120,7 @@ A cidade, dia e hora aparecem à esquerda. A fotografia da cidade ocupa o painel
 
 ### 8.2 Buscar
 
-O botão de lupa `BUSCAR` mostra exatamente três locais. Um local visitado recebe o marcador `VISITADO`; pode ser reaberto sem custo para reler o depoimento.
+O botão de lupa `BUSCAR` mostra exatamente três locais. Um local visitado recebe o marcador `VISITADO`; pode ser reaberto por 2 horas para reler o mesmo depoimento, sem rerrolar testemunha ou pista e sem avançar o contador de novas investigações da visita.
 
 Ao investigar um local novo:
 
@@ -130,6 +130,8 @@ Ao investigar um local novo:
 4. o prazo é verificado;
 5. cenário e testemunha aparecem;
 6. o depoimento é revelado com efeito de terminal.
+
+A identificação acima do depoimento usa somente o cargo localizado da testemunha, como `BIBLIOTECÁRIO/A` ou `PESCADOR/A`; nomes próprios e trocadilhos não aparecem.
 
 O primeiro clique/Enter durante a digitação apenas completa o texto. Um segundo avança.
 
@@ -234,7 +236,7 @@ CASOS RESOLVIDOS: {solvedCases}
 
 ### Prazo esgotado
 
-> SÁBADO, 09:00. A ROTA ESFRIOU. O CULPADO CRUZOU A FRONTEIRA.
+> DOMINGO, 17:00. A ROTA ESFRIOU. O CULPADO CRUZOU A FRONTEIRA.
 
 ### Abandono
 
@@ -263,7 +265,7 @@ A CHEFE DA T.C.C. ESTÁ EM MOVIMENTO.
 ALVO: DEOLANE SAN PAOLO
 ```
 
-O nome conhecido não elimina a investigação de identidade: as pistas ainda precisam formar uma combinação única, e o jogador ainda deve emitir o mandado para Deolane. A rota tem oito cidades e o prazo permanece em 120 horas.
+O nome conhecido não elimina a investigação de identidade: as pistas ainda precisam formar uma combinação única, e o jogador ainda deve emitir o mandado para Deolane. A rota tem oito cidades e mantém o prazo de domingo, 17:00, correspondente às mesmas 154 horas cronológicas internas dos casos padrão.
 
 ## 17. Final
 

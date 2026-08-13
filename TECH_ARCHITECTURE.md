@@ -1860,6 +1860,8 @@ canonical screenshots.
 
 Use a fixed test profile and case seed so screenshot state remains reproducible.
 
+Each new animation must add an E2E visual-progress assertion that compares rendered pixels at two deterministic moments with browser animations enabled. Structural assertions remain useful, but cannot replace this check. `assets:validate` also rejects declared animation frames that are transparent or duplicated.
+
 ---
 
 # PART XXXV — DEVELOPMENT DEBUG MODE

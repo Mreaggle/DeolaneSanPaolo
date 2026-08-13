@@ -72,6 +72,8 @@ Those elements belong to the code/UI layer and must not silently turn into baked
 - `ui-icon`: **15**
 - `witness-sprite`: **36**
 
+Every new `animation-sheet` must declare a stable frame count in `scripts/validate-assets.ts` and add a deterministic E2E visual-progress test. Asset validation rejects transparent or duplicated declared frames; the E2E test must additionally prove that the runtime crop produces visible pixel changes.
+
 
 ---
 
@@ -406,7 +408,7 @@ Each catalog row contains:
 | 163 | `henchman-sneak-spritesheet` | `public/assets/animations/henchman-sneak-spritesheet.png` | `animation-sheet` | Eight-frame side-view tiptoe cycle for the same striped T.C.C. henchman balancing across a high parapet. | `512x64` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
 | 164 | `capture-dramatic-spritesheet` | `public/assets/animations/capture-dramatic-spritesheet.png` | `animation-sheet` | Five-cell dramatic arrest strip: two culprit poses, two pursuing-agent poses rendered with a horizontal mirror only during the rightward chase, and one right-to-left prisoner escort pair. | `320x64` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
 | 167 | `place-icon-atlas` | `public/assets/icons/place-icon-atlas.png` | `ui-icon` | Twelve-cell exterior-view atlas for airport, bank, foreign ministry, harbor, hotel, library, marketplace, museum, palace, riverfront, sports club and stock exchange investigation buttons. | `256x192` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
-| 168 | `footsteps-spritesheet` | `public/assets/animations/footsteps-spritesheet.png` | `animation-sheet` | Canonical footprint source. Runtime samples its base glyph to compose one eight-print, four-pair trail and deliberately does not expose the cumulative frames that restart at the sheet's lower edge. | `512x64` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
+| 168 | `footsteps-spritesheet` | `public/assets/animations/footsteps-spritesheet.png` | `animation-sheet` | Canonical footprint source. Runtime samples the first frame's 15x11 base glyph, adds a hard one-pixel gold contour and composes one eight-print, four-pair trail without exposing the cumulative frames. | `512x64` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
 
 ---
 
