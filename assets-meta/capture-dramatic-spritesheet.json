@@ -2,13 +2,13 @@
   "assetId": "capture-dramatic-spritesheet",
   "model": "gpt-image-2",
   "promptVersion": 1,
-  "promptSha256": "0f1825844c3622923e6fddbdb82fee674272eadf60a64a0d4db027a9311466b4",
+  "promptSha256": "69f5aac85ff6d948efd111cad8b749536955ea7a8d76fe39da1be6b0e7ddb834",
   "referenceAssets": [
     "public/assets/animations/capture-spritesheet.png",
     "public/assets/animations/escape-spritesheet.png"
   ],
-  "generatedAt": "2026-08-13T19:27:57.963Z",
-  "originalOutputSha256": "794f60dadaaef7477aaf734d4a85f2bfabe58cbb2df6dd6a5aaf7b8d8bc6472b",
-  "finalOutputSha256": "1a5f8e51432cea0eb23a53106e899a8bcf1fbfa8fbd77d4bb091a38da5e5c7d5",
+  "generatedAt": "2026-08-13T21:01:16.600Z",
+  "originalOutputSha256": "145801c3bbcb4906bccafcc2bdd1a0f7becc5d6b782d05a5f7c8c54c6ae21af8",
+  "finalOutputSha256": "28b164ec1b3b14809211380eee278a21af35db3214875b87e3b0c3e0896696ed",
   "postprocessVersion": 1
 }

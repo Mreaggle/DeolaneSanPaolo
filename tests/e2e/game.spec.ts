@@ -396,9 +396,13 @@ test('percorre um caso funcional e mantém as novas animações legíveis', asyn
   await expect(page.locator('.capture-fugitive')).toHaveCount(1);
   await expect(page.locator('.capture-agent')).toHaveCount(3);
   await expect(page.locator('.capture-escort')).toHaveCount(1);
+  await expect(page.locator('.capture-agent').first()).toHaveCSS('background-size', '320px 64px');
+  await expect(page.locator('.capture-agent').first()).toHaveCSS('animation-name', /dramatic-agent-frames.*agents-cross/);
   await expectAudioCue(page, 'CRIMINAL_REVEALED');
   await expect(page.getByRole('button', { name: 'AGUARDE A SEQUÊNCIA...' })).toBeDisabled();
   await expect(page.getByRole('button', { name: 'RELATÓRIO À SEDE' })).toBeEnabled({ timeout: 5_000 });
+  await expect(page.locator('.capture-escort')).toHaveCSS('opacity', '1');
+  await expect(page.locator('.capture-escort')).toHaveCSS('right', '148px');
   await expectAudioCue(page, 'CASE_CLOSED');
 });
 
