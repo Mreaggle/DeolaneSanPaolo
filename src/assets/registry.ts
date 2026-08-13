@@ -5,6 +5,8 @@ const staticAssets: Record<string, string> = {
   'title-wordmark': 'assets/title/deolane-logo.png',
   'title-wordmark-retro': 'assets/title/deolane-retro.png',
   'title-background': 'assets/title/title-background.png',
+  'publisher-mreaggle-logo': 'assets/publisher/mreaggle_software_logo.png',
+  'publisher-mreaggle-logo-notext': 'assets/publisher/mreaggle_software_logo_notext.png',
   'hq-background': 'assets/narrative/hq-background.png',
   'news-flash-background': 'assets/narrative/news-flash-background.png',
   'assignment-background': 'assets/narrative/assignment-background.png',
@@ -45,8 +47,10 @@ const staticAssets: Record<string, string> = {
   'travel-airplane-spritesheet': 'assets/animations/travel-airplane-spritesheet.png',
   'trail-alert-spritesheet': 'assets/animations/trail-alert-spritesheet.png',
   'capture-spritesheet': 'assets/animations/capture-spritesheet.png',
+  'capture-dramatic-spritesheet': 'assets/animations/capture-dramatic-spritesheet.png',
   'escape-spritesheet': 'assets/animations/escape-spritesheet.png',
-  'henchman-run-spritesheet': 'assets/animations/henchman-run-spritesheet.png'
+  'henchman-run-spritesheet': 'assets/animations/henchman-run-spritesheet.png',
+  'henchman-sneak-spritesheet': 'assets/animations/henchman-sneak-spritesheet.png'
 };
 
 for (const city of cities) staticAssets[city.artworkAssetId] = `assets/cities/${city.id}.png`;

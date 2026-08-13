@@ -96,7 +96,7 @@ export interface WarrantInput {
 
 export type GameEvent =
   | { type: 'CASE_STARTED' }
-  | { type: 'INVESTIGATION_COMPLETED'; clue: GeneratedClue; reviewed: boolean; finalEncounter: boolean; henchmanAppeared: boolean }
+  | { type: 'INVESTIGATION_COMPLETED'; clue: GeneratedClue; reviewed: boolean; finalEncounter: boolean; henchmanAppeared: boolean; henchmanVariant?: 'run' | 'sneak' }
   | { type: 'ARRIVED'; classification: ArrivalClassification; cityId: string }
   | { type: 'WARRANT_NO_MATCH' }
   | { type: 'WARRANT_MULTIPLE_MATCHES'; suspectIds: readonly string[] }

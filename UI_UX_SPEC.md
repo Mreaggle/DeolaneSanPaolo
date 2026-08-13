@@ -667,6 +667,12 @@ Do not rely only on browser-native outlines.
 
 # PART X — TITLE SCREEN
 
+## 34.1 Publisher splash
+
+Antes do primeiro `TITLE`, a superfície 640×400 fica preta e apresenta a vinheta da Mreaggle Software. A arte sem texto ocupa os primeiros 800 ms do sting, com entrada quase imediata e desaparecimento progressivo; a arte completa entra em seguida. Ao terminar o áudio, a arte completa leva mais 1 segundo para desaparecer e então libera a tela de título.
+
+Nenhum botão do título, rodapé, painel de apoio ou estado da engine fica acessível durante essa vinheta. Se autoplay com áudio for bloqueado, uma mensagem bitmap discreta pede clique ou tecla para iniciar, sem pular a sequência.
+
 ## 35. Title state
 
 The title screen contains:
@@ -851,6 +857,8 @@ or a period-authentic list/grid consistent with the DOS reference.
 Do not display all twelve global place types.
 
 Only the three generated locations are shown.
+
+Each entry includes a small bitmap thumbnail derived from that location's canonical background. Selecting an entry locks controls and shows a short trail of footprints toward the chosen location before the existing clock/investigation resolution begins. This transition is presentation-only and adds no simulated hours.
 
 ---
 
@@ -1261,6 +1269,8 @@ The interface must make this commitment obvious.
 
 Simply changing fields must not consume time.
 
+While the computation delay is active, the physical indicator lamps on both sides of the P.C. bezel blink in an alternating stepped pattern. The lights stop when the engine result is presented and do not perform suspect filtering themselves.
+
 ---
 
 ## 72. Warrant status indicator
@@ -1423,6 +1433,8 @@ culprit encounter
 ```
 
 The player cannot interact during the capture sequence except to advance text after mandatory animation.
+
+The canonical `capture-dramatic-spritesheet` is staged in three readable beats: the disguised culprit crosses the frame, three federal agents follow, and a final right-to-left escort pose shows the arrested culprit with hands raised. The sequence changes presentation only; the engine has already resolved warrant, time and hideout validity.
 
 ---
 

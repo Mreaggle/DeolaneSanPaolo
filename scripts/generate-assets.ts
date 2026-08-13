@@ -49,7 +49,8 @@ const ref = (path: string) => resolve(root, 'references/carmen_sandiego_DOS/www'
 const referencesFor = (asset: AssetEntry): string[] => {
   if (asset.id === 'icon-pc') return [resolve(root, 'public/assets/icons/icon-see.png'), resolve(root, 'public/assets/icons/icon-depart.png'), resolve(root, 'public/assets/icons/icon-search.png')];
   if (asset.id === 'warrant-computer-panel') return [resolve(root, 'public/assets/narrative/warrant-computer-panel.png')];
-  if (asset.id === 'henchman-run-spritesheet') return [resolve(root, 'public/assets/animations/capture-spritesheet.png'), resolve(root, 'public/assets/animations/escape-spritesheet.png')];
+  if (asset.id === 'henchman-run-spritesheet' || asset.id === 'henchman-sneak-spritesheet') return [resolve(root, 'public/assets/animations/henchman-run-spritesheet.png'), resolve(root, 'public/assets/animations/capture-spritesheet.png')];
+  if (asset.id === 'capture-dramatic-spritesheet') return [resolve(root, 'public/assets/animations/capture-spritesheet.png'), resolve(root, 'public/assets/animations/escape-spritesheet.png')];
   if (asset.id === 'title-background') return [resolve(rawDir, 'title-background-base.png'), resolve(rawDir, 'suspect-deolane-san-paolo-dossier.png'), ref('cities/rio_de_janeiro.png')];
   if (asset.id === 'suspect-deolane-san-paolo-dossier') return [ref('profiles/carmen_sandiego.png'), ref('profiles/lady_agatha_wayland.png'), ref('profiles/len_red_bulk.png')];
   if (asset.category === 'suspect-encounter') {
@@ -83,6 +84,8 @@ const promptFor = (asset: AssetEntry): string => {
   if (asset.id === 'icon-pc') return `${styleLock} Create one compact late-1980s personal-computer pictogram for the P.C. warrant button: CRT monitor with a tiny cyan screen, blocky keyboard, white and light-gray body, dark-navy outline and one restrained magenta accent. It must match the existing SEE, DEPART and SEARCH action icons and remain readable at exactly 24x24. Single centered object with generous margin. Flat chroma green #00FF00 background. ${negatives}`;
   if (asset.id === 'warrant-computer-panel') return `${styleLock} Create a straight-on close-up of a bulky late-1980s warrant computer filling the entire 340x306 frame, with almost no surrounding room. Its large, clean, uninterrupted dark-navy CRT display must occupy approximately x=24..316 and y=42..248 so browser-rendered filters can sit inside it. Add a thick gray and beige bezel, vents, indicator lights and a narrow hardware shelf along the bottom. Symmetrical front view, no perspective tilt, no desk, window, landscape, people or embedded interface controls. ${negatives}`;
   if (asset.id === 'henchman-run-spritesheet') return `${styleLock} Create exactly eight equal square frames in one horizontal row showing the same original comic T.C.C. henchman running to the right. Black-and-white striped prison shirt, dark cropped trousers, small black eye mask, soft cap, black shoes and a bouncing brown money sack. Full-body side-view run cycle, stable scale and anchor, readable limb motion and a few dust pixels. Flat chroma green #00FF00 background. ${negatives}`;
+  if (asset.id === 'henchman-sneak-spritesheet') return `${styleLock} Create exactly eight equal square frames in one horizontal row showing the same original comic T.C.C. henchman moving cautiously to the right on tiptoe as if balancing along a high parapet. Preserve his black-and-white striped prison shirt, dark cropped trousers, small black eye mask, soft cap and black shoes. Keep him facing and looking right, knees bent and arms extended sideways, moving slightly up and down with each careful step. No money sack. Stable full-body scale and foot anchor. Flat chroma green #00FF00 background. ${negatives}`;
+  if (asset.id === 'capture-dramatic-spritesheet') return `${styleLock} Create exactly four equal square cells in one horizontal row. Cell 1: an original disguised criminal running right, pose A, wearing a black brimmed hat and long black trench coat, face hidden except the eyes. Cell 2: the same criminal running right, pose B, identical clothing and scale. Cell 3: one standalone fictional Brazilian federal agent in a blue period uniform running right. Cell 4: a complete escort pair facing and walking left, with the captured criminal's hands raised and an agent immediately behind guiding the prisoner with a safely carried shoulder or holstered weapon. Stable full-body scale and foot anchor, no overlap between cells. Flat chroma green #00FF00 background. ${negatives}`;
   if (asset.category.startsWith('suspect')) return suspectPrompt(asset);
   if (asset.id === 'title-background') return `${styleLock} EDIT THE FIRST INPUT, which is an original title background owned by this project. Preserve its complete 640:400 composition: the woman on the left, globe, Rio de Janeiro silhouettes, blue night palette, and quiet dark right half for browser-rendered title text. Change only the woman's facial and identity details to match the SECOND input: make her lips extremely enormous and covered in vivid saturated bright-red lipstick, retain straight blonde hair, intensify the heavy makeup, keep giant gold earrings, thick necklace and enormous centered gold pendant. Her bright-red lips must remain unmistakable after reduction to 640x400. Do not add any text or UI. Edge-to-edge opaque art. ${negatives}`;
   if (asset.category === 'city-scene') return `${styleLock} Create an original vertical world-detective-game city scene: ${asset.purpose} Show two or three unmistakable local architecture/geography cues, foreground activity, middle-ground landmark, distant skyline, daytime unless the subject demands otherwise. Edge-to-edge opaque scene, no people close-up. ${negatives}`;
@@ -160,24 +163,30 @@ const postprocess = async (asset: AssetEntry, rawPath: string, prompt: string, r
   const raw = await readFile(rawPath);
   if (asset.transparency === 'transparent') {
     const transparent = await removeChroma(raw);
-    if (asset.id === 'henchman-run-spritesheet') {
+    const spriteCellCount = asset.id === 'henchman-run-spritesheet' || asset.id === 'henchman-sneak-spritesheet'
+      ? 8
+      : asset.id === 'capture-dramatic-spritesheet'
+        ? 4
+        : 0;
+    if (spriteCellCount) {
       const metadata = await sharp(transparent).metadata();
       const sourceWidth = metadata.width!;
       const sourceHeight = metadata.height!;
-      const cellWidth = Math.floor(sourceWidth / 8);
-      const frames = await Promise.all(Array.from({ length: 8 }, async (_, index) => {
+      const outputCellWidth = Math.floor(asset.width / spriteCellCount);
+      const cellWidth = Math.floor(sourceWidth / spriteCellCount);
+      const frames = await Promise.all(Array.from({ length: spriteCellCount }, async (_, index) => {
         const slice = await sharp(transparent)
-          .extract({ left: index * cellWidth, top: 0, width: index === 7 ? sourceWidth - index * cellWidth : cellWidth, height: sourceHeight })
+          .extract({ left: index * cellWidth, top: 0, width: index === spriteCellCount - 1 ? sourceWidth - index * cellWidth : cellWidth, height: sourceHeight })
           .png()
           .toBuffer();
         const extracted = await sharp(slice)
           .trim({ background: { r: 0, g: 0, b: 0, alpha: 0 }, threshold: 2 })
-          .resize(60, 60, { fit: 'contain', kernel: sharp.kernel.nearest, background: { r: 0, g: 0, b: 0, alpha: 0 } })
+          .resize(outputCellWidth - 4, asset.height - 4, { fit: 'contain', kernel: sharp.kernel.nearest, background: { r: 0, g: 0, b: 0, alpha: 0 } })
           .png()
           .toBuffer();
-        return { input: extracted, left: index * 64 + 2, top: 2 };
+        return { input: extracted, left: index * outputCellWidth + 2, top: 2 };
       }));
-      await sharp({ create: { width: 512, height: 64, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+      await sharp({ create: { width: asset.width, height: asset.height, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
         .composite(frames)
         .png({ palette: true, colours: 64, dither: 0 })
         .toFile(outputPath);

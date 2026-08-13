@@ -21,12 +21,13 @@ O texto é econômico, levemente teatral e seco, como software de investigação
 ### 4.1 Boot
 
 1. Tela preta.
-2. `AGÊNCIA FEDERAL — TERMINAL GEOGRÁFICO` aparece em texto bitmap.
-3. Uma linha de verificação percorre a tela: `ROTAS... ARQUIVOS... MANDADOS... OK`.
-4. A vinheta curta apresenta uma silhueta criminosa, um avião e uma perseguição.
-5. O título **DEOLANE SAN PAOLO** aparece.
+2. A marca sem texto da **Mreaggle Software** surge com fade-in muito curto enquanto o sting começa.
+3. Essa primeira marca desaparece progressivamente até `00:00.800` do áudio.
+4. Em `00:00.800`, a marca completa da **Mreaggle Software** substitui a anterior.
+5. Quando o sting termina, a marca completa realiza um fade-out linear de exatamente 1 segundo.
+6. Somente depois desse fade-out aparece o título **DEOLANE SAN PAOLO**.
 
-O jogador pode completar a vinheta com Enter/clique sem saltar a tela de título.
+O sting tenta iniciar automaticamente. Quando a política de autoplay do navegador impedir áudio sem gesto, a tela permanece na marca inicial e solicita clique ou tecla; a cronologia começa junto com a reprodução autorizada. O estado é exclusivamente de apresentação e não cria nem altera perfil, save ou caso.
 
 ### 4.2 Título
 
@@ -124,10 +125,11 @@ O botão de lupa `BUSCAR` mostra exatamente três locais. Um local visitado rece
 Ao investigar um local novo:
 
 1. os controles travam;
-2. o relógio avança;
-3. o prazo é verificado;
-4. cenário e testemunha aparecem;
-5. o depoimento é revelado com efeito de terminal.
+2. a miniatura do local e uma trilha curta de pegadas confirmam o deslocamento;
+3. o relógio avança;
+4. o prazo é verificado;
+5. cenário e testemunha aparecem;
+6. o depoimento é revelado com efeito de terminal.
 
 O primeiro clique/Enter durante a digitação apenas completa o texto. Um segundo avança.
 
@@ -138,6 +140,8 @@ Ao chegar corretamente a uma nova etapa, uma presença da **T.C.C.** pode cruzar
 > UM OLHEIRO DA T.C.C. SUMIU ENTRE OS PRÉDIOS.
 
 Essa cena confirma perseguição ativa sem revelar o próximo destino.
+
+Quando a apresentação de proximidade ocorre novamente na mesma etapa, o mesmo capanga atravessa um parapeito na ponta dos pés, de braços abertos para se equilibrar. A corrida é sempre a primeira variante e o movimento furtivo é a segunda; ambas acontecem antes do depoimento e não alteram pista, rota ou relógio.
 
 ### 8.4 Pista fria
 
@@ -202,11 +206,12 @@ Ao abrir o esconderijo, o tempo avança e a resolução torna-se definitiva.
 
 Com tempo restante e mandado correto:
 
-1. o culpado aparece;
-2. a perseguição curta é exibida;
-3. a Agência Federal confirma a prisão;
-4. o objeto roubado é recuperado;
-5. surge `CASO RESOLVIDO`.
+1. o culpado disfarçado cruza a cena correndo;
+2. três agentes federais correm atrás dele;
+3. um agente conduz o preso da direita para a esquerda, com as mãos levantadas;
+4. a Agência Federal confirma a prisão;
+5. o objeto roubado é recuperado;
+6. surge `CASO RESOLVIDO`.
 
 Resumo:
 

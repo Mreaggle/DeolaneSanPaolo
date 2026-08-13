@@ -7,7 +7,7 @@
   import type { WarrantInput } from './engine/types';
   import { displayCaseTime } from './engine/TimeEngine';
   import { AudioManager, type AudioSnapshot } from './audio/AudioManager';
-  import { preloadGroups, type AudioCueId } from './audio/audioRegistry';
+  import { preloadGroups, publisherStingUrl, type AudioCueId } from './audio/audioRegistry';
   import { arrivalAudioEvent, cueForAudioEvent, type AudioEventId } from './audio/audioEvents';
   import PixelButton from './ui/components/PixelButton.svelte';
   import TypewriterText from './ui/components/TypewriterText.svelte';
@@ -26,6 +26,8 @@
   let warrantBusy = false;
   let resultAnimationComplete = true;
   let henchmanAnimationComplete = true;
+  let walkingToPlace = false;
+  let approachToken = 0;
   let actionsAreDisabled = false;
   let travelAnimationRun = 0;
   let sceneAssetId = 'agency-emblem';
@@ -35,6 +37,15 @@
   let pixCopied = false;
   let lastAudiblePlayerName = '';
   let lastHourTickSerial = 0;
+  let publisherSplashActive = true;
+  let publisherSplashStarted = false;
+  let publisherSplashStarting = false;
+  let publisherLogoComplete = false;
+  let publisherSplashFading = false;
+  let publisherAwaitingInput = false;
+  let publisherStingAudio: HTMLAudioElement | undefined;
+  let publisherRevealTimer: number | undefined;
+  let publisherExitTimer: number | undefined;
   const categories: TraitCategory[] = ['sex', 'hair', 'hobby', 'feature', 'vehicle'];
   const supportPixCode = '00020126540014BR.GOV.BCB.PIX0111470052348470217DEOLANE-SAN-PAOLO5204000053039865802BR5916Kauan Crema Dias6009SAO PAULO62140510K1EVZGAMpp63044A02';
   const supportPaymentUrl = 'https://nubank.com.br/cobrar/18cvy/6a7bd4b6-3ce0-4c59-9431-5f49cd51dd9d';
@@ -90,8 +101,42 @@
   const requestAudioEvent = (event: AudioEventId) => requestCue(cueForAudioEvent(event));
   const playTypewriter = () => audioManager?.playUiSound('TYPEWRITER');
 
+  const finishPublisherSting = () => {
+    if (!publisherSplashActive || publisherSplashFading) return;
+    if (publisherRevealTimer !== undefined) window.clearTimeout(publisherRevealTimer);
+    publisherLogoComplete = true;
+    publisherSplashFading = true;
+    publisherExitTimer = window.setTimeout(() => {
+      publisherSplashActive = false;
+      publisherSplashStarted = false;
+      publisherAwaitingInput = false;
+      syncScreenAudio();
+    }, 1_000);
+  };
+
+  const startPublisherSting = async () => {
+    if (!publisherSplashActive || publisherSplashStarted || publisherSplashStarting || !publisherStingAudio) return;
+    publisherSplashStarting = true;
+    publisherAwaitingInput = false;
+    publisherStingAudio.currentTime = 0;
+    publisherStingAudio.volume = audioSnapshot.enabled ? audioSnapshot.volume : 0;
+    try {
+      await publisherStingAudio.play();
+      publisherSplashStarted = true;
+      publisherRevealTimer = window.setTimeout(() => { publisherLogoComplete = true; }, 800);
+    } catch {
+      publisherAwaitingInput = true;
+    } finally {
+      publisherSplashStarting = false;
+    }
+  };
+
   const handlePointerDown = (event: PointerEvent) => {
     if (event.button !== 0) return;
+    if (publisherSplashActive) {
+      void startPublisherSting();
+      return;
+    }
     void audioManager?.unlock();
     audioManager?.playUiSound('MOUSE_CLICK');
   };
@@ -122,14 +167,14 @@
   const screenAudioKey = (): string => {
     const event = $uiState.event;
     const detail = event?.type === 'ARRIVED' ? `${event.cityId}:${event.classification}`
-      : event?.type === 'INVESTIGATION_COMPLETED' ? `${event.clue.id}:${event.henchmanAppeared}`
+      : event?.type === 'INVESTIGATION_COMPLETED' ? `${event.clue.id}:${event.henchmanAppeared}:${event.henchmanVariant ?? 'none'}`
       : event?.type === 'CASE_FAILED' ? event.status
       : event?.type ?? '';
     return `${$gameState?.activeCase?.definition.id ?? 'none'}:${$uiState.screen}:${detail}`;
   };
 
   const syncScreenAudio = () => {
-    if (!audioManager) return;
+    if (!audioManager || publisherSplashActive) return;
     const key = screenAudioKey();
     if (key === lastAudioKey) return;
     lastAudioKey = key;
@@ -171,6 +216,7 @@
     }
     else if ($uiState.screen === 'result' && event?.type === 'CASE_SOLVED') {
       resultAnimationComplete = false;
+      audioManager.playUiSound('FOOTSTEPS');
       play(active?.definition.caseType === 'FINAL_DEOLANE' ? 'FINAL_DEOLANE_FOUND' : 'CULPRIT_FOUND');
     } else if ($uiState.screen === 'result' && event?.type === 'CASE_FAILED') {
       resultAnimationComplete = false;
@@ -219,14 +265,22 @@
   };
 
   const visit = (placeId: string) => {
+    if (walkingToPlace || $uiState.timeAdvancing) return;
+    const token = ++approachToken;
     selectedPlaceId = placeId;
     witnessTextComplete = false;
     henchmanAnimationComplete = false;
+    walkingToPlace = true;
+    audioManager?.playUiSound('FOOTSTEPS');
     const active = $gameState?.activeCase;
     if (active && active.runtime.currentCityId === active.definition.finalCityId && placeId === active.definition.finalHideoutPlaceId) {
       resultAnimationComplete = false;
     }
-    actions.investigate(placeId);
+    window.setTimeout(() => {
+      if (token !== approachToken) return;
+      walkingToPlace = false;
+      actions.investigate(placeId);
+    }, 1_050);
   };
 
   const placeVisited = (placeId: string): boolean => {
@@ -265,7 +319,7 @@
     }
     if (!gameplayScreens.includes($uiState.screen)) return;
     if (event.key === 'F11') { event.preventDefault(); void fullscreen(); }
-    if ($uiState.screen === 'traveling' || ($uiState.screen === 'witness' && !witnessTextComplete)) return;
+    if (actionsAreDisabled) return;
     if (key === '1' || key === 'v') actions.go('routes');
     if (key === '2' || key === 'p') actions.go('travel');
     if (key === '3' || key === 'b') actions.go('places');
@@ -276,13 +330,13 @@
     lastHourTickSerial = $uiState.hourTickSerial ?? 0;
     audioManager?.playUiSound('CLOCK_TICK');
   }
-  $: actionsAreDisabled = Boolean($uiState.timeAdvancing) || $uiState.screen === 'traveling' || ($uiState.screen === 'witness' && !witnessTextComplete);
-  $: sceneAssetId = $uiState.screen === 'witness' && selectedPlaceId
+  $: actionsAreDisabled = walkingToPlace || Boolean($uiState.timeAdvancing) || $uiState.screen === 'traveling' || ($uiState.screen === 'witness' && !witnessTextComplete);
+  $: sceneAssetId = ($uiState.screen === 'witness' || walkingToPlace) && selectedPlaceId
     ? placeById(selectedPlaceId)?.backgroundAssetId ?? 'agency-emblem'
     : $uiState.screen === 'dossiers'
       ? 'dossier-cabinet-illustration'
       : cityById($gameState?.activeCase?.runtime.currentCityId)?.artworkAssetId ?? 'agency-emblem';
-  $: sceneAlt = $uiState.screen === 'witness'
+  $: sceneAlt = $uiState.screen === 'witness' || walkingToPlace
     ? placeById(selectedPlaceId)?.name ?? 'Local da investigação'
     : $uiState.screen === 'dossiers'
       ? 'Arquivo de dossiês'
@@ -299,9 +353,13 @@
     audioManager = new AudioManager();
     audioManager.preload(preloadGroups.opening);
     const unsubscribeAudio = audioManager.subscribe((snapshot) => { audioSnapshot = snapshot; });
-    const unlockAudio = () => { void audioManager?.unlock(); };
+    const unlockAudio = () => {
+      if (publisherSplashActive) void startPublisherSting();
+      else void audioManager?.unlock();
+    };
     window.addEventListener('keydown', unlockAudio, { once: true });
     syncScreenAudio();
+    void startPublisherSting();
     updateScale();
     window.addEventListener('resize', updateScale);
     window.addEventListener('keydown', keyboard);
@@ -313,6 +371,10 @@
       window.removeEventListener('keydown', unlockAudio);
       unsubscribeAudio();
       audioManager?.dispose();
+      if (publisherRevealTimer !== undefined) window.clearTimeout(publisherRevealTimer);
+      if (publisherExitTimer !== undefined) window.clearTimeout(publisherExitTimer);
+      publisherStingAudio?.pause();
+      approachToken += 1;
     };
   });
 </script>
@@ -333,7 +395,22 @@
 >
   <div class="scale-box">
     <main class="game-stage" aria-label="Deolane San Paolo" data-audio-cue={audioSnapshot.currentCue ?? (audioSnapshot.ambientPlaying ? 'AMBIENT' : 'NONE')}>
-      {#if $uiState.screen === 'title'}
+      {#if publisherSplashActive}
+        <section
+          class:started={publisherSplashStarted}
+          class:complete={publisherLogoComplete}
+          class:fading={publisherSplashFading}
+          class:awaiting={publisherAwaitingInput}
+          class="full-screen publisher-splash"
+          aria-label="Mreaggle Software"
+          data-publisher-phase={publisherSplashFading ? 'fading' : publisherLogoComplete ? 'complete' : publisherSplashStarted ? 'mark' : 'waiting'}
+        >
+          <audio class="publisher-sting" bind:this={publisherStingAudio} src={publisherStingUrl} preload="auto" on:ended={finishPublisherSting}></audio>
+          <img class="publisher-logo publisher-logo-mark" src={asset('publisher-mreaggle-logo-notext')} alt="" />
+          <img class="publisher-logo publisher-logo-full" src={asset('publisher-mreaggle-logo')} alt="Mreaggle Software" />
+          {#if publisherAwaitingInput}<p>CLIQUE OU PRESSIONE UMA TECLA PARA INICIAR</p>{/if}
+        </section>
+      {:else if $uiState.screen === 'title'}
         <section class="full-screen title-screen">
           <img class="full-art" src={asset('title-background')} alt="" />
           <div class="dither-shade"></div>
@@ -426,7 +503,12 @@
               {#key scenePresentationKey}
                 <img data-scene-asset={sceneAssetId} data-city-id={$gameState.activeCase.runtime.currentCityId} src={asset(sceneAssetId)} alt={sceneAlt} />
                 {#if $uiState.screen === 'witness' && $uiState.event?.type === 'INVESTIGATION_COMPLETED' && $uiState.event.henchmanAppeared && !henchmanAnimationComplete}
-                  <div class="henchman-crossing" aria-label="Um capanga listrado da T.C.C. cruza o local correndo"><i style={`background-image:url(${asset('henchman-run-spritesheet')})`} on:animationend={() => { henchmanAnimationComplete = true; }}></i></div>
+                  <div class:sneak={$uiState.event.henchmanVariant === 'sneak'} class="henchman-crossing" aria-label={$uiState.event.henchmanVariant === 'sneak' ? 'Um capanga listrado da T.C.C. atravessa um parapeito na ponta dos pés' : 'Um capanga listrado da T.C.C. cruza o local correndo'}><i style={`background-image:url(${asset($uiState.event.henchmanVariant === 'sneak' ? 'henchman-sneak-spritesheet' : 'henchman-run-spritesheet')})`} on:animationend={() => { henchmanAnimationComplete = true; }}></i></div>
+                {/if}
+                {#if walkingToPlace}
+                  <div class="footstep-path" aria-label={`Pegadas seguindo até ${placeById(selectedPlaceId)?.name ?? 'o local escolhido'}`}>
+                    {#each Array.from({ length: 8 }) as _, step}<i style={`left:${18 + step * 34}px;bottom:${23 + step * 24}px;transform:rotate(${-28 + step * 8}deg);animation-delay:${step * .1}s`}></i>{/each}
+                  </div>
                 {/if}
               {/key}
               <div class="scene-label">{$uiState.displayedElapsedHours ?? $gameState.activeCase.runtime.elapsedHours}/{$gameState.activeCase.definition.deadlineHour} HORAS</div>
@@ -434,7 +516,11 @@
           </div>
           <div class="right-panel">
             <section class:warrant-panel={$uiState.screen === 'warrant'} class="info-panel">
-              {#if $uiState.screen === 'traveling'}
+              {#if walkingToPlace}
+                <h2>A CAMINHO DE {placeById(selectedPlaceId)?.name?.toUpperCase()}</h2>
+                <div class="approach-panel"><img src={asset(placeById(selectedPlaceId)?.backgroundAssetId ?? 'agency-emblem')} alt="" /><div class="approach-footprints">•• •• •• ••</div></div>
+                <p>O investigador segue até o local escolhido.</p>
+              {:else if $uiState.screen === 'traveling'}
                 <h2>EM TRÂNSITO</h2>
                 {#key travelAnimationRun}
                   <div class="travel-animation" data-animation-run={travelAnimationRun}><i style={`background-image:url(${asset('travel-airplane-spritesheet')})`}></i></div>
@@ -463,7 +549,7 @@
                 <h2>ONDE INVESTIGAR?</h2>
                 <div class="place-list">
                   {#each currentGeneratedCity()?.places ?? [] as generated, index}
-                    <button class:visited={placeVisited(generated.placeId)} on:click={() => visit(generated.placeId)}><span>{index + 1}</span>{placeById(generated.placeId)?.name}<small>{placeVisited(generated.placeId) ? 'VISITADO' : 'CONSULTAR'}</small></button>
+                    <button class:visited={placeVisited(generated.placeId)} on:click={() => visit(generated.placeId)}><span>{index + 1}</span><img class="place-icon" src={asset(placeById(generated.placeId)?.backgroundAssetId ?? 'agency-emblem')} alt="" /><b>{placeById(generated.placeId)?.name}</b><small>{placeVisited(generated.placeId) ? 'VISITADO' : 'CONSULTAR'}</small></button>
                   {/each}
                 </div>
                 <p>Reconsultar um local exibe o mesmo depoimento e ocupa novo tempo de campo.</p>
@@ -511,6 +597,7 @@
               {:else if $uiState.screen === 'warrant'}
                 <div class="warrant-console">
                   <img class="warrant-machine" src={asset('warrant-computer-panel')} alt="Computador de mandados visto de frente" />
+                  <div class:computing={warrantBusy} class="warrant-lights" aria-hidden="true">{#each Array.from({ length: 8 }) as _, light}<i style={`animation-delay:${light * .07}s`}></i>{/each}</div>
                   <div class="warrant-screen-ui">
                     <h2>COMPUTADOR DE MANDADOS</h2>
                     <div class="warrant-grid">
@@ -551,7 +638,15 @@
           <div class:success={$uiState.event?.type === 'CASE_SOLVED'} class="result-card">
             <h2>{$uiState.event?.type === 'CASE_SOLVED' ? 'CASO ENCERRADO!' : 'A T.C.C. ESCAPOU'}</h2>
             <img class="result-suspect" src={asset(suspectById($gameState.activeCase.definition.culpritId)?.encounterAssetId ?? '')} alt={suspectById($gameState.activeCase.definition.culpritId)?.name ?? 'Suspeito'} />
-            <div class="result-animation" aria-label={$uiState.event?.type === 'CASE_SOLVED' ? 'Animação de captura' : 'Animação de fuga'}><i class:escape={$uiState.event?.type !== 'CASE_SOLVED'} style={`background-image:url(${asset($uiState.event?.type === 'CASE_SOLVED' ? 'capture-spritesheet' : 'escape-spritesheet')})`} on:animationend={finishResultAnimation}></i></div>
+            {#if $uiState.event?.type === 'CASE_SOLVED'}
+              <div class="capture-sequence" aria-label="O suspeito corre, três agentes federais o perseguem e depois o conduzem preso">
+                <i class="capture-actor capture-fugitive" style={`background-image:url(${asset('capture-dramatic-spritesheet')})`}></i>
+                {#each [0, 1, 2] as agent}<i class="capture-actor capture-agent" style={`animation-delay:${1.5 + agent * .14}s;background-image:url(${asset('capture-dramatic-spritesheet')})`}></i>{/each}
+                <i class="capture-actor capture-escort" style={`background-image:url(${asset('capture-dramatic-spritesheet')})`} on:animationend={finishResultAnimation}></i>
+              </div>
+            {:else}
+              <div class="result-animation" aria-label="Animação de fuga"><i class="escape" style={`background-image:url(${asset('escape-spritesheet')})`} on:animationend={finishResultAnimation}></i></div>
+            {/if}
             <p>{$uiState.event?.type === 'CASE_SOLVED' ? `${suspectById($gameState.activeCase.definition.culpritId)?.name} foi detido. O objeto roubado voltou ao acervo.` : statusText($gameState.activeCase.runtime.status)}</p>
             <p>TEMPO: {$gameState.activeCase.runtime.elapsedHours}H · CASOS RESOLVIDOS: {$gameState.profile.solvedCases}</p>
             {#if $uiState.event?.type === 'CASE_SOLVED'}
@@ -575,11 +670,13 @@
       {/if}
     </main>
   </div>
-  <footer class="site-footer">
-    <div class="site-credit">Developed &amp; Powered-By <a href="https://instagram.com/mreaggle" target="_blank" rel="noopener noreferrer">@Mreaggle</a></div>
-    <button class="support-toggle" type="button" aria-expanded={showSupport} aria-controls="support-panel" on:click={() => showSupport = !showSupport}>APOIAR</button>
-  </footer>
-  {#if showSupport}
+  {#if !publisherSplashActive}
+    <footer class="site-footer">
+      <div class="site-credit">Developed &amp; Powered-By <a href="https://instagram.com/mreaggle" target="_blank" rel="noopener noreferrer">@Mreaggle</a></div>
+      <button class="support-toggle" type="button" aria-expanded={showSupport} aria-controls="support-panel" on:click={() => showSupport = !showSupport}>APOIAR</button>
+    </footer>
+  {/if}
+  {#if showSupport && !publisherSplashActive}
     <aside id="support-panel" class="support-panel" aria-label="Apoiar Deolane San Paolo">
       <button class="support-close" type="button" aria-label="Fechar apoio" on:click={() => showSupport = false}>×</button>
       <strong>APOIE O JOGO</strong>
@@ -592,12 +689,23 @@
       </div>
     </aside>
   {/if}
-  <div class="rotate-notice">GIRE O CELULAR PARA JOGAR EM PAISAGEM<br />DEPOIS TOQUE EM “TELA CHEIA”.</div>
+  {#if !publisherSplashActive}<div class="rotate-notice">GIRE O CELULAR PARA JOGAR EM PAISAGEM<br />DEPOIS TOQUE EM “TELA CHEIA”.</div>{/if}
 </div>
 
 <style>
   .full-screen { position: absolute; inset: 0; overflow: hidden; background: #111; }
   .full-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
+  .publisher-splash { z-index: 20; display: grid; place-items: center; background: #000; }
+  .publisher-sting { display: none; }
+  .publisher-logo { position: absolute; width: 330px; height: 330px; object-fit: contain; image-rendering: pixelated; opacity: 0; }
+  .publisher-splash.started .publisher-logo-mark { animation: publisher-mark-reveal .8s linear both; }
+  .publisher-splash.awaiting .publisher-logo-mark { opacity: 1; }
+  .publisher-splash.complete .publisher-logo-mark { opacity: 0; }
+  .publisher-splash.complete .publisher-logo-full { opacity: 1; animation: publisher-full-reveal .06s linear both; }
+  .publisher-splash.fading .publisher-logo-full { opacity: 0; transition: opacity 1s linear; }
+  .publisher-splash p { position: absolute; bottom: 26px; margin: 0; color: #ddd; font-size: 8px; letter-spacing: 1px; }
+  @keyframes publisher-mark-reveal { 0% { opacity: 0; } 7% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes publisher-full-reveal { from { opacity: 0; } to { opacity: 1; } }
   .dither-shade { position: absolute; inset: 0; background-color: rgba(0,0,0,.28); }
   .title-copy { position: absolute; inset: 22px 28px 18px 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; text-shadow: 2px 2px #000; }
   .tiny-kicker { padding: 3px 7px; color: #050505; background: #f6d21d; text-shadow: none; letter-spacing: 1px; }
@@ -656,6 +764,13 @@
   @keyframes henchman-frames { to { background-position: -512px 0; } }
   @keyframes henchman-path { 0% { left: -68px; bottom: 35px; } 18% { bottom: 43px; } 52% { bottom: 37px; } 82% { bottom: 45px; } 100% { left: 304px; bottom: 39px; } }
   @keyframes getaway-dust { 0%, 76% { opacity: 0; } 78%, 94% { opacity: 1; } 100% { opacity: 0; } }
+  .henchman-crossing.sneak::before { content: ''; position: absolute; left: 0; right: 0; bottom: 47px; height: 8px; background: #8f8172; border-top: 3px solid #d2c7b6; box-shadow: 0 4px #3d3732; }
+  .henchman-crossing.sneak::after { display: none; }
+  .henchman-crossing.sneak i { bottom: 54px; animation: henchman-frames .96s steps(8) infinite, henchman-sneak-path 4.8s linear forwards; }
+  @keyframes henchman-sneak-path { from { left: -68px; } to { left: 304px; } }
+  .footstep-path { position: absolute; z-index: 4; inset: 0; overflow: hidden; pointer-events: none; }
+  .footstep-path i { position: absolute; width: 8px; height: 12px; opacity: 0; border: 2px solid #fff; border-radius: 50% 50% 35% 35%; box-shadow: 4px -5px 0 -2px #fff; animation: footprint-appear .95s steps(2) forwards; }
+  @keyframes footprint-appear { 0% { opacity: 0; } 35%, 82% { opacity: 1; } 100% { opacity: .2; } }
   .scene-label { position: absolute; left: 5px; bottom: 5px; padding: 3px 5px; color: #fff; background: #111; border: 1px solid #fff; }
   .right-panel { display: grid; grid-template-rows: 306px 72px; }
   .info-panel { position: relative; overflow: hidden; padding: 10px 12px; color: #fff; background-color: #050505; border-bottom: 2px solid #111; }
@@ -686,11 +801,17 @@
   @keyframes plane-takeoff { 0% { left: -38px; top: 91px; } 22% { top: 84px; } 58% { top: 49px; } 82% { top: 33px; } 100% { left: 336px; top: 19px; } }
   @keyframes cloud-scroll { to { transform: translateX(-85px); } }
   .place-list { display: grid; gap: 7px; margin: 16px 6px; }
-  .place-list button { display: grid; grid-template-columns: 26px 1fr 55px; align-items: center; padding: 6px; border: 2px solid #111; background: #fff; text-align: left; }
+  .place-list button { display: grid; grid-template-columns: 23px 34px 1fr 55px; align-items: center; gap: 4px; min-height: 48px; padding: 4px; border: 2px solid #111; background: #fff; text-align: left; }
   .place-list button.visited { background: #d4d4d4; }
   .place-list button span { display: grid; place-items: center; width: 19px; height: 19px; color: #fff; background: #111; }
+  .place-list button b { font-size: 8px; }
+  .place-icon { width: 30px; height: 34px; object-fit: cover; border: 1px solid #111; image-rendering: pixelated; }
   .place-list button small { font-size: 7px; text-align: right; }
   .place-list button.visited small { font-weight: 700; }
+  .approach-panel { position: relative; width: 230px; height: 160px; margin: 13px auto; overflow: hidden; background: #111; border: 3px ridge #999; }
+  .approach-panel img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; opacity: .65; }
+  .approach-footprints { position: absolute; left: -20px; bottom: 19px; width: 280px; color: #fff; font-size: 22px; letter-spacing: 14px; white-space: nowrap; transform: rotate(-17deg); animation: approach-steps 1s steps(8) forwards; }
+  @keyframes approach-steps { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
   .witness-row { display: grid; grid-template-columns: 112px 1fr; gap: 9px; min-height: 205px; }
   .witness { width: 112px; height: 176px; object-fit: contain; object-position: center bottom; background: #142743; border: 2px solid #111; }
   .speech { position: relative; height: 170px; padding: 12px; color: #000; background: #fff; border: 2px solid #111; font-size: 11px; line-height: 1.5; }
@@ -717,6 +838,10 @@
   .info-panel.warrant-panel { padding: 0; }
   .warrant-console { position: absolute; inset: 0; overflow: hidden; }
   .warrant-machine { position: absolute; inset: 0; width: 340px; height: 306px; object-fit: fill; image-rendering: pixelated; }
+  .warrant-lights { position: absolute; z-index: 2; inset: 77px 13px auto; display: grid; grid-template-columns: repeat(2, 6px); justify-content: space-between; row-gap: 9px; pointer-events: none; }
+  .warrant-lights i { width: 5px; height: 4px; background: #4a1b1b; border: 1px solid #120707; }
+  .warrant-lights.computing i { animation-name: computer-light; animation-duration: .34s; animation-timing-function: steps(1); animation-iteration-count: infinite; animation-direction: alternate; }
+  @keyframes computer-light { from { background: #f31e29; box-shadow: 0 0 0 #000; } to { background: #42f2b3; box-shadow: 0 0 3px #42f2b3; } }
   .warrant-screen-ui { position: absolute; z-index: 1; left: 40px; top: 35px; width: 260px; height: 211px; padding: 4px 6px; color: #8ef4e5; }
   .warrant-screen-ui h2 { margin: 0 0 4px; padding: 0 0 3px; color: #8ef4e5; background: transparent; border-bottom: 1px solid #3a7d80; font-size: 9px; text-align: center; letter-spacing: 0; }
   .warrant-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 6px; }
@@ -732,6 +857,16 @@
   .result-animation i { display: block; width: 48px; height: 64px; background-size: 192px 64px; background-repeat: no-repeat; image-rendering: pixelated; animation: result-frames .9s steps(4) 4; }
   .result-animation i.escape { background-position: 0 0; }
   @keyframes result-frames { to { background-position: -192px 0; } }
+  .capture-sequence { position: relative; width: 360px; height: 82px; margin: 3px auto; overflow: hidden; background: #315765; border: 2px inset #777; }
+  .capture-sequence::before { content: ''; position: absolute; left: 0; right: 0; bottom: 7px; height: 3px; background: #d9d0b5; box-shadow: 0 3px #171a1d; }
+  .capture-actor { position: absolute; bottom: 9px; width: 64px; height: 64px; background-size: 256px 64px; background-repeat: no-repeat; image-rendering: pixelated; opacity: 0; }
+  .capture-fugitive { left: -66px; background-position: 0 0; animation: dramatic-fugitive-frames .36s step-end infinite, fugitive-cross 1.45s linear forwards; }
+  .capture-agent { left: -66px; background-position: -128px 0; animation-name: agents-cross; animation-duration: 1.35s; animation-timing-function: linear; animation-fill-mode: both; }
+  .capture-escort { right: -66px; background-position: -192px 0; animation: escort-cross 1.85s steps(14) 3.25s both; }
+  @keyframes dramatic-fugitive-frames { 0%, 49% { background-position: 0 0; } 50%, 100% { background-position: -64px 0; } }
+  @keyframes fugitive-cross { 0% { left: -66px; opacity: 1; } 96% { opacity: 1; } 100% { left: 365px; opacity: 0; } }
+  @keyframes agents-cross { 0% { left: -66px; opacity: 1; } 96% { opacity: 1; } 100% { left: 365px; opacity: 0; } }
+  @keyframes escort-cross { 0% { right: -66px; opacity: 1; } 96% { opacity: 1; } 100% { right: 365px; opacity: 0; } }
   .result-card h2 { margin: -14px -14px 15px; padding: 7px; color: #fff; background: #a30b12; }
   .result-card.success h2, .result-card.success > h2 { background: #196c31; }
   .retry-actions { display: flex; justify-content: center; gap: 12px; }
@@ -760,6 +895,12 @@
     .trail-animation-cue i { animation: trail-frames .72s steps(4) 3 !important; }
     .henchman-crossing::after { animation: getaway-dust 2.6s steps(4) forwards !important; }
     .henchman-crossing i { animation: henchman-frames .64s steps(8) 4, henchman-path 2.6s steps(12) forwards !important; }
+    .henchman-crossing.sneak i { animation: henchman-frames .96s steps(8) 3, henchman-sneak-path 2.8s steps(12) forwards !important; }
+    .footstep-path i { animation-duration: .6s !important; }
+    .approach-footprints { animation-duration: .65s !important; }
+    .capture-fugitive { animation-duration: .8s !important; }
+    .capture-agent { animation-duration: .7s !important; animation-delay: .85s !important; }
+    .capture-escort { animation-duration: 1s !important; animation-delay: 1.8s !important; }
     .result-animation i { animation: result-frames .9s steps(4) 2 !important; }
   }
 </style>

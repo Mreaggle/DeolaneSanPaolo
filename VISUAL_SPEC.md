@@ -1682,6 +1682,10 @@ Avoid fractional glyph scaling.
 
 # PART XXI — LOGO AND TITLE ART
 
+## 93.1 Publisher sting
+
+A abertura usa os PNGs fornecidos `mreaggle_software_logo_notext.png` e `mreaggle_software_logo.png` centralizados sobre preto, sem filtros, suavização, recorte ou efeitos modernos. A primeira arte tem fade-in muito curto e fade-out até 800 ms; a arte completa aparece nesse marco e só inicia seu fade-out linear de 1 segundo quando o sting termina.
+
 ## 94. Title logo
 
 The Deolane San Paolo logo may use original lettering/content but must visually belong to the DOS title-screen era.
@@ -1772,6 +1776,8 @@ Use generic pursuit states where possible.
 
 Do not generate a unique chase animation for every city.
 
+The striped henchman has two reusable 8-frame states: a rightward run and a rightward tiptoe balance across a simple parapet. Both preserve the same silhouette, palette and 64-pixel frame footprint.
+
 ---
 
 # PART XXV — CAPTURE / ESCAPE ART
@@ -1784,6 +1790,8 @@ Capture imagery should use:
 - readable police/arrest cues;
 - limited frames;
 - no violent realism.
+
+The `capture-dramatic-spritesheet` is presented as three sequential crossings rather than a stationary loop: culprit escape attempt, three-agent pursuit, then controlled escort in the opposite direction.
 
 ---
 
