@@ -20,6 +20,7 @@ export const validateCase = (definition: CaseDefinition, content: GameContent): 
     const geo = geographicClues.length;
     if (geo < 2) failures.push(`geo:${cityId}`);
     if (geographicClues.some((place) => !place.clue.compatibleCityIds?.includes(nextId))) failures.push(`geo-truth:${cityId}`);
+    if (geographicClues.some((place) => place.clue.compatibleCityIds?.length === city?.travelCandidates.length)) failures.push(`geo-no-information:${cityId}`);
     if (!geographicClues.some((place) => (place.clue.compatibleCityIds?.length ?? 0) >= 2)) failures.push(`geo-no-broad-clue:${cityId}`);
     const combined = city?.travelCandidates.filter((candidate) =>
       geographicClues.every((place) => place.clue.compatibleCityIds?.includes(candidate))

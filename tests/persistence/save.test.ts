@@ -48,13 +48,13 @@ describe('SaveRepository', () => {
     });
   });
 
-  it('preserva a carreira e descarta somente caso ativo com matriz de traits antiga', () => {
+  it('preserva a carreira e descarta somente caso ativo com matriz de traits anterior', () => {
     const storage = new MemoryStorage();
     const repository = new SaveRepository(storage);
     const engine = new GameEngine(initialState({ ...createProfile('Nina'), solvedCases: 6 }));
     engine.startCase('traits-antigos');
     const legacy = structuredClone(engine.state);
-    legacy.activeCase!.definition.contentVersion = 1;
+    legacy.activeCase!.definition.contentVersion = 2;
     storage.value = JSON.stringify(legacy);
 
     expect(repository.load()).toMatchObject({ profile: { name: 'Nina', solvedCases: 6 } });

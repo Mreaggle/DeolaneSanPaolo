@@ -456,18 +456,18 @@ The canonical balanced runtime matrix is:
 
 | Suspect | Sex | Hair | Hobby | Feature | Vehicle |
 |---|---|---|---|---|---|
-| Deolane | female | blonde | collecting | exaggerated jewelry | luxury car |
-| Cris | female | black | collecting | intense gaze | motorcycle |
-| Lua | female | black | collecting | intense gaze | luxury car |
-| Thais | female | blonde | nightlife | striking face | motorcycle |
-| Tigrínia | female | blonde | nightlife | exaggerated jewelry | luxury car |
-| Narcola | male | shaved | collecting | striking face | customized vehicle |
-| Paulo | male | black | music | striking face | customized vehicle |
-| Zezé | male | black | music | intense gaze | customized vehicle |
-| Cleitinho | male | shaved | music | intense gaze | motorcycle |
-| Vanzeira | male | shaved | nightlife | exaggerated jewelry | luxury car |
+| Deolane | female | straight blonde | high society | exaggerated jewelry | luxury car |
+| Cris | female | curly black | collecting | intense gaze | motorcycle |
+| Lua | female | straight black | collecting | intense gaze | limousine |
+| Thais | female | chestnut | high society | beauty mark | convertible |
+| Tigrínia | female | straight blonde | betting | smug smile | convertible |
+| Narcola | male | balding | betting | huge nose | cargo van |
+| Paulo | male | black | music | large mustache | pickup truck |
+| Zezé | male | black | music | sunglasses | coupe |
+| Cleitinho | male | shaved | collecting | intense gaze | motorcycle |
+| Vanzeira | male | shaved | parties | exaggerated jewelry | luxury car |
 
-This matrix supersedes the earlier per-character warrant-trait directions, which remain visual/editorial guidance only. No isolated value identifies one suspect; multi-trait intersections still identify all ten suspects.
+This expanded matrix restores the cast-specific detail of the earlier warrant directions while retaining shared evidence across sex, hair, hobby, feature and vehicle. Some distinctive values are isolated strong discriminators, but generation makes those clues uncommon, uses no more than one per case and presents shared traits first. Multi-trait intersections identify all ten suspects.
 
 ### 5.5 Deolane supremacy rule
 Deolane is the iconic central villain.

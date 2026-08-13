@@ -946,7 +946,7 @@ interface TraitValue {
 }
 ```
 
-`clueTextKeys` resolves to curated eyewitness phrasing appropriate to the value. These strings describe what the witness saw, heard or remembered and must not imply that the culprit voluntarily revealed the trait. Hair, feature and vehicle values require category-aware grammar rather than a generic `category: value` sentence.
+`clueTextKeys` resolves to curated first-person eyewitness phrasing appropriate to the value. These strings describe what the speaking witness saw, heard or remembered and must not imply that the culprit voluntarily revealed the trait. Hair, feature and vehicle values require category-aware grammar rather than a generic `category: value` sentence.
 
 Example:
 
@@ -1006,9 +1006,9 @@ The content validator should report:
 - overrepresented trait values;
 - underrepresented values.
 
-An isolated trait value matching exactly one suspect is a hard content error. Every suspect must also remain uniquely identifiable through at least one valid multi-trait combination.
+An isolated trait value matching exactly one suspect is reported as a strong discriminator and is permitted only as a minority exception. Case generation must prefer shared values, expose at most one isolated discriminator in a case, and schedule it after shared identity evidence. Every suspect must remain uniquely identifiable through the generated evidence combination.
 
-The balanced trait matrix increments `contentVersion` to 2. Save migration preserves the detective career but discards a version-1 active case because its persisted identity clues refer to superseded trait values.
+The expanded trait matrix increments `contentVersion` to 3. Save migration preserves the detective career but discards older active cases because their persisted identity clues refer to superseded trait values.
 
 Preferred design is defined in `GAME_SPEC.md`.
 

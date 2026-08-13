@@ -143,6 +143,7 @@ test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ 
   await expect(page.getByRole('button', { name: /PARTIR/ })).toBeEnabled();
   await expect(page.getByRole('button', { name: /BUSCAR/ })).toBeEnabled();
   await page.getByRole('button', { name: /PARTIR/ }).click();
+  await expect(page.locator('.game-stage')).not.toHaveAttribute('data-audio-cue', /CRIME_COMPUTER_CALCULATING|WARRANT_ISSUED|WARRANT_INCONCLUSIVE/);
   await expect(page.locator('.destination-list button')).toHaveCount(3);
   await expect(page.getByText(/CORRECT|CERTO|RECOMENDAD/)).toHaveCount(0);
   const markerLeft = await page.locator('.map-box i').first().evaluate((marker) => parseFloat((marker as HTMLElement).style.left));

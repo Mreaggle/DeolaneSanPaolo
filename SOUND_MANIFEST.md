@@ -741,6 +741,8 @@ or:
 
 for inconclusive result.
 
+Tracks 13, 14 and 15 belong to the P.C. screen. Leaving that screen through `JOGO`, `VER`, `PARTIR`, `BUSCAR` or another navigation action stops the active warrant track immediately; it must not continue under the destination screen.
+
 ---
 
 ## 27. Final city

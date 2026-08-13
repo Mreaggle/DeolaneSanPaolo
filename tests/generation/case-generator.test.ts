@@ -17,15 +17,27 @@ describe('CaseGenerator', () => {
       expect(validateCase(definition, content)).toEqual([]);
       expect(definition.route).toHaveLength(4);
       expect(definition.culpritId).not.toBe('deolane-san-paolo');
+      const identityClues = definition.route.slice(0, -1).flatMap((cityId) =>
+        definition.cities[cityId]!.places.map((place) => place.clue).filter((clue) => clue.family === 'identity')
+      );
+      const uniqueIdentityClues = identityClues.filter((clue) =>
+        content.suspects.filter((suspect) => suspect.traits[clue.targetTraitCategory!] === clue.targetTraitValue).length === 1
+      );
+      expect(identityClues.length).toBeGreaterThanOrEqual(2);
+      expect(identityClues.length).toBeLessThanOrEqual(3);
+      expect(uniqueIdentityClues.length).toBeLessThanOrEqual(1);
+      if (uniqueIdentityClues.length) expect(identityClues.at(-1)).toBe(uniqueIdentityClues[0]);
       for (let routeIndex = 0; routeIndex < definition.route.length - 1; routeIndex += 1) {
         const city = definition.cities[definition.route[routeIndex]!]!;
         const target = definition.route[routeIndex + 1]!;
         const geographicClues = city.places.filter((place) => place.clue.family === 'geographic');
-        expect(geographicClues).toHaveLength(2);
+        expect(geographicClues.length).toBeGreaterThanOrEqual(2);
+        expect(geographicClues.length).toBeLessThanOrEqual(3);
         expect(geographicClues.some((place) => (place.clue.compatibleCityIds?.length ?? 0) >= 2)).toBe(true);
-        expect(city.places.some((place) => place.clue.family === 'identity')).toBe(true);
-        expect(city.places.filter((place) => place.clue.family === 'identity').every((place) => place.clue.text.startsWith('A testemunha '))).toBe(true);
+        expect(geographicClues.every((place) => (place.clue.compatibleCityIds?.length ?? 0) < city.travelCandidates.length)).toBe(true);
+        expect(city.places.filter((place) => place.clue.family === 'identity').every((place) => /^(Eu|Notei|Ouvi|Lembro)\b/.test(place.clue.text))).toBe(true);
         expect(city.places.every((place) => !/revel/i.test(place.clue.text))).toBe(true);
+        expect(city.places.every((place) => !/fronteira internacional/i.test(place.clue.text))).toBe(true);
         expect(city.places.some((place) => place.clue.text.includes(' ficou entre '))).toBe(false);
         const combined = city.travelCandidates.filter((candidate) =>
           geographicClues.every((place) => place.clue.compatibleCityIds?.includes(candidate))
