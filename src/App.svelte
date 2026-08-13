@@ -7,7 +7,7 @@
   import type { WarrantInput } from './engine/types';
   import { displayCaseTime } from './engine/TimeEngine';
   import { AudioManager, type AudioSnapshot } from './audio/AudioManager';
-  import { preloadGroups, publisherStingUrl, type AudioCueId } from './audio/audioRegistry';
+  import { preloadGroups, publisherStingUrl, uiSoundPresentationMs, type AudioCueId } from './audio/audioRegistry';
   import { arrivalAudioEvent, cueForAudioEvent, type AudioEventId } from './audio/audioEvents';
   import PixelButton from './ui/components/PixelButton.svelte';
   import TypewriterText from './ui/components/TypewriterText.svelte';
@@ -51,6 +51,7 @@
   const supportPaymentUrl = 'https://nubank.com.br/cobrar/18cvy/6a7bd4b6-3ce0-4c59-9431-5f49cd51dd9d';
   const supportQrCodeUrl = `${import.meta.env.BASE_URL}pix-qrcode.png`;
   const footerVerticalClearance = 80;
+  const footstepsPresentationMs = uiSoundPresentationMs.FOOTSTEPS;
 
   const cityById = (id?: string) => actions.content.cities.find((city) => city.id === id);
   const placeById = (id?: string) => actions.content.places.find((place) => place.id === id);
@@ -286,7 +287,7 @@
       if (token !== approachToken) return;
       walkingToPlace = false;
       actions.investigate(placeId);
-    }, 1_050);
+    }, footstepsPresentationMs);
   };
 
   const placeVisited = (placeId: string): boolean => {
@@ -513,7 +514,7 @@
                 {/if}
                 {#if walkingToPlace}
                   <div class="footstep-path" aria-label={`Pegadas seguindo até ${placeById(selectedPlaceId)?.name ?? 'o local escolhido'}`}>
-                    <i class="footsteps-sprite" style={`background-image:url(${asset('footsteps-spritesheet')})`}></i>
+                    <i class="footsteps-sprite" style={`background-image:url(${asset('footsteps-spritesheet')});--footsteps-duration:${footstepsPresentationMs}ms`}></i>
                   </div>
                 {/if}
               {/key}
@@ -524,7 +525,7 @@
             <section class:warrant-panel={$uiState.screen === 'warrant'} class="info-panel">
               {#if walkingToPlace}
                 <h2>A CAMINHO DE {placeById(selectedPlaceId)?.name?.toUpperCase()}</h2>
-                <div class="approach-panel"><img src={asset(placeById(selectedPlaceId)?.backgroundAssetId ?? 'agency-emblem')} alt="" /><i class="approach-footprints" style={`background-image:url(${asset('footsteps-spritesheet')})`}></i></div>
+                <div class="approach-panel"><img src={asset(placeById(selectedPlaceId)?.backgroundAssetId ?? 'agency-emblem')} alt="" /><i class="approach-footprints" style={`background-image:url(${asset('footsteps-spritesheet')});--footsteps-duration:${footstepsPresentationMs}ms`}></i></div>
                 <p>O investigador segue até o local escolhido.</p>
               {:else if $uiState.screen === 'traveling'}
                 <h2>EM TRÂNSITO</h2>
@@ -776,8 +777,8 @@
   .henchman-crossing.sneak i { bottom: 54px; animation: henchman-frames .96s steps(8) infinite, henchman-sneak-path 4.8s linear forwards; }
   @keyframes henchman-sneak-path { from { left: -68px; } to { left: 304px; } }
   .footstep-path { position: absolute; z-index: 4; inset: 0; overflow: hidden; pointer-events: none; }
-  .footstep-path .footsteps-sprite { position: absolute; left: 86px; bottom: 58px; width: 128px; height: 128px; background-size: 1024px 128px; background-repeat: no-repeat; image-rendering: pixelated; animation: footsteps-scene .95s steps(7, end) forwards; }
-  @keyframes footsteps-scene { to { background-position: -896px 0; } }
+  .footstep-path .footsteps-sprite { position: absolute; left: 86px; bottom: 58px; width: 128px; height: 128px; background-size: 1024px 128px; background-repeat: no-repeat; image-rendering: pixelated; animation: footsteps-scene var(--footsteps-duration) steps(7, jump-end) forwards; }
+  @keyframes footsteps-scene { from { background-position: 0 0; } to { background-position: -896px 0; } }
   .scene-label { position: absolute; left: 5px; bottom: 5px; padding: 3px 5px; color: #fff; background: #111; border: 1px solid #fff; }
   .right-panel { display: grid; grid-template-rows: 306px 72px; }
   .info-panel { position: relative; overflow: hidden; padding: 10px 12px; color: #fff; background-color: #050505; border-bottom: 2px solid #111; }
@@ -817,7 +818,7 @@
   .place-list button.visited small { font-weight: 700; }
   .approach-panel { position: relative; width: 230px; height: 160px; margin: 13px auto; overflow: hidden; background: #111; border: 3px ridge #999; }
   .approach-panel img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; opacity: .65; }
-  .approach-footprints { position: absolute; left: 51px; bottom: 16px; width: 128px; height: 128px; background-size: 1024px 128px; background-repeat: no-repeat; image-rendering: pixelated; animation: footsteps-scene .95s steps(7, end) forwards; }
+  .approach-footprints { position: absolute; left: 51px; bottom: 16px; width: 128px; height: 128px; background-size: 1024px 128px; background-repeat: no-repeat; image-rendering: pixelated; animation: footsteps-scene var(--footsteps-duration) steps(7, jump-end) forwards; }
   .witness-row { display: grid; grid-template-columns: 112px 1fr; gap: 9px; min-height: 205px; }
   .witness { width: 112px; height: 176px; object-fit: contain; object-position: center bottom; background: #142743; border: 2px solid #111; }
   .speech { position: relative; height: 170px; padding: 12px; color: #000; background: #fff; border: 2px solid #111; font-size: 11px; line-height: 1.5; }
@@ -902,7 +903,6 @@
     .henchman-crossing::after { animation: getaway-dust 2.6s steps(4) forwards !important; }
     .henchman-crossing i { animation: henchman-frames .64s steps(8) 4, henchman-path 2.6s steps(12) forwards !important; }
     .henchman-crossing.sneak i { animation: henchman-frames .96s steps(8) 3, henchman-sneak-path 2.8s steps(12) forwards !important; }
-    .footstep-path .footsteps-sprite, .approach-footprints { animation-duration: .65s !important; }
     .capture-fugitive { animation-duration: .8s !important; }
     .capture-agent { animation-duration: .7s !important; animation-delay: .85s !important; }
     .capture-escort { animation-duration: 1s !important; animation-delay: 1.8s !important; }

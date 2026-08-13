@@ -41,6 +41,9 @@ export const uiSoundRegistry = {
 
 export type UiSoundId = keyof typeof uiSoundRegistry;
 export const uiSoundUrl = (filename: string): string => `${import.meta.env.BASE_URL}audio/sfx/${filename}`;
+export const uiSoundPresentationMs = {
+  FOOTSTEPS: 2_200
+} as const satisfies Partial<Record<UiSoundId, number>>;
 export const publisherStingUrl = `${import.meta.env.BASE_URL}audio/sfx/mreaggle_software_sting.mp3`;
 
 export const hardCutCues = new Set<AudioCueId>([

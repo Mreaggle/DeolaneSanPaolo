@@ -1778,7 +1778,7 @@ Do not generate a unique chase animation for every city.
 
 The striped henchman has two reusable 8-frame states: a rightward run and a rightward tiptoe balance across a simple parapet. Both preserve the same silhouette, palette and 64-pixel frame footprint.
 
-Investigation-location buttons use the dedicated twelve-cell `place-icon-atlas`: each cell is an exterior architectural shorthand, never a crop of the interior witness scene. The approach transition uses `footsteps-spritesheet`, whose eight cumulative frames add one alternating shoeprint at a time without moving previously placed prints.
+Investigation-location buttons use the dedicated twelve-cell `place-icon-atlas`: each cell is an exterior architectural shorthand, never a crop of the interior witness scene. The approach transition uses `footsteps-spritesheet`, whose eight cumulative frames add one alternating shoeprint at a time without moving previously placed prints. Frame changes use discrete `jump-end` cadence, never continuous background interpolation. The sequence lasts 2.2 seconds, matching the canonical footsteps MP3, and completes before clock advancement is presented.
 
 ---
 

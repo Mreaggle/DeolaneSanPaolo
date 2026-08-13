@@ -156,22 +156,38 @@ test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ 
 
 test('reproduz passos ao escolher um local e tick a cada hora apresentada', async ({ page }) => {
   await page.addInitScript(() => {
-    const plays: string[] = [];
+    const plays: Array<{ sound: string; at: number }> = [];
     Object.defineProperty(window, '__movementSoundPlays', { value: plays });
     HTMLMediaElement.prototype.play = function () {
-      if (this.src.endsWith('/footsteps.mp3')) plays.push('FOOTSTEPS');
-      if (this.src.endsWith('/clock_tick.mp3')) plays.push('CLOCK_TICK');
+      if (this.src.endsWith('/footsteps.mp3')) plays.push({ sound: 'FOOTSTEPS', at: performance.now() });
+      if (this.src.endsWith('/clock_tick.mp3')) plays.push({ sound: 'CLOCK_TICK', at: performance.now() });
       return Promise.resolve();
     };
   });
   await enterFirstCase(page);
   await page.getByRole('button', { name: /BUSCAR/ }).click();
   await page.locator('.place-list button').first().click();
+  const footsteps = page.locator('.footsteps-sprite');
+  await expect(footsteps).toBeVisible();
+  await expect(footsteps).toHaveCSS('animation-duration', '2.2s');
+  await page.waitForTimeout(1_200);
+  await expect(footsteps).toBeVisible();
+  const footstepFrame = await footsteps.evaluate((sprite) => {
+    const style = getComputedStyle(sprite);
+    return {
+      positionX: Number.parseFloat(style.backgroundPositionX),
+      timing: style.animationTimingFunction
+    };
+  });
+  expect(footstepFrame.timing).toContain('steps(7');
+  expect(Math.abs(footstepFrame.positionX) % 128).toBeLessThan(.01);
+  const duringApproach = await page.evaluate(() => (window as typeof window & { __movementSoundPlays: Array<{ sound: string; at: number }> }).__movementSoundPlays);
+  expect(duringApproach.map(({ sound }) => sound)).toEqual(['FOOTSTEPS']);
   await expect(page.locator('.witness')).toBeVisible();
 
-  const plays = await page.evaluate(() => (window as typeof window & { __movementSoundPlays: string[] }).__movementSoundPlays);
-  expect(plays.filter((sound) => sound === 'FOOTSTEPS')).toHaveLength(1);
-  expect(plays.filter((sound) => sound === 'CLOCK_TICK')).toHaveLength(2);
+  const plays = await page.evaluate(() => (window as typeof window & { __movementSoundPlays: Array<{ sound: string; at: number }> }).__movementSoundPlays);
+  expect(plays.map(({ sound }) => sound)).toEqual(['FOOTSTEPS', 'CLOCK_TICK', 'CLOCK_TICK']);
+  expect(plays[1]!.at - plays[0]!.at).toBeGreaterThanOrEqual(2_200);
 });
 
 test('marca local visitado e cobra 2h para reler a mesma pista', async ({ page }) => {
