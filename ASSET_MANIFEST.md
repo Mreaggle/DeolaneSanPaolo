@@ -57,14 +57,14 @@ Those elements belong to the code/UI layer and must not silently turn into baked
 
 ## 3. Asset count summary
 
-**Total assets in this manifest: 162**
+**Total assets in this manifest: 166**
 
 ### Category breakdown
-- `animation-sheet`: **5**
+- `animation-sheet`: **7**
 - `badge`: **5**
 - `city-scene`: **30**
 - `emblem`: **2**
-- `narrative-screen`: **18**
+- `narrative-screen`: **20**
 - `place-background`: **12**
 - `stolen-item`: **20**
 - `suspect-dossier`: **10**
@@ -190,6 +190,7 @@ Each catalog row contains:
 |---|---|---|---|---|
 | `sfx-typewriter` | `public/audio/sfx/typewriter.mp3` | `ui-sfx` | Parallel per-input feedback for name entry and fixed-cadence feedback for progressively rendered text. | `IMPLEMENTED` |
 | `sfx-mouse-click` | `public/audio/sfx/mouse_click.mp3` | `ui-sfx` | Parallel feedback for primary pointer presses. | `IMPLEMENTED` |
+| `sfx-publisher-sting` | `public/audio/sfx/mreaggle_software_sting.mp3` | `ui-sfx` | Non-looping Mreaggle Software opening sting synchronized with the publisher logo sequence. | `IMPLEMENTED` |
 
 ### Bundled cursor resources
 
@@ -205,6 +206,8 @@ Each catalog row contains:
 | 001 | `title-logo` | `public/assets/title/title-logo.png` | `narrative-screen` | Auxiliary decorative title frame retained for credits or later reuse. | `320x96` | `transparent` | `GLOBAL_SHARED` | `APPROVED` |
 | 161 | `title-wordmark` | `public/assets/title/deolane-logo.png` | `narrative-screen` | Official square “Where is Deolane San Paolo?” wordmark supplied by the project owner and retained at the top of the README. | `1254x1254` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
 | 162 | `title-wordmark-retro` | `public/assets/title/deolane-retro.png` | `narrative-screen` | Wide retro wordmark supplied by the project owner, used exclusively on the in-game title screen. | `1536x1024` | `transparent` | `UNIQUE_SCREEN` | `IMPLEMENTED` |
+| 165 | `publisher-mreaggle-logo-notext` | `public/assets/publisher/mreaggle_software_logo_notext.png` | `narrative-screen` | Project-owner-supplied mark-only Mreaggle Software logo shown during the first 800 ms of the publisher sting. | `1254x1254` | `transparent` | `UNIQUE_SCREEN` | `IMPLEMENTED` |
+| 166 | `publisher-mreaggle-logo` | `public/assets/publisher/mreaggle_software_logo.png` | `narrative-screen` | Project-owner-supplied complete Mreaggle Software logo shown from 800 ms until the final post-sting fade. | `1254x1254` | `transparent` | `UNIQUE_SCREEN` | `IMPLEMENTED` |
 | 002 | `title-background` | `public/assets/title/title-background.png` | `narrative-screen` | Full title-screen background artwork. | `640x400` | `opaque` | `UNIQUE_SCREEN` | `IMPLEMENTED` |
 | 003 | `hq-background` | `public/assets/narrative/hq-background.png` | `narrative-screen` | Headquarters backdrop for sign-in, returning-detective and agency hub scenes. | `640x400` | `opaque` | `UNIQUE_SCREEN` | `IMPLEMENTED` |
 | 004 | `news-flash-background` | `public/assets/narrative/news-flash-background.png` | `narrative-screen` | Backdrop for News Flash / case briefing announcement. | `640x400` | `opaque` | `UNIQUE_SCREEN` | `IMPLEMENTED` |
@@ -400,6 +403,8 @@ Each catalog row contains:
 | 158 | `item-scholar-scroll` | `public/assets/items/scholar-scroll.png` | `stolen-item` | Scholar scroll illustration for case briefings/results. | `96x96` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
 | 159 | `icon-pc` | `public/assets/icons/icon-pc.png` | `ui-icon` | Action icon for the P.C. warrant computer, matching the existing bitmap action-icon family. | `24x24` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
 | 160 | `henchman-run-spritesheet` | `public/assets/animations/henchman-run-spritesheet.png` | `animation-sheet` | Eight-frame side-view run cycle for a striped T.C.C. henchman crossing the city scene when the trail is close. | `512x64` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
+| 163 | `henchman-sneak-spritesheet` | `public/assets/animations/henchman-sneak-spritesheet.png` | `animation-sheet` | Eight-frame side-view tiptoe cycle for the same striped T.C.C. henchman balancing across a high parapet. | `512x64` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
+| 164 | `capture-dramatic-spritesheet` | `public/assets/animations/capture-dramatic-spritesheet.png` | `animation-sheet` | Four-cell dramatic arrest strip: two running poses for the disguised culprit, one pursuing federal agent and one right-to-left prisoner escort pair. | `256x64` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
 
 ---
 

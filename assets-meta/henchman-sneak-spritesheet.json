@@ -1,0 +1,14 @@
+{
+  "assetId": "henchman-sneak-spritesheet",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "affb8d406984595ca490db902539303d570ea6f7ecd9013aec810de44394e888",
+  "referenceAssets": [
+    "public/assets/animations/henchman-run-spritesheet.png",
+    "public/assets/animations/capture-spritesheet.png"
+  ],
+  "generatedAt": "2026-08-13T19:17:32.959Z",
+  "originalOutputSha256": "586531505baf3f14b7d3d753859ca58ac6a1d1115eebc3bfd06ccb6214c32084",
+  "finalOutputSha256": "85a4b5574cb31be5e6e108d15d8c5a5b3d9433303964112ea24c101159244922",
+  "postprocessVersion": 1
+}

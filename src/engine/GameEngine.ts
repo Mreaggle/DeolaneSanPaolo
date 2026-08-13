@@ -105,11 +105,14 @@ export class GameEngine {
     const next = clone(this.stateValue);
     const active = next.activeCase!;
     const result = resolveInvestigation(active.definition, active.runtime, city, placeId);
-    const firstNewInvestigation = !result.reviewed && active.runtime.investigationsThisVisit === 0;
     const routeIndex = active.definition.route.indexOf(active.runtime.currentCityId);
-    const henchmanAppeared = firstNewInvestigation
+    const henchmanVariant = !result.reviewed
+      && active.runtime.investigationsThisVisit < 2
       && active.runtime.currentCityId === active.runtime.trailAnchorCityId
-      && routeIndex === active.definition.route.length - 2;
+      && routeIndex === active.definition.route.length - 2
+      ? active.runtime.investigationsThisVisit === 0 ? 'run' : 'sneak'
+      : undefined;
+    const henchmanAppeared = Boolean(henchmanVariant);
     const time = advanceTime(active.runtime.elapsedHours, result.timeCost, active.definition.deadlineHour);
     active.runtime.elapsedHours = time.elapsedHours;
     if (!result.reviewed) {
@@ -131,7 +134,10 @@ export class GameEngine {
     this.commit(next);
     return {
       state: this.state,
-      event: { type: 'INVESTIGATION_COMPLETED', clue: result.place.clue, reviewed: result.reviewed, finalEncounter: false, henchmanAppeared },
+      event: {
+        type: 'INVESTIGATION_COMPLETED', clue: result.place.clue, reviewed: result.reviewed,
+        finalEncounter: false, henchmanAppeared, ...(henchmanVariant ? { henchmanVariant } : {})
+      },
       timeAdvance: time
     };
   }

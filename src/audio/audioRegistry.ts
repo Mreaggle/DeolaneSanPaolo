@@ -35,11 +35,13 @@ export const audioUrl = (filename: string): string => `${import.meta.env.BASE_UR
 export const uiSoundRegistry = {
   TYPEWRITER: 'typewriter.mp3',
   MOUSE_CLICK: 'mouse_click.mp3',
-  CLOCK_TICK: 'clock_tick.mp3'
+  CLOCK_TICK: 'clock_tick.mp3',
+  FOOTSTEPS: 'footsteps.mp3'
 } as const;
 
 export type UiSoundId = keyof typeof uiSoundRegistry;
 export const uiSoundUrl = (filename: string): string => `${import.meta.env.BASE_URL}audio/sfx/${filename}`;
+export const publisherStingUrl = `${import.meta.env.BASE_URL}audio/sfx/mreaggle_software_sting.mp3`;
 
 export const hardCutCues = new Set<AudioCueId>([
   'DETECTIVE_UNKNOWN', 'COLD_TRAIL', 'TIME_ALMOST_EXPIRED',

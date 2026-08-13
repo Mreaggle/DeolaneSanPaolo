@@ -73,8 +73,13 @@ describe('regras centrais', () => {
       expect(arrival.type).toBe('ARRIVED');
       expect(arrival).not.toHaveProperty('henchmanAppeared');
     }
-    const investigation = engine.investigate(engine.getCurrentCityDefinition().places[0]!.placeId).event;
-    expect(investigation).toMatchObject({ type: 'INVESTIGATION_COMPLETED', henchmanAppeared: true });
+    const hotPlaces = engine.getCurrentCityDefinition().places;
+    const investigation = engine.investigate(hotPlaces[0]!.placeId).event;
+    expect(investigation).toMatchObject({ type: 'INVESTIGATION_COMPLETED', henchmanAppeared: true, henchmanVariant: 'run' });
+    expect(engine.investigate(hotPlaces[1]!.placeId).event)
+      .toMatchObject({ type: 'INVESTIGATION_COMPLETED', henchmanAppeared: true, henchmanVariant: 'sneak' });
+    expect(engine.investigate(hotPlaces[2]!.placeId).event)
+      .toMatchObject({ type: 'INVESTIGATION_COMPLETED', henchmanAppeared: false });
 
     const coldEngine = new GameEngine(initialState(createProfile('Lia')));
     coldEngine.startCase('capanga-frio');

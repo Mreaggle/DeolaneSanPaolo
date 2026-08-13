@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AudioManager, type AudioLike } from '../../src/audio/AudioManager';
-import { ambientTrack, audioRegistry, uiSoundRegistry } from '../../src/audio/audioRegistry';
+import { ambientTrack, audioRegistry, publisherStingUrl, uiSoundRegistry } from '../../src/audio/audioRegistry';
 
 class FakeAudio implements AudioLike {
   currentTime = 0;
@@ -20,6 +20,11 @@ class FakeAudio implements AudioLike {
 }
 
 describe('trilha sonora', () => {
+  it('registra o sting de abertura fora dos 26 cues musicais', () => {
+    expect(publisherStingUrl).toContain('/audio/sfx/mreaggle_software_sting.mp3');
+    expect(Object.values(audioRegistry)).not.toContain('mreaggle_software_sting.mp3');
+  });
+
   it('registra exatamente os 26 cues canônicos e o ambiente separado', () => {
     expect(Object.keys(audioRegistry)).toHaveLength(26);
     const files = [...Object.values(audioRegistry), ambientTrack];
@@ -148,5 +153,25 @@ describe('trilha sonora', () => {
 
     expect(tick.src).toContain('/audio/sfx/clock_tick.mp3');
     expect(tick.plays).toBe(2);
+  });
+
+  it('registra os passos como SFX sem interromper a música', async () => {
+    const created: FakeAudio[] = [];
+    const manager = new AudioManager({ createAudio: (src) => {
+      const audio = new FakeAudio(src);
+      created.push(audio);
+      return audio;
+    } });
+    await manager.unlock();
+    manager.request('HOT_TRAIL');
+    await Promise.resolve();
+    const cue = created.find((audio) => audio.src.endsWith('/8_hot_trail.mp3'))!;
+    const footsteps = created.find((audio) => audio.src.endsWith(`/${uiSoundRegistry.FOOTSTEPS}`))!;
+
+    manager.playUiSound('FOOTSTEPS');
+
+    expect(footsteps.src).toContain('/audio/sfx/footsteps.mp3');
+    expect(footsteps.plays).toBe(1);
+    expect(cue.paused).toBe(false);
   });
 });

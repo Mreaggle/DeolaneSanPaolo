@@ -1544,6 +1544,16 @@ CLOCK_TICK
 
 `TimeEngine` emits ordered hour-boundary data without depending on audio APIs. The presentation layer advances the visible clock one hour at a time and requests one `CLOCK_TICK` per displayed boundary, including sleep hours. Large advances must be presented sequentially; ticks must not be started simultaneously.
 
+### 63.2 Footsteps
+
+The canonical movement SFX is `public/audio/sfx/footsteps.mp3`, with stable runtime ID `FOOTSTEPS`. It accompanies the short approach-to-location transition and the staged successful-capture pursuit. It is a presentation-only SFX and never changes investigation or capture timing in the engine.
+
+### 63.3 Mreaggle Software sting
+
+The publisher opening uses the project-owner-supplied file `public/audio/sfx/mreaggle_software_sting.mp3`, with stable presentation ID `PUBLISHER_STING`. Playback begins before `TITLE`; at 800 ms the complete publisher logo replaces the mark-only image. The audio never loops. Its `ended` boundary starts the complete logo's final 1-second fade, after which `TITLE_ENTERED` may request the title theme.
+
+If browser autoplay policy rejects the initial attempt, playback and visual timing wait for the first click or key. The publisher sting is presentation-only and is not an engine event or music cue.
+
 ---
 
 # PART XXV — ACCEPTANCE CHECKLIST

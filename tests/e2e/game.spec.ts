@@ -4,8 +4,18 @@ import { createProfile } from '../../src/engine/CaseEngine';
 import { generateCase } from '../../src/generation/CaseGenerator';
 import type { TraitCategory } from '../../src/content';
 
-const enterFirstCase = async (page: import('@playwright/test').Page, url = './') => {
+const openTitle = async (page: import('@playwright/test').Page, url = './') => {
   await page.goto(url);
+  const splash = page.locator('.publisher-splash');
+  await expect(splash).toBeVisible();
+  if (await splash.getAttribute('data-publisher-phase') === 'waiting') await splash.click();
+  await expect(splash).toHaveAttribute('data-publisher-phase', 'mark');
+  await page.locator('.publisher-sting').evaluate((audio) => audio.dispatchEvent(new Event('ended')));
+  await expect(page.getByRole('heading', { name: 'Where is Deolane San Paolo?' })).toBeVisible({ timeout: 3_000 });
+};
+
+const enterFirstCase = async (page: import('@playwright/test').Page, url = './') => {
+  await openTitle(page, url);
   await page.getByRole('button', { name: 'NOVO JOGO' }).click();
   await page.getByLabel('NOME').fill('Detetive Bia');
   await page.getByRole('button', { name: 'TRANSMITIR' }).click();
@@ -20,8 +30,35 @@ const expectAudioCue = async (page: import('@playwright/test').Page, cue: string
   await expect(page.locator('.game-stage')).toHaveAttribute('data-audio-cue', cue);
 };
 
-test('abre o prólogo e entra no primeiro caso', async ({ page }, testInfo) => {
+test('apresenta a vinheta Mreaggle antes do título e respeita os marcos do sting', async ({ page }) => {
+  await page.addInitScript(() => {
+    HTMLMediaElement.prototype.play = function () { return Promise.resolve(); };
+  });
   await page.goto('./');
+
+  const splash = page.locator('.publisher-splash');
+  const mark = page.locator('.publisher-logo-mark');
+  const complete = page.locator('.publisher-logo-full');
+  await expect(splash).toHaveAttribute('data-publisher-phase', 'mark');
+  await expect(mark).toHaveAttribute('src', /mreaggle_software_logo_notext\.png$/);
+  await expect(complete).toHaveAttribute('src', /mreaggle_software_logo\.png$/);
+  await expect(complete).toHaveCSS('opacity', '0');
+  await expect(page.locator('.publisher-sting')).toHaveAttribute('src', /mreaggle_software_sting\.mp3$/);
+  await expect(page.locator('.site-footer')).toHaveCount(0);
+
+  await page.waitForTimeout(850);
+  await expect(splash).toHaveAttribute('data-publisher-phase', 'complete');
+  await expect(complete).toHaveCSS('opacity', '1');
+  await page.locator('.publisher-sting').evaluate((audio) => audio.dispatchEvent(new Event('ended')));
+  await expect(splash).toHaveAttribute('data-publisher-phase', 'fading');
+  await expect(page.getByRole('heading', { name: 'Where is Deolane San Paolo?' })).toHaveCount(0);
+  await page.waitForTimeout(500);
+  await expect(splash).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Where is Deolane San Paolo?' })).toBeVisible({ timeout: 1_000 });
+});
+
+test('abre o prólogo e entra no primeiro caso', async ({ page }, testInfo) => {
+  await openTitle(page);
   await expect(page.getByRole('heading', { name: 'Where is Deolane San Paolo?' })).toBeVisible();
   await expect(page.getByAltText('Where is Deolane San Paolo?')).toHaveAttribute('src', /deolane-retro\.png$/);
   await expect(page.getByAltText('Brasão da Agência Federal')).toHaveAttribute('src', /agency-emblem\.png$/);
@@ -42,7 +79,7 @@ test('abre o prólogo e entra no primeiro caso', async ({ page }, testInfo) => {
 });
 
 test('informa o prazo completo na ordem de serviço', async ({ page }) => {
-  await page.goto('./');
+  await openTitle(page);
   await page.getByRole('button', { name: 'NOVO JOGO' }).click();
   await page.getByLabel('NOME').fill('Detetive Bia');
   await page.getByRole('button', { name: 'TRANSMITIR' }).click();
@@ -60,7 +97,9 @@ test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ 
   await page.getByRole('button', { name: /BUSCAR/ }).click();
   const places = page.locator('.place-list button');
   await expect(places).toHaveCount(3);
+  await expect(page.locator('.place-icon')).toHaveCount(3);
   await places.first().click();
+  await expect(page.locator('.footstep-path')).toBeVisible();
   await expect(page.getByRole('button', { name: 'OUTRO LOCAL' })).toBeVisible();
   await expect(page.locator('.witness')).toBeVisible();
   await expect(page.getByRole('button', { name: /P\.C/ })).toBeDisabled();
@@ -89,6 +128,7 @@ test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ 
   await page.locator('.warrant-grid select').first().selectOption({ index: 1 });
   await expectAudioCue(page, 'CRIME_COMPUTER_CALCULATING');
   await page.getByRole('button', { name: 'COMPUTAR MANDADO' }).click();
+  await expect(page.locator('.warrant-lights.computing')).toBeVisible();
   await expectAudioCue(page, 'WARRANT_INCONCLUSIVE');
   await expect(page.getByRole('button', { name: /VER/ })).toBeEnabled();
   await expect(page.getByRole('button', { name: /PARTIR/ })).toBeEnabled();
@@ -128,7 +168,7 @@ test('marca local visitado e cobra 2h para reler a mesma pista', async ({ page }
 });
 
 test('mantém uma única superfície 640×400 escalada para o visor', async ({ page }, testInfo) => {
-  await page.goto('./');
+  await openTitle(page);
   const stage = page.locator('.game-stage');
   const box = await stage.boundingBox();
   const fontFamily = await stage.evaluate((element) => getComputedStyle(element).fontFamily);
@@ -144,7 +184,7 @@ test('mantém uma única superfície 640×400 escalada para o visor', async ({ p
 });
 
 test('centraliza o rodapé sem colidir com o jogo ou a página', async ({ page }) => {
-  await page.goto('./');
+  await openTitle(page);
   const stageBox = await page.locator('.game-stage').boundingBox();
   const footerBox = await page.locator('.site-footer').boundingBox();
   const viewport = page.viewportSize();
@@ -164,7 +204,7 @@ test('centraliza o rodapé sem colidir com o jogo ou a página', async ({ page }
 });
 
 test('bloqueia o menu de contexto do botão direito', async ({ page }) => {
-  await page.goto('./');
+  await openTitle(page);
   const contextMenuPrevented = await page.locator('.app-shell').evaluate((element) => {
     const event = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
     element.dispatchEvent(event);
@@ -174,7 +214,7 @@ test('bloqueia o menu de contexto do botão direito', async ({ page }) => {
 });
 
 test('bloqueia atalhos de inspeção e seleção de texto', async ({ page }) => {
-  await page.goto('./');
+  await openTitle(page);
   const blocked = await page.evaluate(() => {
     const f12 = new KeyboardEvent('keydown', { key: 'F12', bubbles: true, cancelable: true });
     const inspect = new KeyboardEvent('keydown', { key: 'I', ctrlKey: true, shiftKey: true, bubbles: true, cancelable: true });
@@ -203,7 +243,7 @@ test('cadencia textos automáticos e respeita cada entrada do nome', async ({ pa
     (window as typeof window & { __uiSoundPlays: { typewriter: number[]; mouse: number[] } }).__uiSoundPlays.typewriter.length = 0;
   });
 
-  await page.goto('./');
+  await openTitle(page);
   await page.getByRole('button', { name: 'NOVO JOGO' }).click();
   await page.waitForTimeout(650);
   const automatic = (await soundPlays()).typewriter;
@@ -219,7 +259,7 @@ test('cadencia textos automáticos e respeita cada entrada do nome', async ({ pa
 });
 
 test('usa cursores de mouse solto e pressionado somente no PC', async ({ page }, testInfo) => {
-  await page.goto('./');
+  await openTitle(page);
   const shell = page.locator('.app-shell');
   const button = page.getByRole('button', { name: 'NOVO JOGO' });
   const shellCursor = () => shell.evaluate((element) => getComputedStyle(element).cursor);
@@ -292,6 +332,11 @@ test('percorre um caso funcional e mantém as novas animações legíveis', asyn
       await expect(page.locator('.witness')).toBeVisible({ timeout: 5_000 });
       await page.locator('.speech .typewriter').click();
       await page.getByRole('button', { name: 'OUTRO LOCAL' }).click();
+      await page.locator('.place-list button').nth(1).click();
+      await expect(page.locator('.henchman-crossing.sneak')).toBeVisible({ timeout: 5_000 });
+      await expect(page.locator('.witness')).toBeVisible({ timeout: 6_000 });
+      await page.locator('.speech .typewriter').click();
+      await page.getByRole('button', { name: 'OUTRO LOCAL' }).click();
     } else if (index === definition.route.length - 1) {
       await expectAudioCue(page, 'FINAL_CITY');
     } else {
@@ -302,7 +347,10 @@ test('percorre um caso funcional e mantém as novas animações legíveis', asyn
   const hideout = content.places.find((place) => place.id === definition.finalHideoutPlaceId)!;
   await page.getByRole('button', { name: /BUSCAR/ }).click();
   await page.locator('.place-list button').filter({ hasText: hideout.name }).click();
-  await expect(page.locator('.result-animation')).toBeVisible();
+  await expect(page.locator('.capture-sequence')).toBeVisible();
+  await expect(page.locator('.capture-fugitive')).toHaveCount(1);
+  await expect(page.locator('.capture-agent')).toHaveCount(3);
+  await expect(page.locator('.capture-escort')).toHaveCount(1);
   await expectAudioCue(page, 'CRIMINAL_REVEALED');
   await expect(page.getByRole('button', { name: 'AGUARDE A SEQUÊNCIA...' })).toBeDisabled();
   await expect(page.getByRole('button', { name: 'RELATÓRIO À SEDE' })).toBeEnabled({ timeout: 5_000 });
