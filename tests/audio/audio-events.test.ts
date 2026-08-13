@@ -36,12 +36,11 @@ describe('mapeamento semântico da trilha', () => {
   });
 
   it('resolve a chegada pelo evento mais específico', () => {
-    expect(arrivalAudioEvent('CORRECT_FORWARD', false, false)).toBe('ARRIVED_CORRECT_CITY');
-    expect(arrivalAudioEvent('CORRECT_FORWARD', true, false)).toBe('HENCHMAN_APPEARED');
-    expect(arrivalAudioEvent('WRONG_CITY', false, false)).toBe('COLD_TRAIL_CONFIRMED');
-    expect(arrivalAudioEvent('OLD_ROUTE_CITY', false, false)).toBe('COLD_TRAIL_CONFIRMED');
-    expect(arrivalAudioEvent('TRAIL_ANCHOR', false, false)).toBeUndefined();
-    expect(arrivalAudioEvent('FINAL_CITY', false, false)).toBe('FINAL_CITY_REACHED');
-    expect(arrivalAudioEvent('FINAL_CITY', false, true)).toBeUndefined();
+    expect(arrivalAudioEvent('CORRECT_FORWARD', false)).toBe('ARRIVED_CORRECT_CITY');
+    expect(arrivalAudioEvent('WRONG_CITY', false)).toBe('COLD_TRAIL_CONFIRMED');
+    expect(arrivalAudioEvent('OLD_ROUTE_CITY', false)).toBe('COLD_TRAIL_CONFIRMED');
+    expect(arrivalAudioEvent('TRAIL_ANCHOR', false)).toBeUndefined();
+    expect(arrivalAudioEvent('FINAL_CITY', false)).toBe('FINAL_CITY_REACHED');
+    expect(arrivalAudioEvent('FINAL_CITY', true)).toBeUndefined();
   });
 });

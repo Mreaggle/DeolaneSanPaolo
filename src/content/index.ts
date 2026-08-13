@@ -6,7 +6,7 @@ import { suspects } from './data/suspects';
 import { stolenItems } from './data/items';
 
 export const content = Object.freeze({
-  contentVersion: 1,
+  contentVersion: 2,
   cities,
   connections,
   places,

@@ -725,10 +725,12 @@ Case start:
 0
 ```
 
-Deadline:
+The first actionable runtime state is `elapsedHours = 2` (Monday 09:00), after the opening portion of the mandatory sleep window.
+
+Canonical deadline:
 
 ```text
-120
+154
 ```
 
 ---
@@ -740,7 +742,7 @@ This avoids calendar arithmetic bugs.
 UI derives:
 
 ```text
-Monday 09:00 + elapsedHours
+Monday 07:00 + elapsedHours
 ```
 
 for presentation.
@@ -760,6 +762,8 @@ class TimeEngine {
 }
 ```
 
+`TimeResult` includes ordered hour-boundary events tagged as action or mandatory sleep. The presentation layer consumes those events sequentially for clock updates and SFX; `TimeEngine` remains independent from browser audio.
+
 ---
 
 ## 33. Exclusive deadline
@@ -767,8 +771,10 @@ class TimeEngine {
 Expired if:
 
 ```ts
-elapsedHours >= 120
+elapsedHours >= caseDefinition.deadlineHour
 ```
+
+The canonical deadline is 154 elapsed hours from Monday 07:00 to Sunday 17:00. `TimeEngine` inserts sleep from 00:00 to 09:00 and stops at the first boundary that reaches the exclusive deadline.
 
 ---
 
@@ -1034,7 +1040,7 @@ interface CaseDefinition {
   finalHideoutPlaceId: PlaceId;
 
   startHour: 0;
-  deadlineHour: 120;
+  deadlineHour: 154;
 }
 ```
 

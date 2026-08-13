@@ -34,7 +34,8 @@ export const audioUrl = (filename: string): string => `${import.meta.env.BASE_UR
 
 export const uiSoundRegistry = {
   TYPEWRITER: 'typewriter.mp3',
-  MOUSE_CLICK: 'mouse_click.mp3'
+  MOUSE_CLICK: 'mouse_click.mp3',
+  CLOCK_TICK: 'clock_tick.mp3'
 } as const;
 
 export type UiSoundId = keyof typeof uiSoundRegistry;

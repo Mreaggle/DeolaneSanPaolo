@@ -1,4 +1,6 @@
 import type { GameState } from '../engine/types';
+import { content } from '../content';
+import { FIRST_ACTION_ELAPSED_HOURS } from '../engine/TimeEngine';
 
 const KEY = 'deolane-san-paolo.save';
 
@@ -23,8 +25,16 @@ export class SaveRepository {
     try {
       const parsed = JSON.parse(raw) as GameState;
       if (parsed.schemaVersion !== 1) return undefined;
+      if (parsed.activeCase && parsed.activeCase.definition.contentVersion < content.contentVersion) {
+        delete parsed.activeCase;
+      }
       if (parsed.activeCase && !parsed.activeCase.runtime.audioFlags) {
         parsed.activeCase.runtime.audioFlags = { timeWarningPlayed: false, finalCityPlayed: false };
+      }
+      if (parsed.activeCase && !parsed.activeCase.runtime.clockVersion) {
+        parsed.activeCase.runtime.elapsedHours += FIRST_ACTION_ELAPSED_HOURS;
+        parsed.activeCase.runtime.clockVersion = 2;
+        parsed.activeCase.definition.deadlineHour = 154;
       }
       return parsed;
     } catch {

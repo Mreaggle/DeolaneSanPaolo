@@ -49,7 +49,7 @@ test('informa o prazo completo na ordem de serviço', async ({ page }) => {
   await page.getByRole('button', { name: 'AGUARDAR BOLETIM' }).click();
   await page.getByRole('button', { name: 'RECEBER MISSÃO' }).click();
 
-  await expect(page.getByText(/PRAZO: SÁBADO, 09:00 \(120 HORAS\)/)).toBeVisible();
+  await expect(page.getByText(/PRAZO: DOMINGO, 17:00 \(154 HORAS\)/)).toBeVisible();
 });
 
 test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ page }) => {
@@ -105,7 +105,7 @@ test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ 
   await expect(page.locator('.city-brief')).toBeVisible({ timeout: 5_000 });
 });
 
-test('marca local visitado e permite reler a mesma pista sem custo', async ({ page }) => {
+test('marca local visitado e cobra 2h para reler a mesma pista', async ({ page }) => {
   await enterFirstCase(page);
   await page.getByRole('button', { name: /BUSCAR/ }).click();
   const firstPlace = page.locator('.place-list button').first();
@@ -123,7 +123,8 @@ test('marca local visitado e permite reler a mesma pista sem custo', async ({ pa
   await page.locator('.speech .typewriter').click();
 
   await expect(page.locator('.speech .typewriter')).toHaveText(clue ?? '');
-  await expect(page.locator('.city-header time')).toHaveText(timeAfterInvestigation ?? '');
+  expect(timeAfterInvestigation).toBe('Segunda, 11:00');
+  await expect(page.locator('.city-header time')).toHaveText('Segunda, 13:00');
 });
 
 test('mantém uma única superfície 640×400 escalada para o visor', async ({ page }, testInfo) => {
@@ -277,6 +278,10 @@ test('percorre um caso funcional e mantém as novas animações legíveis', asyn
     await expect(page.locator('.scene > img')).toHaveAttribute('src', new RegExp(`/assets/cities/${city.id}\\.png$`));
     expect(await page.locator('.scene > img').getAttribute('src')).not.toBe(sceneBeforeTravel);
     if (index === definition.route.length - 2) {
+      await expectAudioCue(page, 'HOT_TRAIL');
+      await expect(page.locator('.henchman-crossing')).toHaveCount(0);
+      await page.getByRole('button', { name: /BUSCAR/ }).click();
+      await page.locator('.place-list button').first().click();
       await expectAudioCue(page, 'SUSPICIOUS_HENCHMAN');
       const henchman = page.locator('.henchman-crossing i');
       await expect(henchman).toBeVisible();
@@ -284,10 +289,7 @@ test('percorre um caso funcional e mantém as novas animações legíveis', asyn
       await page.waitForTimeout(500);
       const henchmanLater = await henchman.evaluate((element) => parseFloat(getComputedStyle(element).left));
       expect(henchmanLater).toBeGreaterThan(henchmanStart + 10);
-      await expect(page.getByText(/CAPANGA DA T\.C\.C\./)).toBeVisible();
-      await page.getByRole('button', { name: /BUSCAR/ }).click();
-      await page.locator('.place-list button').first().click();
-      await expectAudioCue(page, 'CULPRIT_VERY_CLOSE');
+      await expect(page.locator('.witness')).toBeVisible({ timeout: 5_000 });
       await page.locator('.speech .typewriter').click();
       await page.getByRole('button', { name: 'OUTRO LOCAL' }).click();
     } else if (index === definition.route.length - 1) {
@@ -307,7 +309,7 @@ test('percorre um caso funcional e mantém as novas animações legíveis', asyn
   await expectAudioCue(page, 'CASE_CLOSED');
 });
 
-test('troca imediatamente a viagem por pista fria ao chegar a uma cidade errada', async ({ page }) => {
+test('mantém a pista fria implícita ao chegar a uma cidade errada', async ({ page }) => {
   const seed = 'cold-trail-audio';
   const definition = generateCase(createProfile('Detetive Bia'), seed, content);
   const start = definition.route[0]!;
@@ -320,7 +322,8 @@ test('troca imediatamente a viagem por pista fria ao chegar a uma cidade errada'
   await page.locator('.destination-list button').filter({ hasText: wrongCity.name }).click();
   await expectAudioCue(page, 'AIRPLANE_TRAVEL');
   await expect(page.locator('.city-brief')).toBeVisible({ timeout: 5_000 });
-  await expect(page.getByText(/Pista fria/)).toBeVisible();
+  await expect(page.getByText(/CHEGADA REGISTRADA/)).toBeVisible();
+  await expect(page.getByText(/PISTA FRIA|COLD TRAIL/i)).toHaveCount(0);
   await expectAudioCue(page, 'COLD_TRAIL');
 });
 
@@ -353,6 +356,9 @@ test('mantém viagens, perseguição e fotos visíveis com redução de moviment
     expect(await page.locator('.scene > img').getAttribute('src')).not.toBe(previousSrc);
 
     if (index === definition.route.length - 2) {
+      await expect(page.locator('.henchman-crossing')).toHaveCount(0);
+      await page.getByRole('button', { name: /BUSCAR/ }).click();
+      await page.locator('.place-list button').first().click();
       const runner = page.locator('.henchman-crossing i');
       await expect(runner).toBeVisible();
       const runnerStart = await runner.evaluate((element) => ({

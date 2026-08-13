@@ -1,5 +1,5 @@
 import type { CaseDefinition, CaseRuntimeState, GeneratedCityDefinition } from './types';
-import { investigationCost } from './TimeEngine';
+import { investigationCost, REVIEW_COST } from './TimeEngine';
 
 export const locationKey = (cityId: string, placeId: string): string => `${cityId}:${placeId}`;
 
@@ -17,8 +17,7 @@ export const resolveInvestigation = (
     place,
     key,
     reviewed,
-    timeCost: reviewed ? 0 : investigationCost(runtime.investigationsThisVisit),
+    timeCost: reviewed ? REVIEW_COST : investigationCost(runtime.investigationsThisVisit),
     finalEncounter: runtime.currentCityId === definition.finalCityId && placeId === definition.finalHideoutPlaceId
   };
 };
-

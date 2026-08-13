@@ -5,7 +5,7 @@
   import { traitLabels, traitValueLabels } from './content';
   import type { TraitCategory } from './content';
   import type { WarrantInput } from './engine/types';
-  import { displayCaseTime, investigationCost } from './engine/TimeEngine';
+  import { displayCaseTime } from './engine/TimeEngine';
   import { AudioManager, type AudioSnapshot } from './audio/AudioManager';
   import { preloadGroups, type AudioCueId } from './audio/audioRegistry';
   import { arrivalAudioEvent, cueForAudioEvent, type AudioEventId } from './audio/audioEvents';
@@ -25,6 +25,7 @@
   let detectingPlayer = false;
   let warrantBusy = false;
   let resultAnimationComplete = true;
+  let henchmanAnimationComplete = true;
   let actionsAreDisabled = false;
   let travelAnimationRun = 0;
   let sceneAssetId = 'agency-emblem';
@@ -33,6 +34,7 @@
   let showSupport = false;
   let pixCopied = false;
   let lastAudiblePlayerName = '';
+  let lastHourTickSerial = 0;
   const categories: TraitCategory[] = ['sex', 'hair', 'hobby', 'feature', 'vehicle'];
   const supportPixCode = '00020126540014BR.GOV.BCB.PIX0111470052348470217DEOLANE-SAN-PAOLO5204000053039865802BR5916Kauan Crema Dias6009SAO PAULO62140510K1EVZGAMpp63044A02';
   const supportPaymentUrl = 'https://nubank.com.br/cobrar/18cvy/6a7bd4b6-3ce0-4c59-9431-5f49cd51dd9d';
@@ -119,8 +121,8 @@
 
   const screenAudioKey = (): string => {
     const event = $uiState.event;
-    const detail = event?.type === 'ARRIVED' ? `${event.cityId}:${event.classification}:${event.henchmanAppeared}`
-      : event?.type === 'INVESTIGATION_COMPLETED' ? event.clue.id
+    const detail = event?.type === 'ARRIVED' ? `${event.cityId}:${event.classification}`
+      : event?.type === 'INVESTIGATION_COMPLETED' ? `${event.clue.id}:${event.henchmanAppeared}`
       : event?.type === 'CASE_FAILED' ? event.status
       : event?.type ?? '';
     return `${$gameState?.activeCase?.definition.id ?? 'none'}:${$uiState.screen}:${detail}`;
@@ -154,14 +156,14 @@
     else if ($uiState.screen === 'warrant' && event?.type === 'WARRANT_ISSUED') play('WARRANT_ISSUED');
     else if ($uiState.screen === 'warrant' && (event?.type === 'WARRANT_NO_MATCH' || event?.type === 'WARRANT_MULTIPLE_MATCHES')) play('WARRANT_INCONCLUSIVE');
     else if ($uiState.screen === 'witness' && active && event?.type === 'INVESTIGATION_COMPLETED' && !event.reviewed) {
-      if (active.runtime.currentCityId === active.definition.finalCityId && selectedPlaceId !== active.definition.finalHideoutPlaceId) {
+      if (event.henchmanAppeared) {
+        play('HENCHMAN_APPEARED');
+      } else if (active.runtime.currentCityId === active.definition.finalCityId && selectedPlaceId !== active.definition.finalHideoutPlaceId) {
         play('FINAL_HIDEOUT_MISSED');
-      } else if (active.definition.route.indexOf(active.runtime.currentCityId) === active.definition.route.length - 2 && active.runtime.investigationsThisVisit === 1) {
-        play('CULPRIT_PROXIMITY_HIGH');
       }
     }
     else if ($uiState.screen === 'city' && event?.type === 'ARRIVED') {
-      const arrivalEvent = arrivalAudioEvent(event.classification, event.henchmanAppeared, active?.runtime.audioFlags.finalCityPlayed ?? false);
+      const arrivalEvent = arrivalAudioEvent(event.classification, active?.runtime.audioFlags.finalCityPlayed ?? false);
       if (arrivalEvent) play(arrivalEvent);
       if (arrivalEvent === 'FINAL_CITY_REACHED') {
         actions.markAudioFlag('finalCityPlayed');
@@ -200,11 +202,11 @@
     if (!event) return '';
     if (event.type === 'INVESTIGATION_COMPLETED') return event.clue.text;
     if (event.type === 'ARRIVED') return ({
-      CORRECT_FORWARD: event.henchmanAppeared ? 'UM CAPANGA DA T.C.C. SUMIU ENTRE OS PRÉDIOS. VOCÊ ESTÁ PERTO!' : 'A pista está quente. A T.C.C. passou por aqui.',
-      FINAL_CITY: 'Movimento suspeito confirmado. O esconderijo está nesta cidade.',
-      WRONG_CITY: 'Pista fria. Ninguém viu a T.C.C. por aqui.',
-      OLD_ROUTE_CITY: 'Você voltou a uma pista antiga.',
-      TRAIL_ANCHOR: 'De volta ao último paradeiro confirmado.'
+      CORRECT_FORWARD: 'CHEGADA REGISTRADA. CONSULTE AS TESTEMUNHAS LOCAIS.',
+      FINAL_CITY: 'CHEGADA REGISTRADA. INVESTIGUE OS LOCAIS DISPONÍVEIS.',
+      WRONG_CITY: 'CHEGADA REGISTRADA. CONSULTE AS TESTEMUNHAS LOCAIS.',
+      OLD_ROUTE_CITY: 'VOCÊ RETORNOU A UMA CIDADE JÁ VISITADA.',
+      TRAIL_ANCHOR: 'VOCÊ RETORNOU AO ÚLTIMO PARADEIRO REGISTRADO.'
     }[event.classification]);
     if (event.type === 'WARRANT_ISSUED') return `MANDADO EMITIDO PARA ${suspectById(event.suspectId)?.name.toUpperCase()}.`;
     if (event.type === 'WARRANT_NO_MATCH') return 'NENHUM SUSPEITO CORRESPONDE A ESSES DADOS.';
@@ -219,18 +221,12 @@
   const visit = (placeId: string) => {
     selectedPlaceId = placeId;
     witnessTextComplete = false;
+    henchmanAnimationComplete = false;
     const active = $gameState?.activeCase;
     if (active && active.runtime.currentCityId === active.definition.finalCityId && placeId === active.definition.finalHideoutPlaceId) {
       resultAnimationComplete = false;
     }
     actions.investigate(placeId);
-  };
-
-  const placeCost = (placeId: string): number => {
-    const runtime = $gameState?.activeCase?.runtime;
-    if (!runtime) return 0;
-    if (runtime.visitedLocationKeys.includes(`${runtime.currentCityId}:${placeId}`)) return 0;
-    return investigationCost(runtime.investigationsThisVisit);
   };
 
   const placeVisited = (placeId: string): boolean => {
@@ -276,7 +272,11 @@
     if (key === '4' || key === 'c') openWarrantComputer();
   };
 
-  $: actionsAreDisabled = $uiState.screen === 'traveling' || ($uiState.screen === 'witness' && !witnessTextComplete);
+  $: if (($uiState.hourTickSerial ?? 0) > lastHourTickSerial) {
+    lastHourTickSerial = $uiState.hourTickSerial ?? 0;
+    audioManager?.playUiSound('CLOCK_TICK');
+  }
+  $: actionsAreDisabled = Boolean($uiState.timeAdvancing) || $uiState.screen === 'traveling' || ($uiState.screen === 'witness' && !witnessTextComplete);
   $: sceneAssetId = $uiState.screen === 'witness' && selectedPlaceId
     ? placeById(selectedPlaceId)?.backgroundAssetId ?? 'agency-emblem'
     : $uiState.screen === 'dossiers'
@@ -291,7 +291,7 @@
     $uiState.screen,
     $gameState?.activeCase?.runtime.currentCityId ?? 'none',
     selectedPlaceId,
-    $uiState.event?.type === 'ARRIVED' ? `${$uiState.event.cityId}:${$uiState.event.classification}:${$uiState.event.henchmanAppeared}` : $uiState.event?.type ?? 'none',
+    $uiState.event?.type === 'ARRIVED' ? `${$uiState.event.cityId}:${$uiState.event.classification}` : $uiState.event?.type ?? 'none',
     travelAnimationRun
   ].join(':');
 
@@ -394,7 +394,7 @@
           <img class="full-art" src={asset('assignment-background')} alt="Sala de briefing" />
           <div class="briefing">
             <h2>ORDEM DE SERVIÇO {$gameState.activeCase.definition.id.slice(-6).toUpperCase()}</h2>
-            <TypewriterText text={`AGENTE: ${$gameState.profile.name}\nPATENTE: ${rankById($gameState.activeCase.definition.rankId)?.name}\nPARTIDA: ${cityById($gameState.activeCase.definition.route[0])?.name}\nOBJETO: ${itemById($gameState.activeCase.definition.stolenItemId)?.name}\nPRAZO: SÁBADO, 09:00 (${$gameState.activeCase.definition.deadlineHour} HORAS)\n\nSIGA AS PISTAS GEOGRÁFICAS. IDENTIFIQUE O LADRÃO. EMITA O MANDADO ANTES DO ENCONTRO FINAL.`} speed={8} onaudiopulse={playTypewriter} />
+            <TypewriterText text={`AGENTE: ${$gameState.profile.name}\nPATENTE: ${rankById($gameState.activeCase.definition.rankId)?.name}\nPARTIDA: ${cityById($gameState.activeCase.definition.route[0])?.name}\nOBJETO: ${itemById($gameState.activeCase.definition.stolenItemId)?.name}\nPRAZO: ${displayCaseTime($gameState.activeCase.definition.deadlineHour).toUpperCase()} (${$gameState.activeCase.definition.deadlineHour} HORAS)\n\nSIGA AS PISTAS GEOGRÁFICAS. IDENTIFIQUE O LADRÃO. EMITA O MANDADO ANTES DO ENCONTRO FINAL.`} speed={8} onaudiopulse={playTypewriter} />
             <PixelButton label="INICIAR INVESTIGAÇÃO" onactivate={() => actions.go('city')} />
           </div>
         </section>
@@ -420,16 +420,16 @@
           <div class="left-panel">
             <header class="city-header">
               <div><b>{cityById($gameState.activeCase.runtime.currentCityId)?.name}</b><small>{cityById($gameState.activeCase.runtime.currentCityId)?.country}</small></div>
-              <time>{displayCaseTime($gameState.activeCase.runtime.elapsedHours)}</time>
+              <time>{displayCaseTime($uiState.displayedElapsedHours ?? $gameState.activeCase.runtime.elapsedHours)}</time>
             </header>
             <div class="scene">
               {#key scenePresentationKey}
                 <img data-scene-asset={sceneAssetId} data-city-id={$gameState.activeCase.runtime.currentCityId} src={asset(sceneAssetId)} alt={sceneAlt} />
-                {#if $uiState.screen === 'city' && $uiState.event?.type === 'ARRIVED' && $uiState.event.henchmanAppeared}
-                  <div class="henchman-crossing" data-animation-run={travelAnimationRun} aria-label="Um capanga listrado da T.C.C. cruza a cidade correndo"><i style={`background-image:url(${asset('henchman-run-spritesheet')})`}></i></div>
+                {#if $uiState.screen === 'witness' && $uiState.event?.type === 'INVESTIGATION_COMPLETED' && $uiState.event.henchmanAppeared && !henchmanAnimationComplete}
+                  <div class="henchman-crossing" aria-label="Um capanga listrado da T.C.C. cruza o local correndo"><i style={`background-image:url(${asset('henchman-run-spritesheet')})`} on:animationend={() => { henchmanAnimationComplete = true; }}></i></div>
                 {/if}
               {/key}
-              <div class="scene-label">{$gameState.activeCase.runtime.elapsedHours}/120 HORAS</div>
+              <div class="scene-label">{$uiState.displayedElapsedHours ?? $gameState.activeCase.runtime.elapsedHours}/{$gameState.activeCase.definition.deadlineHour} HORAS</div>
             </div>
           </div>
           <div class="right-panel">
@@ -444,7 +444,7 @@
                 {@const currentCity = cityById($gameState.activeCase.runtime.currentCityId)}
                 <h2>{currentCity?.name} · {currentCity?.country}</h2>
                 {#if $uiState.event?.type === 'ARRIVED' && ['CORRECT_FORWARD', 'FINAL_CITY'].includes($uiState.event.classification)}
-                  <div class="trail-animation-cue" data-animation-run={travelAnimationRun} aria-label="Pista quente"><i style={`background-image:url(${asset('trail-alert-spritesheet')})`}></i></div>
+                  <div class="trail-animation-cue" data-animation-run={travelAnimationRun} aria-label="Sinal da perseguição"><i style={`background-image:url(${asset('trail-alert-spritesheet')})`}></i></div>
                 {/if}
                 <p class="city-intro">A Agência Federal registra sua chegada a {currentCity?.name}, em {currentCity?.country}. A fotografia oficial da cidade está exibida ao lado.</p>
                 {#if $uiState.event?.type === 'ARRIVED'}<p class="trail-note">{eventText($uiState.event)}</p>{/if}
@@ -463,19 +463,24 @@
                 <h2>ONDE INVESTIGAR?</h2>
                 <div class="place-list">
                   {#each currentGeneratedCity()?.places ?? [] as generated, index}
-                    <button class:visited={placeVisited(generated.placeId)} on:click={() => visit(generated.placeId)}><span>{index + 1}</span>{placeById(generated.placeId)?.name}<small>{placeVisited(generated.placeId) ? 'VISITADO' : `${placeCost(generated.placeId)}H`}</small></button>
+                    <button class:visited={placeVisited(generated.placeId)} on:click={() => visit(generated.placeId)}><span>{index + 1}</span>{placeById(generated.placeId)?.name}<small>{placeVisited(generated.placeId) ? 'VISITADO' : 'CONSULTAR'}</small></button>
                   {/each}
                 </div>
-                <p>Revisitar um local já consultado não gasta tempo.</p>
+                <p>Reconsultar um local exibe o mesmo depoimento e ocupa novo tempo de campo.</p>
               {:else if $uiState.screen === 'witness'}
                 {@const generated = currentGeneratedCity()?.places.find((entry) => entry.placeId === selectedPlaceId)}
                 {@const witness = placeById(selectedPlaceId)?.witnesses.find((entry) => entry.id === generated?.witnessId)}
-                <h2>{placeById(selectedPlaceId)?.name ?? 'DEPOIMENTO'}</h2>
-                <div class="witness-row">
-                  <img class="witness" src={asset(witness?.assetId ?? 'agency-clerk-portrait')} alt={witness?.name ?? 'Testemunha'} />
-                  <div class="speech"><b class="witness-name">{witness?.name ?? 'TESTEMUNHA'}</b><TypewriterText text={eventText($uiState.event)} speed={30} onaudiopulse={playTypewriter} oninteract={() => { witnessTextComplete = true; }} onadvance={() => actions.go('places')} /></div>
-                </div>
-                <PixelButton label="OUTRO LOCAL" onactivate={() => actions.go('places')} />
+                {#if $uiState.event?.type === 'INVESTIGATION_COMPLETED' && $uiState.event.henchmanAppeared && !henchmanAnimationComplete}
+                  <h2>MOVIMENTO SUSPEITO</h2>
+                  <p>ALGUÉM CRUZOU O LOCAL ANTES QUE A TESTEMUNHA PUDESSE FALAR.</p>
+                {:else}
+                  <h2>{placeById(selectedPlaceId)?.name ?? 'DEPOIMENTO'}</h2>
+                  <div class="witness-row">
+                    <img class="witness" src={asset(witness?.assetId ?? 'agency-clerk-portrait')} alt={witness?.name ?? 'Testemunha'} />
+                    <div class="speech"><b class="witness-name">{witness?.name ?? 'TESTEMUNHA'}</b><TypewriterText text={eventText($uiState.event)} speed={30} onaudiopulse={playTypewriter} oninteract={() => { witnessTextComplete = true; }} onadvance={() => actions.go('places')} /></div>
+                  </div>
+                  <PixelButton label="OUTRO LOCAL" onactivate={() => actions.go('places')} />
+                {/if}
               {:else if $uiState.screen === 'travel'}
                 <h2>CONEXÕES DISPONÍVEIS</h2>
                 <div class="map-box"><img src={asset('world-map')} alt="Mapa-múndi" />
@@ -524,7 +529,7 @@
                       {#if eventText($uiState.event)}
                         <TypewriterText text={eventText($uiState.event)} speed={18} onaudiopulse={playTypewriter} />
                       {:else}
-                        PREENCHA SÓ OS TRAÇOS CONFIRMADOS. CONSULTA: 2 HORAS.
+                        PREENCHA SOMENTE OS TRAÇOS CONFIRMADOS PELAS TESTEMUNHAS.
                       {/if}
                     </div>
                     <div class="warrant-submit"><PixelButton label={warrantBusy ? 'CALCULANDO...' : 'COMPUTAR MANDADO'} disabled={warrantBusy} onactivate={computeWarrant} /></div>
@@ -549,7 +554,12 @@
             <div class="result-animation" aria-label={$uiState.event?.type === 'CASE_SOLVED' ? 'Animação de captura' : 'Animação de fuga'}><i class:escape={$uiState.event?.type !== 'CASE_SOLVED'} style={`background-image:url(${asset($uiState.event?.type === 'CASE_SOLVED' ? 'capture-spritesheet' : 'escape-spritesheet')})`} on:animationend={finishResultAnimation}></i></div>
             <p>{$uiState.event?.type === 'CASE_SOLVED' ? `${suspectById($gameState.activeCase.definition.culpritId)?.name} foi detido. O objeto roubado voltou ao acervo.` : statusText($gameState.activeCase.runtime.status)}</p>
             <p>TEMPO: {$gameState.activeCase.runtime.elapsedHours}H · CASOS RESOLVIDOS: {$gameState.profile.solvedCases}</p>
-            <PixelButton label={resultAnimationComplete ? 'RELATÓRIO À SEDE' : 'AGUARDE A SEQUÊNCIA...'} disabled={!resultAnimationComplete} onactivate={actions.afterResult} />
+            {#if $uiState.event?.type === 'CASE_SOLVED'}
+              <PixelButton label={resultAnimationComplete ? 'RELATÓRIO À SEDE' : 'AGUARDE A SEQUÊNCIA...'} disabled={!resultAnimationComplete} onactivate={actions.afterResult} />
+            {:else}
+              <p>TENTAR NOVAMENTE?</p>
+              <div class="retry-actions"><PixelButton label="SIM" disabled={!resultAnimationComplete} onactivate={actions.retry} /><PixelButton label="NÃO" disabled={!resultAnimationComplete} onactivate={actions.declineRetry} /></div>
+            {/if}
           </div>
         </section>
       {:else if $uiState.screen === 'promotion' && $gameState}
@@ -724,6 +734,7 @@
   @keyframes result-frames { to { background-position: -192px 0; } }
   .result-card h2 { margin: -14px -14px 15px; padding: 7px; color: #fff; background: #a30b12; }
   .result-card.success h2, .result-card.success > h2 { background: #196c31; }
+  .retry-actions { display: flex; justify-content: center; gap: 12px; }
   .promotion-screen h1 { color: #9f0d13; font-size: 28px; text-transform: uppercase; }
   .rank-badge { float: right; width: 72px; height: 72px; margin: 0 10px; image-rendering: pixelated; }
   .hall-screen .result-card { color: #fff; background: #111; border-color: #ffd42a; }

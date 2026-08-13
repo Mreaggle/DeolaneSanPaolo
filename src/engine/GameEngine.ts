@@ -4,12 +4,12 @@ import { SeededRng } from '../generation/rng/SeededRng';
 import { resolveInvestigation } from './InvestigationEngine';
 import { applySolvedCase } from './ProgressionEngine';
 import { classifyDestination } from './RouteEngine';
-import { advanceTime } from './TimeEngine';
+import { advanceTime, FIRST_ACTION_ELAPSED_HOURS } from './TimeEngine';
 import { travelHours } from './TravelEngine';
 import { matchSuspects } from './WarrantEngine';
 import type {
   ActiveCase, CaseRuntimeState, EngineResult, GameState, GeneratedCityDefinition,
-  WrongCityDefinition, WarrantInput
+  TimeAdvance, WrongCityDefinition, WarrantInput
 } from './types';
 
 const clone = <T>(value: T): T => structuredClone(value);
@@ -42,7 +42,8 @@ export class GameEngine {
       currentCityId: definition.route[0]!,
       furthestRouteIndex: 0,
       trailAnchorCityId: definition.route[0]!,
-      elapsedHours: 0,
+      elapsedHours: FIRST_ACTION_ELAPSED_HOURS,
+      clockVersion: 2,
       investigationsThisVisit: 0,
       visitedLocationKeys: [],
       discoveredClueIds: [],
@@ -77,8 +78,8 @@ export class GameEngine {
             id: `${seed}:${index}`,
             family: oldTrail ? 'old-trail' : 'negative',
             text: oldTrail
-              ? 'A T.C.C. passou por aqui antes, mas essa pista já esfriou.'
-              : ['Ninguém com essa descrição passou por aqui.', 'A T.C.C. não deixou sinal nesta cidade.', 'Essa pista esfriou. Eu revisaria o último paradeiro confirmado.'][index]!
+              ? 'Reconheço essa descrição, mas faz tempo que ninguém assim aparece por aqui.'
+              : ['Ninguém com essa descrição passou por aqui.', 'Não vi ninguém ligado à T.C.C. nesta cidade.', 'Eu revisaria o último paradeiro que você confirmou.'][index]!
           }
         };
       })
@@ -104,28 +105,34 @@ export class GameEngine {
     const next = clone(this.stateValue);
     const active = next.activeCase!;
     const result = resolveInvestigation(active.definition, active.runtime, city, placeId);
+    const firstNewInvestigation = !result.reviewed && active.runtime.investigationsThisVisit === 0;
+    const routeIndex = active.definition.route.indexOf(active.runtime.currentCityId);
+    const henchmanAppeared = firstNewInvestigation
+      && active.runtime.currentCityId === active.runtime.trailAnchorCityId
+      && routeIndex === active.definition.route.length - 2;
+    const time = advanceTime(active.runtime.elapsedHours, result.timeCost, active.definition.deadlineHour);
+    active.runtime.elapsedHours = time.elapsedHours;
     if (!result.reviewed) {
-      const time = advanceTime(active.runtime.elapsedHours, result.timeCost);
-      active.runtime.elapsedHours = time.elapsedHours;
       active.runtime.visitedLocationKeys.push(result.key);
       active.runtime.investigationsThisVisit += 1;
-      if (time.expired) return this.fail(next, 'FAILED_TIME');
-      active.runtime.discoveredClueIds.push(result.place.clue.id);
     }
+    if (time.expired) return this.fail(next, 'FAILED_TIME', time);
+    if (!result.reviewed) active.runtime.discoveredClueIds.push(result.place.clue.id);
     if (result.finalEncounter && !result.reviewed) {
       const warrant = active.runtime.activeWarrantSuspectId;
-      if (!warrant) return this.fail(next, 'FAILED_NO_WARRANT');
-      if (warrant !== active.definition.culpritId) return this.fail(next, 'FAILED_WRONG_WARRANT');
+      if (!warrant) return this.fail(next, 'FAILED_NO_WARRANT', time);
+      if (warrant !== active.definition.culpritId) return this.fail(next, 'FAILED_WRONG_WARRANT', time);
       active.runtime.status = 'SOLVED';
       const progress = applySolvedCase(next.profile, active.definition.culpritId, active.definition.route[0]!, active.definition.stolenItemId);
       next.profile = progress.profile;
       this.commit(next);
-      return { state: this.state, event: { type: 'CASE_SOLVED', promoted: progress.promoted } };
+      return { state: this.state, event: { type: 'CASE_SOLVED', promoted: progress.promoted }, timeAdvance: time };
     }
     this.commit(next);
     return {
       state: this.state,
-      event: { type: 'INVESTIGATION_COMPLETED', clue: result.place.clue, reviewed: result.reviewed, finalEncounter: false }
+      event: { type: 'INVESTIGATION_COMPLETED', clue: result.place.clue, reviewed: result.reviewed, finalEncounter: false, henchmanAppeared },
+      timeAdvance: time
     };
   }
 
@@ -136,46 +143,59 @@ export class GameEngine {
     const next = clone(this.stateValue);
     const active = next.activeCase!;
     const hours = travelHours(this.gameContent, active.runtime.currentCityId, cityId, active.runtime.trailAnchorCityId);
-    const time = advanceTime(active.runtime.elapsedHours, hours);
+    const time = advanceTime(active.runtime.elapsedHours, hours, active.definition.deadlineHour);
     active.runtime.elapsedHours = time.elapsedHours;
     active.runtime.investigationsThisVisit = 0;
-    if (time.expired) return this.fail(next, 'FAILED_TIME');
+    if (time.expired) return this.fail(next, 'FAILED_TIME', time);
     const classification = classifyDestination(active.definition, active.runtime, cityId);
     active.runtime.currentCityId = cityId;
     if (classification === 'CORRECT_FORWARD' || classification === 'FINAL_CITY') {
       active.runtime.furthestRouteIndex += 1;
       active.runtime.trailAnchorCityId = cityId;
     }
-    const henchmanAppeared = classification === 'CORRECT_FORWARD'
-      && active.runtime.furthestRouteIndex === active.definition.route.length - 2;
     this.commit(next);
-    return { state: this.state, event: { type: 'ARRIVED', classification, cityId, henchmanAppeared } };
+    return { state: this.state, event: { type: 'ARRIVED', classification, cityId }, timeAdvance: time };
   }
 
   computeWarrant(input: WarrantInput): EngineResult {
     const next = clone(this.stateValue);
     const active = next.activeCase!;
     delete active.runtime.activeWarrantSuspectId;
-    const time = advanceTime(active.runtime.elapsedHours, 2);
+    const time = advanceTime(active.runtime.elapsedHours, 2, active.definition.deadlineHour);
     active.runtime.elapsedHours = time.elapsedHours;
-    if (time.expired) return this.fail(next, 'FAILED_TIME');
+    if (time.expired) return this.fail(next, 'FAILED_TIME', time);
     const matches = matchSuspects(this.gameContent.suspects, input);
     if (matches.length === 1) {
       active.runtime.activeWarrantSuspectId = matches[0]!;
       this.commit(next);
-      return { state: this.state, event: { type: 'WARRANT_ISSUED', suspectId: matches[0]! } };
+      return { state: this.state, event: { type: 'WARRANT_ISSUED', suspectId: matches[0]! }, timeAdvance: time };
     }
     this.commit(next);
     return matches.length === 0
-      ? { state: this.state, event: { type: 'WARRANT_NO_MATCH' } }
-      : { state: this.state, event: { type: 'WARRANT_MULTIPLE_MATCHES', suspectIds: matches } };
+      ? { state: this.state, event: { type: 'WARRANT_NO_MATCH' }, timeAdvance: time }
+      : { state: this.state, event: { type: 'WARRANT_MULTIPLE_MATCHES', suspectIds: matches }, timeAdvance: time };
   }
 
   abandonCase(): EngineResult {
     return this.fail(clone(this.stateValue), 'ABANDONED');
   }
 
-  private fail(next: GameState, status: 'FAILED_TIME' | 'FAILED_NO_WARRANT' | 'FAILED_WRONG_WARRANT' | 'ABANDONED'): EngineResult {
+  retryCase(seed: string): EngineResult {
+    const active = this.stateValue.activeCase;
+    if (!active || active.runtime.status === 'ACTIVE' || active.runtime.status === 'SOLVED') throw new Error('CASE_NOT_FAILED');
+    return this.startCase(seed);
+  }
+
+  returnToHeadquarters(): EngineResult {
+    const active = this.stateValue.activeCase;
+    if (!active || active.runtime.status === 'ACTIVE' || active.runtime.status === 'SOLVED') throw new Error('CASE_NOT_FAILED');
+    const next = clone(this.stateValue);
+    delete next.activeCase;
+    this.commit(next);
+    return { state: this.state, event: { type: 'RETURNED_TO_HEADQUARTERS' } };
+  }
+
+  private fail(next: GameState, status: 'FAILED_TIME' | 'FAILED_NO_WARRANT' | 'FAILED_WRONG_WARRANT' | 'ABANDONED', timeAdvance?: TimeAdvance): EngineResult {
     const active = next.activeCase!;
     active.runtime.status = status;
     next.profile.failedCases += 1;
@@ -183,7 +203,7 @@ export class GameEngine {
     next.profile.recentStartCityIds = [active.definition.route[0]!, ...next.profile.recentStartCityIds].slice(0, 3);
     next.profile.recentStolenItemIds = [active.definition.stolenItemId, ...next.profile.recentStolenItemIds].slice(0, 3);
     this.commit(next);
-    return { state: this.state, event: { type: 'CASE_FAILED', status } };
+    return { state: this.state, event: { type: 'CASE_FAILED', status }, ...(timeAdvance ? { timeAdvance } : {}) };
   }
 
   replaceState(state: GameState): void {

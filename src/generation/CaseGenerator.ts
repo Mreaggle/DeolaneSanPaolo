@@ -1,6 +1,7 @@
 import { traitLabels, traitValueLabels, type GameContent, type RankId, type TraitCategory } from '../content';
-import type { CaseDefinition, DetectiveProfile, GeneratedCityDefinition, GeneratedPlaceDefinition } from '../engine/types';
+import type { CaseDefinition, DetectiveProfile, GeneratedCityDefinition, GeneratedClue, GeneratedPlaceDefinition } from '../engine/types';
 import { rankForSolvedCases } from '../engine/ProgressionEngine';
+import { DEADLINE_HOURS } from '../engine/TimeEngine';
 import { SeededRng } from './rng/SeededRng';
 import { validateCase } from './CaseValidator';
 
@@ -44,16 +45,56 @@ const routeFrom = (start: string, length: number, adjacency: Map<string, readonl
   return extend() ? route : undefined;
 };
 
+const regionLabels: Readonly<Record<string, string>> = {
+  'north-america': 'na América do Norte',
+  'south-america': 'na América do Sul',
+  europe: 'na Europa',
+  africa: 'na África',
+  'middle-east': 'no Oriente Médio',
+  asia: 'na Ásia',
+  oceania: 'na Oceania'
+};
+
+interface BroadGeographicClue {
+  text: string;
+  compatibleCityIds: readonly string[];
+}
+
+const broadGeographicClue = (
+  targetCityId: string,
+  travelCandidates: readonly string[],
+  content: GameContent
+): BroadGeographicClue => {
+  const target = content.cities.find((city) => city.id === targetCityId)!;
+  const candidates = travelCandidates.map((cityId) => content.cities.find((city) => city.id === cityId)!);
+  const sameRegion = candidates.filter((city) => city.region === target.region).map((city) => city.id);
+  return sameRegion.length >= 2 ? {
+    text: `Comentaram que a próxima parada ficava ${regionLabels[target.region]}.`,
+    compatibleCityIds: sameRegion
+  } : {
+    text: 'A pessoa confirmou que cruzaria uma fronteira internacional antes da próxima parada.',
+    compatibleCityIds: travelCandidates
+  };
+};
+
+const factIndexesByRank: Readonly<Record<RankId, readonly number[]>> = {
+  rookie: [0, 1, 2],
+  sleuth: [1, 0, 2],
+  'private-eye': [1, 2, 0],
+  investigator: [2, 1, 0],
+  'ace-detective': [2, 1, 0]
+};
+
 export const generateCase = (profile: DetectiveProfile, seed: string, content: GameContent): CaseDefinition => {
   const rank = rankForSolvedCases(profile.solvedCases);
   const caseType = profile.solvedCases === 13 && !profile.deolaneCaptured ? 'FINAL_DEOLANE' : 'STANDARD';
   const rng = new SeededRng(seed);
-  const eligibleCulprits = caseType === 'FINAL_DEOLANE'
-    ? content.suspects.filter((suspect) => suspect.isMastermind)
-    : content.suspects.filter((suspect) => !suspect.isMastermind && suspect.id !== profile.recentCulpritIds[0]);
-  const preferredCulprits = eligibleCulprits.filter((suspect) => !profile.recentCulpritIds.slice(0, 2).includes(suspect.id));
-  const culpritPool = preferredCulprits.length ? preferredCulprits : eligibleCulprits;
-  const culprit = rng.pick(culpritPool);
+  const ordinaryCulprits = content.suspects.filter((suspect) => !suspect.isMastermind && suspect.id !== profile.recentCulpritIds[0]);
+  const preferredCulprits = ordinaryCulprits.filter((suspect) => !profile.recentCulpritIds.slice(0, 2).includes(suspect.id));
+  const culpritPool = preferredCulprits.length ? preferredCulprits : ordinaryCulprits;
+  const culprit = caseType === 'FINAL_DEOLANE'
+    ? content.suspects.find((suspect) => suspect.isMastermind)!
+    : rng.pick(culpritPool);
   const adjacency = buildAdjacency(content);
   const freshStarts = content.cities.filter((city) => !profile.recentStartCityIds.slice(0, 3).includes(city.id));
   const startCandidates = rng.shuffle(freshStarts.length ? freshStarts : content.cities.filter((city) => city.id !== profile.recentStartCityIds[0]));
@@ -84,26 +125,51 @@ export const generateCase = (profile: DetectiveProfile, seed: string, content: G
       continue;
     }
     const targetCityId = route[routeIndex + 1]!;
-    const target = content.cities.find((candidate) => candidate.id === targetCityId)!;
     const neighbours = adjacency.get(cityId) ?? [];
     const decoys = rng.shuffle(neighbours.filter((candidate) => candidate !== targetCityId));
     const travelCandidates = rng.shuffle([targetCityId, ...decoys.slice(0, Math.max(0, rank.travelChoices - 1))]);
+    const targetCity = content.cities.find((candidate) => candidate.id === targetCityId)!;
+    const broadClue = broadGeographicClue(targetCityId, travelCandidates, content);
+    const category = identityCursor < identityCategories.length ? identityCategories[identityCursor++] : undefined;
+    const trait = category ? culprit.traits[category] : undefined;
+    const cluePayloads: GeneratedClue[] = [
+      {
+        id: '',
+        family: 'geographic',
+        text: broadClue.text,
+        targetCityId,
+        compatibleCityIds: broadClue.compatibleCityIds
+      }
+    ];
+    const specificFactCount = category ? 1 : 2;
+    for (const factIndex of factIndexesByRank[rank.id].slice(0, specificFactCount)) {
+      const fact = targetCity.facts[factIndex]!;
+      cluePayloads.push({
+        id: '',
+        family: 'geographic',
+        text: fact.text,
+        targetCityId,
+        compatibleCityIds: fact.compatibleCityIds.filter((cityId) => travelCandidates.includes(cityId))
+      });
+    }
+    if (category && trait) {
+      cluePayloads.push({
+        id: '',
+        family: 'identity',
+        text: `A pessoa revelou ${traitLabels[category].toLowerCase()}: ${traitValueLabels[trait]?.toLowerCase() ?? trait.replaceAll('-', ' ')}.`,
+        targetTraitCategory: category,
+        targetTraitValue: trait
+      });
+    }
+    const shuffledPayloads = rng.shuffle(cluePayloads);
     const placeDefinitions: GeneratedPlaceDefinition[] = selectedPlaces.map((placeId, placeIndex) => {
-      const fact = target.facts[placeIndex % target.facts.length]!;
-      const category = identityCursor < identityCategories.length && placeIndex === (routeIndex % 3)
-        ? identityCategories[identityCursor++]
-        : undefined;
-      const trait = category ? culprit.traits[category] : undefined;
-      const identityText = category && trait ? ` A pessoa também revelou ${traitLabels[category].toLowerCase()}: ${traitValueLabels[trait]?.toLowerCase() ?? trait.replaceAll('-', ' ')}.` : '';
+      const clue = shuffledPayloads[placeIndex]!;
       return {
         placeId,
         witnessId: rng.pick(content.places.find((place) => place.id === placeId)!.witnesses).id,
         clue: {
-          id: `${seed}:${cityId}:${placeIndex}`,
-          family: category ? 'identity' : 'geographic',
-          text: `${fact.text}${identityText}`,
-          targetCityId,
-          ...(category && trait ? { targetTraitCategory: category, targetTraitValue: trait } : {})
+          ...clue,
+          id: `${seed}:${cityId}:${placeIndex}`
         }
       };
     });
@@ -120,7 +186,7 @@ export const generateCase = (profile: DetectiveProfile, seed: string, content: G
   const definition: CaseDefinition = {
     id: `DSP-${seed}`,
     seed,
-    generationVersion: 1,
+    generationVersion: 2,
     contentVersion: content.contentVersion,
     caseType,
     rankId: rank.id as RankId,
@@ -130,7 +196,7 @@ export const generateCase = (profile: DetectiveProfile, seed: string, content: G
     cities: cityDefinitions,
     finalCityId,
     finalHideoutPlaceId,
-    deadlineHour: 120
+    deadlineHour: DEADLINE_HOURS
   };
   const failures = validateCase(definition, content);
   if (failures.length) throw new Error(`GENERATION_FAILED: ${failures.join(', ')}`);

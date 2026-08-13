@@ -1002,7 +1002,9 @@ The content validator should report:
 - overrepresented trait values;
 - underrepresented values.
 
-These are balance warnings, not necessarily hard errors.
+An isolated trait value matching exactly one suspect is a hard content error. Every suspect must also remain uniquely identifiable through at least one valid multi-trait combination.
+
+The balanced trait matrix increments `contentVersion` to 2. Save migration preserves the detective career but discards a version-1 active case because its persisted identity clues refer to superseded trait values.
 
 Preferred design is defined in `GAME_SPEC.md`.
 

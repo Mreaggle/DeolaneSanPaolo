@@ -1049,6 +1049,8 @@ S = {target}
 
 Exactly one destination must remain.
 
+At least one geographic clue in each route city must remain compatible with multiple displayed candidates. A second, more specific factual clue may be decisive, as in the original manual examples. Difficulty comes from clue order, specificity and the choice between spending time or travelling with partial confidence; generated text must never enumerate competing candidate clues as an artificial `A or B` statement.
+
 ---
 
 ## 51. Minimum useful geographic clues
@@ -1059,13 +1061,7 @@ Canonical minimum per correct non-final city:
 2 useful geographic clues
 ```
 
-Rookie:
-
-```text
-3 useful geographic clues
-```
-
-unless a content limitation forces regeneration.
+At Rookie rank, the third witness slot normally carries a separate identity clue. This preserves two truthful geographic reports while allowing enough warrant evidence to be gathered before capture.
 
 ---
 
@@ -1076,26 +1072,26 @@ Preferred geographic-clue pattern:
 ### Rookie
 
 ```text
-3 strong clues
+1 broad geographic clue + 1 specific geographic clue + 1 identity clue
 ```
 
 or:
 
 ```text
-2 strong + 1 supportive
+2 complementary geographic clues + 1 identity clue
 ```
 
 ### Sleuth
 
 ```text
-2–3 useful clues
-at least 1 strong
+2–3 useful geographic clues
+at least 1 broad clue
 ```
 
 ### Private Eye
 
 ```text
-2–3 useful clues
+2–3 useful geographic clues
 combined set must be unique
 strong clue preferred but not mandatory
 ```
@@ -1455,19 +1451,19 @@ The player discovers the hideout by searching.
 Case start:
 
 ```text
-Monday 09:00
+Monday 07:00
 ```
 
 Deadline:
 
 ```text
-Saturday 09:00
+Sunday 17:00
 ```
 
 Total budget:
 
 ```text
-120 hours
+154 chronological hours, including mandatory sleep
 ```
 
 ---
@@ -1619,7 +1615,7 @@ valid if exists solution where:
     culprit uniquely identifiable
     correct warrant issued
     final hideout reached
-    elapsedTime < 120h
+    elapsedTime < 154h
 ```
 
 ---
@@ -1631,22 +1627,18 @@ Do not accept cases that are technically solvable with one minute/hour to spare 
 Required baseline margin:
 
 ```text
-best reasonable solution time <= 100 hours
+best reasonable solution time <= deadline - 12 chronological hours
 ```
 
 This leaves at least:
 
 ```text
-20 hours
+12 chronological hours
 ```
 
 for one or more mistakes.
 
-For Ace Detective and final Deolane cases, minimum accepted margin may be:
-
-```text
-15 hours
-```
+The same minimum applies to Ace Detective and the final Deolane case.
 
 Therefore:
 
@@ -2541,11 +2533,11 @@ WARRANT_COMPUTE_COST = 2h
 
 TRAVEL_COST_RANGE = 3h..7h
 
-CASE_DURATION = 120h
+CASE_DURATION = 154 chronological hours
 
-CASE_START = Monday 09:00
+CASE_START = Monday 07:00
 
-DEADLINE = Saturday 09:00
+DEADLINE = Sunday 17:00
 
 ROUTE_LENGTHS:
 Rookie        = 4

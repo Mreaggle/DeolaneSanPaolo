@@ -1528,6 +1528,22 @@ SFX may overlap with music.
 
 Music tracks may not overlap with each other.
 
+### 63.1 Clock tick
+
+The canonical hourly clock SFX is:
+
+```text
+public/audio/sfx/clock_tick.mp3
+```
+
+Stable runtime ID:
+
+```text
+CLOCK_TICK
+```
+
+`TimeEngine` emits ordered hour-boundary data without depending on audio APIs. The presentation layer advances the visible clock one hour at a time and requests one `CLOCK_TICK` per displayed boundary, including sleep hours. Large advances must be presented sequentially; ticks must not be started simultaneously.
+
 ---
 
 # PART XXV — ACCEPTANCE CHECKLIST

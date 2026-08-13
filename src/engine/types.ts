@@ -20,6 +20,7 @@ export interface GeneratedClue {
   family: 'geographic' | 'identity' | 'negative' | 'old-trail' | 'final-proximity';
   text: string;
   targetCityId?: string;
+  compatibleCityIds?: readonly string[];
   targetTraitCategory?: TraitCategory;
   targetTraitValue?: string;
 }
@@ -49,7 +50,7 @@ export interface CaseDefinition {
   cities: Readonly<Record<string, GeneratedCityDefinition>>;
   finalCityId: string;
   finalHideoutPlaceId: string;
-  deadlineHour: 120;
+  deadlineHour: number;
 }
 
 export interface WrongCityDefinition extends GeneratedCityDefinition {
@@ -62,6 +63,7 @@ export interface CaseRuntimeState {
   furthestRouteIndex: number;
   trailAnchorCityId: string;
   elapsedHours: number;
+  clockVersion: 2;
   investigationsThisVisit: number;
   visitedLocationKeys: string[];
   discoveredClueIds: string[];
@@ -94,15 +96,28 @@ export interface WarrantInput {
 
 export type GameEvent =
   | { type: 'CASE_STARTED' }
-  | { type: 'INVESTIGATION_COMPLETED'; clue: GeneratedClue; reviewed: boolean; finalEncounter: boolean }
-  | { type: 'ARRIVED'; classification: ArrivalClassification; cityId: string; henchmanAppeared: boolean }
+  | { type: 'INVESTIGATION_COMPLETED'; clue: GeneratedClue; reviewed: boolean; finalEncounter: boolean; henchmanAppeared: boolean }
+  | { type: 'ARRIVED'; classification: ArrivalClassification; cityId: string }
   | { type: 'WARRANT_NO_MATCH' }
   | { type: 'WARRANT_MULTIPLE_MATCHES'; suspectIds: readonly string[] }
   | { type: 'WARRANT_ISSUED'; suspectId: string }
   | { type: 'CASE_SOLVED'; promoted: boolean }
-  | { type: 'CASE_FAILED'; status: Exclude<CaseStatus, 'ACTIVE' | 'SOLVED'> };
+  | { type: 'CASE_FAILED'; status: Exclude<CaseStatus, 'ACTIVE' | 'SOLVED'> }
+  | { type: 'RETURNED_TO_HEADQUARTERS' };
+
+export interface HourBoundaryEvent {
+  elapsedHours: number;
+  phase: 'ACTION' | 'SLEEP';
+}
+
+export interface TimeAdvance {
+  fromElapsedHours: number;
+  elapsedHours: number;
+  hourBoundaries: readonly HourBoundaryEvent[];
+}
 
 export interface EngineResult {
   state: Readonly<GameState>;
   event: GameEvent;
+  timeAdvance?: TimeAdvance;
 }

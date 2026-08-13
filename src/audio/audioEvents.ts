@@ -36,11 +36,9 @@ export const cueForAudioEvent = (event: AudioEventId): AudioCueId => audioEventM
 
 export const arrivalAudioEvent = (
   classification: ArrivalClassification,
-  henchmanAppeared: boolean,
   finalCityCuePlayed: boolean
 ): AudioEventId | undefined => {
   if (classification === 'FINAL_CITY') return finalCityCuePlayed ? undefined : 'FINAL_CITY_REACHED';
-  if (henchmanAppeared) return 'HENCHMAN_APPEARED';
   if (classification === 'CORRECT_FORWARD') return 'ARRIVED_CORRECT_CITY';
   if (classification === 'WRONG_CITY' || classification === 'OLD_ROUTE_CITY') return 'COLD_TRAIL_CONFIRMED';
   return undefined;
