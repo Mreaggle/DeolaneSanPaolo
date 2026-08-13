@@ -1,23 +1,23 @@
 import type { Place } from '../types';
 
 const rows = [
-  ['airport', 'Aeroporto', [['pilot', 'Célio Aéreo'], ['ticket-clerk', 'Bia Lhete'], ['ground-controller', 'Dora Radar']]],
-  ['bank', 'Banco', [['teller', 'Caio Xá'], ['guard', 'Cida Dão'], ['executive', 'Beto Rente']]],
-  ['foreign-ministry', 'Ministério Exterior', [['clerk', 'Rita Visto'], ['attache', 'Adil Son'], ['ambassador', 'Ema Baixada']]],
-  ['harbor', 'Porto', [['dockworker', 'Este Vador'], ['captain', 'Capi Tão'], ['customs-officer', 'Adu Ana']]],
-  ['hotel', 'Hotel', [['manager', 'Hélio Tel'], ['bellhop', 'Nando Malas'], ['concierge', 'Conceição Erge']]],
-  ['library', 'Biblioteca', [['librarian', 'Bia Blioteca'], ['archivist', 'Arqui Valdo'], ['researcher', 'Rui Busca']]],
-  ['marketplace', 'Mercado', [['vendor', 'Vando Preço'], ['jeweler', 'Joia Nilda'], ['food-seller', 'Cida Feira']]],
-  ['museum', 'Museu', [['curator', 'Musa Ema'], ['guard', 'Gilda Guarda'], ['restorer', 'Rê Stauro']]],
-  ['palace', 'Palácio', [['chamberlain', 'Cami Leiro'], ['guard', 'Guaracy Portão'], ['gardener', 'Jardel Flores']]],
-  ['riverfront', 'Margem do Rio', [['fisher', 'Pedro Escador'], ['boatman', 'Beto Canoa'], ['tour-guide', 'Guia Naldo']]],
-  ['sports-club', 'Clube Esportivo', [['coach', 'Tânia Dores'], ['player', 'Atle Tadeu'], ['attendant', 'Célia Quadra']]],
-  ['stock-exchange', 'Bolsa de Valores', [['broker', 'Correa Tor'], ['runner', 'Mário Mercado'], ['analyst', 'Ana Lista']]]
+  ['airport', 'Aeroporto', [['pilot', 'Piloto/a'], ['ticket-clerk', 'Atendente de Passagens'], ['ground-controller', 'Controlador/a de Solo']]],
+  ['bank', 'Banco', [['teller', 'Caixa'], ['guard', 'Segurança'], ['executive', 'Gerente do Banco']]],
+  ['foreign-ministry', 'Ministério Exterior', [['clerk', 'Funcionário/a Consular'], ['attache', 'Adido/a Diplomático/a'], ['ambassador', 'Embaixador/a']]],
+  ['harbor', 'Porto', [['dockworker', 'Estivador/a'], ['captain', 'Capitão/Capitã'], ['customs-officer', 'Fiscal da Alfândega']]],
+  ['hotel', 'Hotel', [['manager', 'Gerente do Hotel'], ['bellhop', 'Mensageiro/a'], ['concierge', 'Concierge']]],
+  ['library', 'Biblioteca', [['librarian', 'Bibliotecário/a'], ['archivist', 'Arquivista'], ['researcher', 'Pesquisador/a']]],
+  ['marketplace', 'Mercado', [['vendor', 'Vendedor/a'], ['jeweler', 'Joalheiro/a'], ['food-seller', 'Feirante']]],
+  ['museum', 'Museu', [['curator', 'Curador/a'], ['guard', 'Segurança do Museu'], ['restorer', 'Restaurador/a']]],
+  ['palace', 'Palácio', [['chamberlain', 'Camareiro/a'], ['guard', 'Guarda do Palácio'], ['gardener', 'Jardineiro/a']]],
+  ['riverfront', 'Margem do Rio', [['fisher', 'Pescador/a'], ['boatman', 'Barqueiro/a'], ['tour-guide', 'Guia Turístico/a']]],
+  ['sports-club', 'Clube Esportivo', [['coach', 'Técnico/a'], ['player', 'Atleta'], ['attendant', 'Atendente do Clube']]],
+  ['stock-exchange', 'Bolsa de Valores', [['broker', 'Corretor/a'], ['runner', 'Operador/a do Pregão'], ['analyst', 'Analista de Mercado']]]
 ] as const;
 
-export const places: readonly Place[] = rows.map(([id, name, witnessNames], iconAtlasIndex) => ({
+export const places: readonly Place[] = rows.map(([id, name, witnessRoles], iconAtlasIndex) => ({
   id, name, backgroundAssetId: `place-${id}`, iconAssetId: 'place-icon-atlas', iconAtlasIndex,
-  witnesses: witnessNames.map(([role, witnessName]) => {
-    return { id: `${id}-${role}`, name: witnessName, assetId: `witness-${id}-${role}` };
+  witnesses: witnessRoles.map(([role, title]) => {
+    return { id: `${id}-${role}`, title, assetId: `witness-${id}-${role}` };
   })
 }));

@@ -860,7 +860,7 @@ Do not display all twelve global place types.
 
 Only the three generated locations are shown.
 
-Each entry includes a small dedicated bitmap icon showing a concise exterior view of that building or location. It must not crop or reuse the witness/interior background. Selecting an entry locks controls and uses the canonical footprint glyph to place eight alternating prints as one continuous trail, in four close left/right pairs, for the full duration of the footsteps SFX. The trail exists only over the city scene: it must not be duplicated over the destination-interior preview and must not restart from a second corner. Only after that approach finishes may the existing clock/investigation presentation begin; footsteps and hourly ticks must never overlap. This transition is presentation-only and adds no simulated hours.
+Each entry includes a small dedicated bitmap icon showing a concise exterior view of that building or location. It must not crop or reuse the witness/interior background. Selecting an entry locks controls and uses the canonical footprint glyph at its native 15×11 logical-pixel crop to place eight alternating prints as one continuous trail, in four close left/right pairs, for the full duration of the footsteps SFX. A hard one-pixel gold outline keeps the dark sole readable over every place background; it is a sprite contour, never a soft shadow. The trail crosses the central floor area, never collides with the clock label, exists only over the city scene, must not be duplicated over the destination-interior preview and must not restart from a second corner. Only after that approach finishes may the existing clock/investigation presentation begin; footsteps and hourly ticks must never overlap. This transition is presentation-only and adds no simulated hours.
 
 ---
 
@@ -1299,7 +1299,7 @@ Do not permanently occupy large screen space.
 
 The information panel displays:
 
-- witness role/name;
+- localized witness occupation/title, without a personal name;
 - statement text;
 - optional visual divider;
 - continue/back control.

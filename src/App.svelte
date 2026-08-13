@@ -577,8 +577,8 @@
                 {:else}
                   <h2>{placeById(selectedPlaceId)?.name ?? 'DEPOIMENTO'}</h2>
                   <div class="witness-row">
-                    <img class="witness" src={asset(witness?.assetId ?? 'agency-clerk-portrait')} alt={witness?.name ?? 'Testemunha'} />
-                    <div class="speech"><b class="witness-name">{witness?.name ?? 'TESTEMUNHA'}</b><TypewriterText text={eventText($uiState.event)} speed={30} onaudiopulse={playTypewriter} oninteract={() => { witnessTextComplete = true; }} onadvance={() => actions.go('places')} /></div>
+                    <img class="witness" src={asset(witness?.assetId ?? 'agency-clerk-portrait')} alt={witness?.title ?? 'Testemunha'} />
+                    <div class="speech"><b class="witness-name">{witness?.title ?? 'TESTEMUNHA'}</b><TypewriterText text={eventText($uiState.event)} speed={30} onaudiopulse={playTypewriter} oninteract={() => { witnessTextComplete = true; }} onadvance={() => actions.go('places')} /></div>
                   </div>
                   <PixelButton label="OUTRO LOCAL" onactivate={() => actions.go('places')} />
                 {/if}
@@ -785,15 +785,15 @@
   .henchman-crossing.sneak i { bottom: 54px; animation: henchman-frames .96s steps(8) infinite, henchman-sneak-path 4.8s linear forwards; }
   @keyframes henchman-sneak-path { from { left: -68px; } to { left: 304px; } }
   .footstep-path { position: absolute; z-index: 4; inset: 0; overflow: hidden; pointer-events: none; }
-  .footstep-path .footprint { position: absolute; width: 30px; height: 22px; background-position: -14px -92px; background-size: 1024px 128px; background-repeat: no-repeat; image-rendering: pixelated; opacity: 0; animation: footprint-reveal 1ms step-end var(--footstep-delay) forwards; }
-  .footstep-path .footprint:nth-child(1) { left: 34px; bottom: 24px; }
-  .footstep-path .footprint:nth-child(2) { left: 52px; bottom: 31px; transform: scaleX(-1); }
-  .footstep-path .footprint:nth-child(3) { left: 84px; bottom: 55px; }
-  .footstep-path .footprint:nth-child(4) { left: 102px; bottom: 62px; transform: scaleX(-1); }
-  .footstep-path .footprint:nth-child(5) { left: 134px; bottom: 86px; }
-  .footstep-path .footprint:nth-child(6) { left: 152px; bottom: 93px; transform: scaleX(-1); }
-  .footstep-path .footprint:nth-child(7) { left: 184px; bottom: 117px; }
-  .footstep-path .footprint:nth-child(8) { left: 202px; bottom: 124px; transform: scaleX(-1); }
+  .footstep-path .footprint { position: absolute; width: 15px; height: 11px; background-position: -7px -46px; background-size: 512px 64px; background-repeat: no-repeat; image-rendering: pixelated; filter: drop-shadow(1px 0 0 #f5df82) drop-shadow(-1px 0 0 #f5df82) drop-shadow(0 1px 0 #f5df82) drop-shadow(0 -1px 0 #f5df82); opacity: 0; animation: footprint-reveal 1ms step-end var(--footstep-delay) forwards; }
+  .footstep-path .footprint:nth-child(1) { left: 68px; bottom: 46px; }
+  .footstep-path .footprint:nth-child(2) { left: 85px; bottom: 55px; transform: scaleX(-1); }
+  .footstep-path .footprint:nth-child(3) { left: 104px; bottom: 78px; }
+  .footstep-path .footprint:nth-child(4) { left: 121px; bottom: 87px; transform: scaleX(-1); }
+  .footstep-path .footprint:nth-child(5) { left: 140px; bottom: 110px; }
+  .footstep-path .footprint:nth-child(6) { left: 157px; bottom: 119px; transform: scaleX(-1); }
+  .footstep-path .footprint:nth-child(7) { left: 176px; bottom: 142px; }
+  .footstep-path .footprint:nth-child(8) { left: 193px; bottom: 151px; transform: scaleX(-1); }
   @keyframes footprint-reveal { to { opacity: 1; } }
   .scene-label { position: absolute; left: 5px; bottom: 5px; padding: 3px 5px; color: #fff; background: #111; border: 1px solid #fff; }
   .right-panel { display: grid; grid-template-rows: 306px 72px; }

@@ -135,6 +135,8 @@ test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ 
   await expect(page.locator('.approach-footprints')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'OUTRO LOCAL' })).toBeVisible();
   await expect(page.locator('.witness')).toBeVisible();
+  const witnessTitles = content.places.flatMap((place) => place.witnesses.map((witness) => witness.title));
+  expect(witnessTitles).toContain(await page.locator('.witness-name').textContent());
   await expect(page.getByRole('button', { name: /P\.C/ })).toBeDisabled();
   await page.locator('.speech .typewriter').click();
   await expect(page.getByRole('button', { name: /P\.C/ })).toBeEnabled();
@@ -205,10 +207,22 @@ test('reproduz passos ao escolher um local e tick a cada hora apresentada', asyn
   expect(visibleFootsteps).toBeLessThanOrEqual(5);
   const trailPositions = await footsteps.evaluateAll((prints) => prints.map((print) => ({
     left: Number.parseFloat(getComputedStyle(print).left),
-    bottom: Number.parseFloat(getComputedStyle(print).bottom)
+    bottom: Number.parseFloat(getComputedStyle(print).bottom),
+    width: Number.parseFloat(getComputedStyle(print).width),
+    height: Number.parseFloat(getComputedStyle(print).height)
   })));
   expect(new Set(trailPositions.map(({ left, bottom }) => `${left}:${bottom}`)).size).toBe(8);
   expect(trailPositions.every((position, index) => index === 0 || position.left > trailPositions[index - 1]!.left)).toBe(true);
+  expect(trailPositions.every(({ width, height }) => width === 15 && height === 11)).toBe(true);
+  const overlapsClockLabel = await page.locator('.footprint').evaluateAll((prints) => {
+    const label = document.querySelector('.scene-label')?.getBoundingClientRect();
+    if (!label) return true;
+    return prints.some((print) => {
+      const rect = print.getBoundingClientRect();
+      return rect.left < label.right && rect.right > label.left && rect.top < label.bottom && rect.bottom > label.top;
+    });
+  });
+  expect(overlapsClockLabel).toBe(false);
   const duringApproach = await page.evaluate(() => (window as typeof window & { __movementSoundPlays: Array<{ sound: string; at: number }> }).__movementSoundPlays);
   expect(duringApproach.map(({ sound }) => sound)).toEqual(['FOOTSTEPS']);
   await expect(page.locator('.witness')).toBeVisible();

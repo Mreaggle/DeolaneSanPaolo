@@ -131,6 +131,8 @@ Ao investigar um local novo:
 5. cenário e testemunha aparecem;
 6. o depoimento é revelado com efeito de terminal.
 
+A identificação acima do depoimento usa somente o cargo localizado da testemunha, como `BIBLIOTECÁRIO/A` ou `PESCADOR/A`; nomes próprios e trocadilhos não aparecem.
+
 O primeiro clique/Enter durante a digitação apenas completa o texto. Um segundo avança.
 
 ### 8.3 Pista viva

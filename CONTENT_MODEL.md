@@ -710,7 +710,7 @@ interface Witness {
 
   placeId: PlaceId;
 
-  nameKey: I18nKey;
+  titleKey: I18nKey;
 
   artworkAssetId: AssetId;
 
@@ -729,6 +729,8 @@ interface Witness {
 ## 25. Witness scope
 
 Witnesses are roles, not case-specific people.
+
+The player-facing witness label is the localized occupation/title, never a personal name or pun. When the artwork is intentionally reusable or its gender is not mechanically relevant, Portuguese titles use a concise inclusive form such as `Bibliotecário/a`, `Pescador/a` or `Piloto/a`.
 
 Example:
 
@@ -1754,7 +1756,7 @@ Illustrative only:
 {
   "id": "bank-teller",
   "placeId": "bank",
-  "nameKey": "witnesses.bank-teller.name",
+  "titleKey": "witnesses.bank-teller.title",
   "artworkAssetId": "witness-bank-teller",
 
   "geoTemplateTags": [
@@ -2174,7 +2176,7 @@ Every:
 - city name;
 - country name;
 - place name;
-- witness name;
+- witness occupation/title;
 - suspect name;
 - dossier field;
 - stolen item name;

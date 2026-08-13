@@ -54,7 +54,7 @@ export interface Suspect {
 
 export interface Witness {
   id: string;
-  name: string;
+  title: string;
   assetId: string;
 }
 
