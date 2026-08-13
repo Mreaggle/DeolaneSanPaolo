@@ -1,4 +1,4 @@
-import { traitLabels, traitValueLabels, type GameContent, type RankId, type TraitCategory } from '../content';
+import { traitClueTexts, traitLabels, traitValueLabels, type GameContent, type RankId, type TraitCategory } from '../content';
 import type { CaseDefinition, DetectiveProfile, GeneratedCityDefinition, GeneratedClue, GeneratedPlaceDefinition } from '../engine/types';
 import { rankForSolvedCases } from '../engine/ProgressionEngine';
 import { DEADLINE_HOURS } from '../engine/TimeEngine';
@@ -156,7 +156,7 @@ export const generateCase = (profile: DetectiveProfile, seed: string, content: G
       cluePayloads.push({
         id: '',
         family: 'identity',
-        text: `A pessoa revelou ${traitLabels[category].toLowerCase()}: ${traitValueLabels[trait]?.toLowerCase() ?? trait.replaceAll('-', ' ')}.`,
+        text: traitClueTexts[trait] ?? `A testemunha observou ${traitLabels[category].toLowerCase()}: ${traitValueLabels[trait]?.toLowerCase() ?? trait.replaceAll('-', ' ')}.`,
         targetTraitCategory: category,
         targetTraitValue: trait
       });

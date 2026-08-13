@@ -24,6 +24,8 @@ describe('CaseGenerator', () => {
         expect(geographicClues).toHaveLength(2);
         expect(geographicClues.some((place) => (place.clue.compatibleCityIds?.length ?? 0) >= 2)).toBe(true);
         expect(city.places.some((place) => place.clue.family === 'identity')).toBe(true);
+        expect(city.places.filter((place) => place.clue.family === 'identity').every((place) => place.clue.text.startsWith('A testemunha '))).toBe(true);
+        expect(city.places.every((place) => !/revel/i.test(place.clue.text))).toBe(true);
         expect(city.places.some((place) => place.clue.text.includes(' ficou entre '))).toBe(false);
         const combined = city.travelCandidates.filter((candidate) =>
           geographicClues.every((place) => place.clue.compatibleCityIds?.includes(candidate))

@@ -946,6 +946,8 @@ interface TraitValue {
 }
 ```
 
+`clueTextKeys` resolves to curated eyewitness phrasing appropriate to the value. These strings describe what the witness saw, heard or remembered and must not imply that the culprit voluntarily revealed the trait. Hair, feature and vehicle values require category-aware grammar rather than a generic `category: value` sentence.
+
 Example:
 
 ```json
