@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { content, traitClueTexts, type TraitCategory } from '../../src/content';
+import { content, traitClueTexts, traitClueVariants, type TraitCategory } from '../../src/content';
 import { matchSuspects } from '../../src/engine/WarrantEngine';
 
 const categories: readonly TraitCategory[] = ['sex', 'hair', 'hobby', 'feature', 'vehicle'];
@@ -36,6 +36,19 @@ describe('matriz de traits dos suspeitos', () => {
     }
     for (const hair of new Set(content.suspects.map((suspect) => suspect.traits.hair))) {
       expect(traitClueTexts[hair], hair).toMatch(/cabelo|calv/);
+    }
+  });
+
+  it('mantém formulações variadas para todos os valores do computador', () => {
+    const values = new Set(content.suspects.flatMap((suspect) => categories.map((category) => suspect.traits[category])));
+    expect(values.size).toBeGreaterThanOrEqual(28);
+    for (const value of values) {
+      expect(traitClueVariants[value], value).toHaveLength(2);
+      expect(new Set(traitClueVariants[value]).size, value).toBe(2);
+      for (const text of traitClueVariants[value]!) {
+        expect(text, value).toMatch(/^(Eu|Notei|Ouvi|Lembro|Pelo que)\b/);
+        expect(text, value).not.toMatch(/revel|A testemunha/i);
+      }
     }
   });
 });

@@ -473,6 +473,33 @@ The manual's worked examples first narrow the problem to the connections shown b
 
 The faithful way to increase difficulty is to vary clue specificity, distribute geographic and identity evidence across witnesses, and preserve the time-versus-certainty decision. Synthesizing a statement that explicitly lists two candidate clues as alternatives is not supported by this evidence and must not replace the original factual-report style. Exact rank-by-rank clue allocation remains `UNKNOWN` under OG-016.
 
+### Finding OG-009B — Flag descriptions are a recurring geographic clue category
+
+**Status:** `CORROBORATED_SECONDARY`
+
+The original manual confirms that clues may identify the destination country and that the player is expected to compare natural facts through the World Almanac, although its worked examples use currency and fauna rather than flags. A detailed classic-version data catalogue separately records a `Country flag` fact for the cities, including shared color descriptions and more distinctive symbols. Contemporary runtime recollection of the DOS release also documents the recurring example of a blue flag with a white cross pointing toward Norway.
+
+This supports flag clues as part of the original investigation vocabulary, with two important fidelity properties:
+
+- color-only clues may remain compatible with several destinations;
+- symbols such as a sun, maple leaf, lion, crescent, wheel or cross may be more decisive.
+
+Sources consulted:
+
+- 1985/1986 Broderbund IBM/Apple/Commodore manual: <https://www.retrogames.cz/manualy/DOS/Carmen_Sandiego_-_DOS_-_Manual.pdf>
+- classic city-data walkthrough: <https://www.cheatbook.de/wfiles/whereinworld.htm>
+- DOS retrospective with an observed flag-clue example: <https://www.chalgyr.com/2023/03/tbt-where-carmen-sandiego-retro.html>
+
+The exact frequency and place-specific allocation remain `UNKNOWN`; Deolane San Paolo therefore uses a bounded deterministic selection rate rather than claiming an unverified original percentage.
+
+### Finding OG-009C — Classic city entries expose a systematic fact vocabulary
+
+**Status:** `CORROBORATED_SECONDARY`
+
+The detailed classic city-data catalogue organizes destination knowledge through recurring presentation concepts including currency, dictionary/language, sights, study/history, activity/geography, books/topics, country flag, leader/government, commodity, purchases/food and objects being sought. The period manual independently confirms the underlying loop: compare a witness's natural fact with the currently available connections, consulting the almanac when necessary.
+
+This supports preserving a broad, repeated taxonomy across the world data rather than concentrating most generated reports in only currency, monument and cuisine. It does not establish an exact original frequency for each category, so Deolane San Paolo selects from the complete catalogue deterministically and still applies its own documented solvability constraints.
+
 ---
 
 ## 12. Two simultaneous investigations

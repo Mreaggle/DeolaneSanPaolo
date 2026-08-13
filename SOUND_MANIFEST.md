@@ -929,7 +929,9 @@ Opening the T.C.C. dossiers immediately replaces the current event cue with
 `27_dossiers.mp3`. Moving between suspect pages while the dossiers remain open
 must not restart it. If the player leaves and later opens the dossiers again,
 the semantic event may request track 27 again; ordinary same-track suppression
-still applies while that file is already playing.
+still applies while that file is already playing. Leaving the Dossiês screen
+stops track 27 immediately and restores the applicable ambient behavior, just
+as leaving the P.C. stops its computer-specific tracks.
 
 ---
 

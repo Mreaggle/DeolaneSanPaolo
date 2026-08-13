@@ -198,6 +198,7 @@
       audioManager.stop('WARRANT_ISSUED');
       audioManager.stop('WARRANT_INCONCLUSIVE');
     }
+    if ($uiState.screen !== 'dossiers') audioManager.stop('DOSSIERS');
     if ($uiState.screen === 'title') play('TITLE_ENTERED');
     else if ($uiState.screen === 'signin') play('HEADQUARTERS_ENTERED');
     else if ($uiState.screen === 'new-player') play('DETECTIVE_NOT_FOUND');
@@ -519,7 +520,9 @@
                 {/if}
                 {#if walkingToPlace}
                   <div class="footstep-path" aria-label={`Pegadas seguindo até ${placeById(selectedPlaceId)?.name ?? 'o local escolhido'}`}>
-                    <i class="footsteps-sprite" style={`background-image:url(${asset('footsteps-spritesheet')});--footsteps-duration:${footstepsPresentationMs}ms`}></i>
+                    {#each [0, 1, 2, 3, 4, 5, 6, 7] as footstep}
+                      <i class="footprint" style={`background-image:url(${asset('footsteps-spritesheet')});--footstep-delay:${footstep * footstepsPresentationMs / 8}ms`}></i>
+                    {/each}
                   </div>
                 {/if}
               {/key}
@@ -530,7 +533,7 @@
             <section class:warrant-panel={$uiState.screen === 'warrant'} class="info-panel">
               {#if walkingToPlace}
                 <h2>A CAMINHO DE {placeById(selectedPlaceId)?.name?.toUpperCase()}</h2>
-                <div class="approach-panel"><img src={asset(placeById(selectedPlaceId)?.backgroundAssetId ?? 'agency-emblem')} alt="" /><i class="approach-footprints" style={`background-image:url(${asset('footsteps-spritesheet')});--footsteps-duration:${footstepsPresentationMs}ms`}></i></div>
+                <div class="approach-panel"><img src={asset(placeById(selectedPlaceId)?.backgroundAssetId ?? 'agency-emblem')} alt="" /></div>
                 <p>O investigador segue até o local escolhido.</p>
               {:else if $uiState.screen === 'traveling'}
                 <h2>EM TRÂNSITO</h2>
@@ -553,7 +556,7 @@
                 <p>Conexões registradas a partir de {cityById($gameState.activeCase.runtime.currentCityId)?.name}:</p>
                 <ol class="route-list">
                   {#each currentGeneratedCity()?.travelCandidates ?? [] as cityId}
-                    <li><b>{cityById(cityId)?.name}</b><small>{cityById(cityId)?.country}</small></li>
+                    <li><b>{cityById(cityId)?.name}</b></li>
                   {/each}
                 </ol>
                 <p class="route-hint">CONSULTA APENAS. USE PARTIR PARA SELECIONAR O DESTINO.</p>
@@ -782,8 +785,16 @@
   .henchman-crossing.sneak i { bottom: 54px; animation: henchman-frames .96s steps(8) infinite, henchman-sneak-path 4.8s linear forwards; }
   @keyframes henchman-sneak-path { from { left: -68px; } to { left: 304px; } }
   .footstep-path { position: absolute; z-index: 4; inset: 0; overflow: hidden; pointer-events: none; }
-  .footstep-path .footsteps-sprite { position: absolute; left: 86px; bottom: 58px; width: 128px; height: 128px; background-size: 1024px 128px; background-repeat: no-repeat; image-rendering: pixelated; animation: footsteps-scene var(--footsteps-duration) steps(7, jump-end) forwards; }
-  @keyframes footsteps-scene { from { background-position: 0 0; } to { background-position: -896px 0; } }
+  .footstep-path .footprint { position: absolute; width: 30px; height: 22px; background-position: 0 0; background-size: 1024px 128px; background-repeat: no-repeat; image-rendering: pixelated; opacity: 0; animation: footprint-reveal 1ms step-end var(--footstep-delay) forwards; }
+  .footstep-path .footprint:nth-child(1) { left: 34px; bottom: 24px; }
+  .footstep-path .footprint:nth-child(2) { left: 52px; bottom: 31px; transform: scaleX(-1); }
+  .footstep-path .footprint:nth-child(3) { left: 84px; bottom: 55px; }
+  .footstep-path .footprint:nth-child(4) { left: 102px; bottom: 62px; transform: scaleX(-1); }
+  .footstep-path .footprint:nth-child(5) { left: 134px; bottom: 86px; }
+  .footstep-path .footprint:nth-child(6) { left: 152px; bottom: 93px; transform: scaleX(-1); }
+  .footstep-path .footprint:nth-child(7) { left: 184px; bottom: 117px; }
+  .footstep-path .footprint:nth-child(8) { left: 202px; bottom: 124px; transform: scaleX(-1); }
+  @keyframes footprint-reveal { to { opacity: 1; } }
   .scene-label { position: absolute; left: 5px; bottom: 5px; padding: 3px 5px; color: #fff; background: #111; border: 1px solid #fff; }
   .right-panel { display: grid; grid-template-rows: 306px 72px; }
   .info-panel { position: relative; overflow: hidden; padding: 10px 12px; color: #fff; background-color: #050505; border-bottom: 2px solid #111; }
@@ -823,7 +834,6 @@
   .place-list button.visited small { font-weight: 700; }
   .approach-panel { position: relative; width: 230px; height: 160px; margin: 13px auto; overflow: hidden; background: #111; border: 3px ridge #999; }
   .approach-panel img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; opacity: .65; }
-  .approach-footprints { position: absolute; left: 51px; bottom: 16px; width: 128px; height: 128px; background-size: 1024px 128px; background-repeat: no-repeat; image-rendering: pixelated; animation: footsteps-scene var(--footsteps-duration) steps(7, jump-end) forwards; }
   .witness-row { display: grid; grid-template-columns: 112px 1fr; gap: 9px; min-height: 205px; }
   .witness { width: 112px; height: 176px; object-fit: contain; object-position: center bottom; background: #142743; border: 2px solid #111; }
   .speech { position: relative; height: 170px; padding: 12px; color: #000; background: #fff; border: 2px solid #111; font-size: 11px; line-height: 1.5; }
@@ -838,7 +848,6 @@
   .route-list { display: grid; gap: 5px; margin: 11px 4px; padding: 0; list-style: none; counter-reset: route; }
   .route-list li { counter-increment: route; display: grid; grid-template-columns: 24px 1fr auto; align-items: center; min-height: 28px; padding: 4px 6px; color: #050505; background: #dedede; border: 2px solid; border-color: #fff #444 #444 #fff; }
   .route-list li::before { content: counter(route); display: grid; place-items: center; width: 17px; height: 17px; color: #fff; background: #111; }
-  .route-list small { font-size: 7px; text-transform: uppercase; }
   .route-hint { color: #ffd92a; font-size: 8px !important; }
   .dossier { display: grid; grid-template-columns: 118px 1fr; gap: 10px; }
   .dossier img { width: 118px; height: 176px; object-fit: cover; border: 3px double #111; }
@@ -873,7 +882,7 @@
   .capture-sequence::before { content: ''; position: absolute; left: 0; right: 0; bottom: 7px; height: 3px; background: #d9d0b5; box-shadow: 0 3px #171a1d; }
   .capture-actor { position: absolute; bottom: 9px; width: 64px; height: 64px; background-size: 320px 64px; background-repeat: no-repeat; image-rendering: pixelated; opacity: 0; }
   .capture-fugitive { left: -66px; background-position: 0 0; animation: dramatic-fugitive-frames .36s step-end infinite, fugitive-cross 1.45s linear forwards; }
-  .capture-agent { left: -66px; background-position: -128px 0; animation-name: dramatic-agent-frames, agents-cross; animation-duration: .32s, 1.35s; animation-timing-function: step-end, linear; animation-iteration-count: infinite, 1; animation-fill-mode: none, both; }
+  .capture-agent { left: -66px; background-position: -128px 0; transform: scaleX(-1); animation-name: dramatic-agent-frames, agents-cross; animation-duration: .32s, 1.35s; animation-timing-function: step-end, linear; animation-iteration-count: infinite, 1; animation-fill-mode: none, both; }
   .capture-escort { right: -66px; background-position: -256px 0; animation: escort-cross 1.85s steps(14) 3.25s both; }
   @keyframes dramatic-fugitive-frames { 0%, 49% { background-position: 0 0; } 50%, 100% { background-position: -64px 0; } }
   @keyframes dramatic-agent-frames { 0%, 49% { background-position: -128px 0; } 50%, 100% { background-position: -192px 0; } }

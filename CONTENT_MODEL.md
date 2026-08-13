@@ -452,26 +452,11 @@ Canonical shape:
 
 ```ts
 interface CityClueProfile {
-  currencies: ClueFact[];
-  languages: ClueFact[];
-  flags: ClueFact[];
-  landmarks: ClueFact[];
-  history: ClueFact[];
-  geography: ClueFact[];
-  rivers: ClueFact[];
-  mountains: ClueFact[];
-  fauna: ClueFact[];
-  foods: ClueFact[];
-  architecture: ClueFact[];
-  culture: ClueFact[];
-  institutions: ClueFact[];
-  transport: ClueFact[];
-  objects: ClueFact[];
-  topics: ClueFact[];
+  facts: ClueFact[];
 }
 ```
 
-Not every city must populate every category.
+The implemented catalogue gives every city exactly one fact in each canonical runtime category: `currency`, `landmark`, `culture`, `flag`, `language`, `history`, `geography`, `fauna-flora`, `food`, `government`, `commodity`, `book-topic` and `artifact`.
 
 ---
 
@@ -482,9 +467,10 @@ A city clue fact represents one true piece of information usable by the clue eng
 ```ts
 interface ClueFact {
   id: string;
-  textKey: I18nKey;
-  tags?: string[];
-  difficulty?: ClueDifficulty;
+  category: GeographicClueCategory;
+  text: string;
+  compatibleCityIds: readonly string[];
+  difficulty: ClueDifficulty;
 }
 ```
 
@@ -493,14 +479,14 @@ Example:
 ```json
 {
   "id": "currency-yen",
-  "textKey": "facts.currency.yen",
+  "category": "currency",
+  "text": "Trocaram dinheiro por ienes.",
+  "compatibleCityIds": ["tokyo"],
   "difficulty": "easy"
 }
 ```
 
-The fact is not itself a full witness sentence.
-
-It is inserted or referenced by clue templates.
+Facts are curated player-facing witness reports. Compatibility is explicit so shared facts may remain ambiguous while intersections are still validated.
 
 ---
 
@@ -1008,7 +994,7 @@ The content validator should report:
 
 An isolated trait value matching exactly one suspect is reported as a strong discriminator and is permitted only as a minority exception. Case generation must prefer shared values, expose at most one isolated discriminator in a case, and schedule it after shared identity evidence. Every suspect must remain uniquely identifiable through the generated evidence combination.
 
-The expanded trait matrix increments `contentVersion` to 3. Save migration preserves the detective career but discards older active cases because their persisted identity clues refer to superseded trait values.
+The expanded trait matrix increments `contentVersion` to 3, the flag catalogue to 4, and the complete thirteen-family city catalogue plus trait-text variants to 5. Save migration preserves the detective career but discards older active cases because their persisted geographic or identity clues may refer to superseded content.
 
 Preferred design is defined in `GAME_SPEC.md`.
 

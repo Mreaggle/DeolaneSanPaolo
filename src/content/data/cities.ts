@@ -1,4 +1,4 @@
-import type { City } from '../types';
+import type { City, GeographicClueCategory } from '../types';
 
 const allPlaces = [
   'airport', 'bank', 'foreign-ministry', 'harbor', 'hotel', 'library',
@@ -6,6 +6,104 @@ const allPlaces = [
 ] as const;
 
 type CityRow = readonly [string, string, string, string, number, number, string, string, string];
+
+interface FlagClue {
+  text: string;
+  compatibleCityIds: readonly string[];
+}
+
+type SupplementalCategory = Exclude<GeographicClueCategory, 'currency' | 'landmark' | 'culture' | 'flag'>;
+type SupplementalProfile = Readonly<Record<SupplementalCategory, string>>;
+
+const redWhiteBlue = ['london', 'moscow', 'sydney', 'reykjavik', 'new-york', 'paris', 'bangkok', 'oslo'] as const;
+const greenWhiteRed = ['mexico-city', 'rome', 'budapest'] as const;
+const redWhiteBlack = ['baghdad', 'cairo'] as const;
+const blueWhite = ['buenos-aires', 'san-marino', 'athens'] as const;
+
+const flagClues: Readonly<Record<string, FlagClue>> = {
+  'mexico-city': { text: 'Eu vi uma bandeira verde, branca e vermelha presa à bagagem.', compatibleCityIds: greenWhiteRed },
+  london: { text: 'Eu vi uma bandeira azul, branca e vermelha presa à bagagem.', compatibleCityIds: redWhiteBlue },
+  moscow: { text: 'Eu vi uma bandeira azul, branca e vermelha presa à bagagem.', compatibleCityIds: redWhiteBlue },
+  istanbul: { text: 'Eu vi uma bandeira vermelha com uma lua crescente e uma estrela.', compatibleCityIds: ['istanbul'] },
+  baghdad: { text: 'Eu vi uma bandeira vermelha, branca e preta presa à bagagem.', compatibleCityIds: redWhiteBlack },
+  tokyo: { text: 'Eu vi uma bandeira branca com um disco vermelho no centro.', compatibleCityIds: ['tokyo'] },
+  'port-moresby': { text: 'Eu vi uma bandeira dividida na diagonal, com uma ave-do-paraíso e estrelas.', compatibleCityIds: ['port-moresby'] },
+  'new-delhi': { text: 'Eu vi uma bandeira açafrão, branca e verde com uma roda azul no centro.', compatibleCityIds: ['new-delhi'] },
+  'buenos-aires': { text: 'Eu vi que carregava uma bandeira azul e branca com um sol no centro.', compatibleCityIds: ['buenos-aires'] },
+  sydney: { text: 'Eu vi uma bandeira azul, branca e vermelha presa à bagagem.', compatibleCityIds: redWhiteBlue },
+  'san-marino': { text: 'Eu vi uma bandeira azul e branca presa à bagagem.', compatibleCityIds: blueWhite },
+  singapore: { text: 'Eu vi uma bandeira vermelha e branca com uma lua crescente e cinco estrelas.', compatibleCityIds: ['singapore'] },
+  rome: { text: 'Eu vi uma bandeira verde, branca e vermelha presa à bagagem.', compatibleCityIds: greenWhiteRed },
+  reykjavik: { text: 'Eu vi uma bandeira azul, branca e vermelha presa à bagagem.', compatibleCityIds: redWhiteBlue },
+  beijing: { text: 'Eu vi uma bandeira vermelha com cinco estrelas amarelas.', compatibleCityIds: ['beijing'] },
+  montreal: { text: 'Eu vi uma bandeira com uma folha vermelha no centro.', compatibleCityIds: ['montreal'] },
+  lima: { text: 'Eu vi uma bandeira com duas faixas vermelhas separadas por uma faixa branca.', compatibleCityIds: ['lima'] },
+  'new-york': { text: 'Eu vi uma bandeira azul, branca e vermelha presa à bagagem.', compatibleCityIds: redWhiteBlue },
+  paris: { text: 'Eu vi uma bandeira azul, branca e vermelha presa à bagagem.', compatibleCityIds: redWhiteBlue },
+  colombo: { text: 'Eu vi uma bandeira com um leão dourado segurando uma espada.', compatibleCityIds: ['colombo'] },
+  budapest: { text: 'Eu vi uma bandeira verde, branca e vermelha presa à bagagem.', compatibleCityIds: greenWhiteRed },
+  kathmandu: { text: 'Eu vi uma bandeira formada por dois triângulos sobrepostos.', compatibleCityIds: ['kathmandu'] },
+  bangkok: { text: 'Eu vi uma bandeira azul, branca e vermelha presa à bagagem.', compatibleCityIds: redWhiteBlue },
+  cairo: { text: 'Eu vi uma bandeira vermelha, branca e preta presa à bagagem.', compatibleCityIds: redWhiteBlack },
+  athens: { text: 'Eu vi uma bandeira azul e branca presa à bagagem.', compatibleCityIds: blueWhite },
+  'rio-de-janeiro': { text: 'Eu vi uma bandeira verde e amarela com um globo azul no centro.', compatibleCityIds: ['rio-de-janeiro'] },
+  kigali: { text: 'Eu vi uma bandeira azul, amarela e verde com um sol no alto.', compatibleCityIds: ['kigali'] },
+  bamako: { text: 'Eu vi uma bandeira com faixas verticais verde, amarela e vermelha.', compatibleCityIds: ['bamako'] },
+  moroni: { text: 'Eu vi uma bandeira de quatro cores com um crescente e quatro estrelas.', compatibleCityIds: ['moroni'] },
+  oslo: { text: 'Eu vi uma bandeira vermelha com uma cruz azul contornada de branco.', compatibleCityIds: ['oslo'] }
+};
+
+const supplementalProfiles: Readonly<Record<string, SupplementalProfile>> = {
+  'mexico-city': { language: 'espanhol', history: 'a civilização asteca', geography: 'explorar o planalto central e seus vulcões', 'fauna-flora': 'axolotes e borboletas-monarca', food: 'mole poblano', government: 'uma república federal presidencial', commodity: 'prata e automóveis', 'book-topic': 'os astecas', artifact: 'artefatos astecas' },
+  london: { language: 'inglês', history: 'a Revolução Industrial', geography: 'navegar pelo Tâmisa', 'fauna-flora': 'cervos-vermelhos e carvalhos', food: 'fish and chips', government: 'uma monarquia constitucional parlamentar', commodity: 'máquinas e produtos farmacêuticos', 'book-topic': 'os druidas e a história britânica', artifact: 'artefatos celtas' },
+  moscow: { language: 'russo', history: 'os czares e a era soviética', geography: 'percorrer o Volga e os Montes Urais', 'fauna-flora': 'ursos-pardos e bétulas', food: 'borsch', government: 'uma república federal', commodity: 'petróleo, gás e trigo', 'book-topic': 'os czares', artifact: 'tesouros imperiais' },
+  istanbul: { language: 'turco', history: 'os impérios Bizantino e Otomano', geography: 'cruzar o Bósforo', 'fauna-flora': 'leopardos-da-anatólia e tulipas', food: 'kebab', government: 'uma república presidencial', commodity: 'avelãs e tecidos', 'book-topic': 'Constantinopla', artifact: 'artefatos bizantinos' },
+  baghdad: { language: 'árabe', history: 'a Mesopotâmia e o Califado Abássida', geography: 'navegar pelos rios Tigre e Eufrates', 'fauna-flora': 'gazelas-arábias e tamareiras', food: 'masgouf', government: 'uma república federal parlamentar', commodity: 'petróleo e tâmaras', 'book-topic': 'sumérios e babilônios', artifact: 'artefatos mesopotâmicos' },
+  tokyo: { language: 'japonês', history: 'os xogunatos e o período Edo', geography: 'avistar o Monte Fuji', 'fauna-flora': 'grous e cerejeiras', food: 'sushi', government: 'uma monarquia constitucional parlamentar', commodity: 'automóveis e eletrônicos', 'book-topic': 'os xoguns', artifact: 'armaduras samurais' },
+  'port-moresby': { language: 'tok pisin', history: 'os povos ancestrais da Melanésia', geography: 'explorar as terras altas e o Mar de Coral', 'fauna-flora': 'aves-do-paraíso e orquídeas', food: 'mumu', government: 'uma monarquia constitucional parlamentar', commodity: 'ouro, cobre e café', 'book-topic': 'a diversidade cultural da Melanésia', artifact: 'máscaras entalhadas' },
+  'new-delhi': { language: 'hindi', history: 'o Império Mogol e a independência', geography: 'percorrer o Himalaia e a planície do Ganges', 'fauna-flora': 'tigres-de-bengala e pavões', food: 'pratos com masala', government: 'uma república federal parlamentar', commodity: 'especiarias e tecidos', 'book-topic': 'o Império Mogol', artifact: 'artefatos mogóis' },
+  'buenos-aires': { language: 'espanhol', history: 'os gauchos e a independência argentina', geography: 'navegar pelo Rio da Prata e atravessar os pampas', 'fauna-flora': 'horneros e ceibos', food: 'empanadas', government: 'uma república federal presidencial', commodity: 'soja, carne bovina e vinho', 'book-topic': 'os gauchos', artifact: 'prataria colonial' },
+  sydney: { language: 'inglês', history: 'os povos aborígenes e a colonização', geography: 'explorar o outback e a Grande Barreira de Coral', 'fauna-flora': 'cangurus e eucaliptos', food: 'tortas de carne', government: 'uma monarquia constitucional parlamentar', commodity: 'minério de ferro e lã', 'book-topic': 'a história aborígene', artifact: 'arte aborígene' },
+  'san-marino': { language: 'italiano', history: 'a mais antiga república europeia', geography: 'subir o Monte Titano', 'fauna-flora': 'falcões-peregrinos e oliveiras', food: 'torta tre monti', government: 'uma república parlamentar', commodity: 'cerâmica, selos e vinho', 'book-topic': 'a república medieval', artifact: 'moedas e selos históricos' },
+  singapore: { language: 'inglês', history: 'a história do comércio marítimo', geography: 'percorrer os jardins e a baía', 'fauna-flora': 'orquídeas e lontras', food: 'laksa', government: 'uma república parlamentar', commodity: 'eletrônicos e petróleo refinado', 'book-topic': 'a história de seu porto', artifact: 'artefatos peranakan' },
+  rome: { language: 'italiano', history: 'o Império Romano e o Renascimento', geography: 'percorrer os Apeninos e o rio Pó', 'fauna-flora': 'lobos e oliveiras', food: 'pasta carbonara', government: 'uma república parlamentar', commodity: 'vinho, máquinas e mármore', 'book-topic': 'etruscos e romanos', artifact: 'artefatos romanos' },
+  reykjavik: { language: 'islandês', history: 'os vikings e o Althing', geography: 'visitar gêiseres e campos de lava', 'fauna-flora': 'papagaios-do-mar e tremoceiros', food: 'skyr', government: 'uma república parlamentar', commodity: 'pescado e alumínio', 'book-topic': 'as sagas islandesas', artifact: 'artefatos vikings' },
+  beijing: { language: 'mandarim', history: 'as dinastias imperiais', geography: 'caminhar pela Grande Muralha', 'fauna-flora': 'pandas-gigantes e peônias', food: 'pato de Pequim', government: 'uma república socialista', commodity: 'eletrônicos, aço e chá', 'book-topic': 'as dinastias chinesas', artifact: 'porcelana imperial' },
+  montreal: { language: 'francês', history: 'a Nova França', geography: 'navegar pelo rio São Lourenço', 'fauna-flora': 'alces e bordos', food: 'poutine', government: 'uma monarquia constitucional parlamentar', commodity: 'madeira e potássio', 'book-topic': 'a Nova França', artifact: 'artefatos indígenas e coloniais' },
+  lima: { language: 'espanhol', history: 'os incas e a conquista espanhola', geography: 'cruzar os Andes e a costa do Pacífico', 'fauna-flora': 'vicunhas e quinas', food: 'ceviche', government: 'uma república presidencial', commodity: 'cobre, café e pescado', 'book-topic': 'os incas', artifact: 'tecidos incas' },
+  'new-york': { language: 'inglês', history: 'a imigração e a industrialização', geography: 'navegar pelo Hudson', 'fauna-flora': 'águias-carecas e sequoias', food: 'cachorro-quente', government: 'uma república federal presidencial', commodity: 'aeronaves, milho e tecnologia', 'book-topic': 'a história da imigração', artifact: 'arte indígena e moderna' },
+  paris: { language: 'francês', history: 'os francos e a Revolução Francesa', geography: 'navegar pelo Sena e visitar os Alpes', 'fauna-flora': 'galos e lavandas', food: 'croissants', government: 'uma república semipresidencial', commodity: 'vinho, perfume e aeronaves', 'book-topic': 'a Revolução Francesa', artifact: 'artefatos francos' },
+  colombo: { language: 'cingalês', history: 'os antigos reinos do Ceilão', geography: 'explorar o oceano Índico e as terras altas', 'fauna-flora': 'elefantes e pés de chá', food: 'kottu', government: 'uma república semipresidencial', commodity: 'chá, borracha e canela', 'book-topic': 'o antigo Ceilão', artifact: 'artefatos budistas' },
+  budapest: { language: 'húngaro', history: 'os magiares e o Império Austro-Húngaro', geography: 'navegar pelo Danúbio e visitar fontes termais', 'fauna-flora': 'abetardas e páprica', food: 'goulash', government: 'uma república parlamentar', commodity: 'automóveis, remédios e vinho', 'book-topic': 'os magiares', artifact: 'artefatos magiares' },
+  kathmandu: { language: 'nepalês', history: 'os antigos reinos do Himalaia', geography: 'caminhar pelo Himalaia', 'fauna-flora': 'rinocerontes e rododendros', food: 'momo', government: 'uma república federal parlamentar', commodity: 'tapetes, chá e cardamomo', 'book-topic': 'os gurkhas e o Himalaia', artifact: 'artefatos hindus e budistas' },
+  bangkok: { language: 'tailandês', history: 'o antigo Sião e Ayutthaya', geography: 'navegar pelo Chao Phraya', 'fauna-flora': 'elefantes e orquídeas', food: 'pad thai', government: 'uma monarquia constitucional', commodity: 'arroz, borracha e eletrônicos', 'book-topic': 'o antigo Sião', artifact: 'artefatos budistas' },
+  cairo: { language: 'árabe', history: 'os faraós e o Egito Antigo', geography: 'navegar pelo Nilo e atravessar o Saara', 'fauna-flora': 'crocodilos e papiros', food: 'koshari', government: 'uma república semipresidencial', commodity: 'algodão, petróleo e frutas cítricas', 'book-topic': 'o Egito Antigo', artifact: 'artefatos faraônicos' },
+  athens: { language: 'grego', history: 'as antigas cidades-estado', geography: 'navegar pelo Egeu e visitar o Monte Olimpo', 'fauna-flora': 'oliveiras e tartarugas-cabeçudas', food: 'moussaka', government: 'uma república parlamentar', commodity: 'azeitonas, navios e remédios', 'book-topic': 'Platão e Esparta', artifact: 'artefatos da Grécia Antiga' },
+  'rio-de-janeiro': { language: 'português', history: 'os povos indígenas e o período imperial', geography: 'explorar a Mata Atlântica e a costa', 'fauna-flora': 'onças-pintadas e araras', food: 'feijoada', government: 'uma república federal presidencial', commodity: 'café, soja e minério de ferro', 'book-topic': 'a Amazônia e os povos indígenas', artifact: 'artefatos indígenas e imperiais' },
+  kigali: { language: 'kinyarwanda', history: 'os antigos reinos e a reconstrução nacional', geography: 'atravessar as Mil Colinas', 'fauna-flora': 'gorilas-das-montanhas e acácias', food: 'isombe', government: 'uma república presidencial', commodity: 'café, chá e estanho', 'book-topic': 'os povos dos Grandes Lagos', artifact: 'cestaria tradicional' },
+  bamako: { language: 'bambara', history: 'o Império do Mali e Timbuktu', geography: 'navegar pelo Níger e atravessar o Sahel', 'fauna-flora': 'baobás e elefantes-do-deserto', food: 'tigadèguèna', government: 'um Estado unitário', commodity: 'ouro e algodão', 'book-topic': 'o Império do Mali', artifact: 'artefatos tuaregues e mandês' },
+  moroni: { language: 'comoriano', history: 'os antigos sultanatos do Índico', geography: 'subir o vulcão Karthala', 'fauna-flora': 'celacantos e ylang-ylang', food: 'lagosta com baunilha', government: 'uma república federal presidencial', commodity: 'baunilha, cravo e ylang-ylang', 'book-topic': 'os sultanatos do oceano Índico', artifact: 'artefatos islâmicos insulares' },
+  oslo: { language: 'norueguês', history: 'os vikings e a formação da Noruega', geography: 'navegar pelos fiordes', 'fauna-flora': 'renas e pinheiros', food: 'salmão', government: 'uma monarquia constitucional parlamentar', commodity: 'petróleo, pescado e alumínio', 'book-topic': 'Ibsen e os vikings', artifact: 'artefatos vikings' }
+};
+
+const supplementalTemplates: Readonly<Record<SupplementalCategory, (value: string) => string>> = {
+  language: (value) => `Eu ouvi a pessoa pedir um dicionário de ${value}.`,
+  history: (value) => `Eu ouvi que pretendia estudar ${value}.`,
+  geography: (value) => `Eu ouvi planos de ${value}.`,
+  'fauna-flora': (value) => `Eu ouvi perguntas sobre ${value}.`,
+  food: (value) => `Eu ouvi que pretendia provar ${value}.`,
+  government: (value) => `Eu ouvi referências a ${value}.`,
+  commodity: (value) => `Eu vi documentos de carga mencionando ${value}.`,
+  'book-topic': (value) => `Eu vi um pedido de livros sobre ${value}.`,
+  artifact: (value) => `Eu ouvi perguntas sobre ${value}.`
+};
+
+const supplementalDifficulty: Readonly<Record<SupplementalCategory, 'easy' | 'medium' | 'hard'>> = {
+  language: 'easy', government: 'easy', geography: 'medium', food: 'medium', commodity: 'medium',
+  history: 'hard', 'fauna-flora': 'hard', 'book-topic': 'hard', artifact: 'hard'
+};
+
+const supplementalCategories = Object.keys(supplementalTemplates) as SupplementalCategory[];
 
 const rows: readonly CityRow[] = [
   ['mexico-city', 'Cidade do México', 'México', 'north-america', .17, .40, 'Trocaram notas por pesos mexicanos.', 'Perguntaram pelo Zócalo e suas pedras antigas.', 'Falavam espanhol e queriam provar mole poblano.'],
@@ -75,18 +173,39 @@ const briefs: Readonly<Record<string, string>> = {
 
 export const cities: readonly City[] = rows.map((row, index) => {
   const [id, name, country, region, x, y, ...facts] = row;
+  const flagClue = flagClues[id]!;
+  const profile = supplementalProfiles[id]!;
   const rotated = [...allPlaces.slice(index % allPlaces.length), ...allPlaces.slice(0, index % allPlaces.length)];
   return {
     id, name, country, region, coordinates: { x, y },
     allowedPlaceIds: rotated.slice(0, 8),
     artworkAssetId: `city-${id}`,
     brief: briefs[id]!,
-    facts: facts.map((text, factIndex) => ({
-      id: `${id}-fact-${factIndex + 1}`,
-      text,
-      compatibleCityIds: [id],
-      difficulty: factIndex === 0 ? 'easy' : factIndex === 1 ? 'medium' : 'hard'
-    }))
+    facts: [
+      ...facts.map((text, factIndex) => ({
+        id: `${id}-fact-${factIndex + 1}`,
+        category: (['currency', 'landmark', 'culture'] as const)[factIndex]!,
+        text,
+        compatibleCityIds: [id],
+        difficulty: factIndex === 0 ? 'easy' as const : factIndex === 1 ? 'medium' as const : 'hard' as const
+      })),
+      {
+        id: `${id}-fact-flag`,
+        category: 'flag' as const,
+        text: flagClue.text,
+        compatibleCityIds: flagClue.compatibleCityIds,
+        difficulty: 'medium'
+      },
+      ...supplementalCategories.map((category) => ({
+        id: `${id}-fact-${category}`,
+        category,
+        text: supplementalTemplates[category](profile[category]),
+        compatibleCityIds: rows
+          .filter(([candidateId]) => supplementalProfiles[candidateId]![category] === profile[category])
+          .map(([candidateId]) => candidateId),
+        difficulty: supplementalDifficulty[category]
+      }))
+    ]
   } satisfies City;
 });
 

@@ -1,4 +1,4 @@
-import { traitClueTexts, traitLabels, traitValueLabels, type GameContent, type RankId, type TraitCategory } from '../content';
+import { traitClueTexts, traitClueVariants, traitLabels, traitValueLabels, type GameContent, type RankId, type TraitCategory } from '../content';
 import type { CaseDefinition, DetectiveProfile, GeneratedCityDefinition, GeneratedClue, GeneratedPlaceDefinition } from '../engine/types';
 import { rankForSolvedCases } from '../engine/ProgressionEngine';
 import { DEADLINE_HOURS } from '../engine/TimeEngine';
@@ -111,12 +111,62 @@ const broadGeographicClue = (
   return rng.pick(clues);
 };
 
-const factIndexesByRank: Readonly<Record<RankId, readonly number[]>> = {
-  rookie: [0, 1, 2],
-  sleuth: [1, 0, 2],
-  'private-eye': [1, 2, 0],
-  investigator: [2, 1, 0],
-  'ace-detective': [2, 1, 0]
+const factDifficultyWeights: Readonly<Record<RankId, Readonly<Record<'easy' | 'medium' | 'hard', number>>>> = {
+  rookie: { easy: 4, medium: 3, hard: 1 },
+  sleuth: { easy: 3, medium: 4, hard: 2 },
+  'private-eye': { easy: 2, medium: 4, hard: 3 },
+  investigator: { easy: 1, medium: 3, hard: 4 },
+  'ace-detective': { easy: 1, medium: 2, hard: 5 }
+};
+
+const usefulForCandidates = (fact: GameContent['cities'][number]['facts'][number], targetCityId: string, travelCandidates: readonly string[]): boolean => {
+  const compatible = fact.compatibleCityIds.filter((cityId) => travelCandidates.includes(cityId));
+  return compatible.includes(targetCityId) && compatible.length < travelCandidates.length;
+};
+
+const factsLeaveOnlyTarget = (
+  facts: readonly GameContent['cities'][number]['facts'][number][],
+  broadCompatibleCityIds: readonly string[],
+  targetCityId: string,
+  travelCandidates: readonly string[]
+): boolean => travelCandidates.filter((candidate) =>
+  broadCompatibleCityIds.includes(candidate) && facts.every((fact) => fact.compatibleCityIds.includes(candidate))
+).every((candidate) => candidate === targetCityId)
+  && facts.every((fact) => fact.compatibleCityIds.includes(targetCityId));
+
+const weightedFacts = (
+  facts: readonly GameContent['cities'][number]['facts'][number][],
+  rankId: RankId
+): GameContent['cities'][number]['facts'][number][] => facts.flatMap((fact) =>
+  Array.from({ length: factDifficultyWeights[rankId][fact.difficulty] }, () => fact)
+);
+
+const selectSpecificFacts = (
+  targetFacts: readonly GameContent['cities'][number]['facts'][number][],
+  count: number,
+  broadCompatibleCityIds: readonly string[],
+  targetCityId: string,
+  travelCandidates: readonly string[],
+  rankId: RankId,
+  rng: SeededRng
+): readonly GameContent['cities'][number]['facts'][number][] => {
+  const useful = targetFacts.filter((fact) => usefulForCandidates(fact, targetCityId, travelCandidates));
+  const flag = useful.find((fact) => fact.category === 'flag');
+  const flagEligible = flag && (count > 1 || factsLeaveOnlyTarget([flag], broadCompatibleCityIds, targetCityId, travelCandidates))
+    ? flag
+    : undefined;
+  const firstPool = count === 1
+    ? useful.filter((fact) => factsLeaveOnlyTarget([fact], broadCompatibleCityIds, targetCityId, travelCandidates))
+    : useful;
+  const first = flagEligible && rng.next() < .4
+    ? flagEligible
+    : rng.pick(weightedFacts(firstPool, rankId));
+  if (count === 1) return [first];
+
+  const secondPool = useful.filter((fact) =>
+    fact.id !== first.id && factsLeaveOnlyTarget([first, fact], broadCompatibleCityIds, targetCityId, travelCandidates)
+  );
+  return [first, rng.pick(weightedFacts(secondPool, rankId))];
 };
 
 export const generateCase = (profile: DetectiveProfile, seed: string, content: GameContent): CaseDefinition => {
@@ -176,8 +226,16 @@ export const generateCase = (profile: DetectiveProfile, seed: string, content: G
       }
     ];
     const specificFactCount = category ? 1 : 2;
-    for (const factIndex of factIndexesByRank[rank.id].slice(0, specificFactCount)) {
-      const fact = targetCity.facts[factIndex]!;
+    const specificFacts = selectSpecificFacts(
+      targetCity.facts,
+      specificFactCount,
+      broadClue.compatibleCityIds,
+      targetCityId,
+      travelCandidates,
+      rank.id,
+      rng
+    );
+    for (const fact of specificFacts) {
       cluePayloads.push({
         id: '',
         family: 'geographic',
@@ -190,7 +248,7 @@ export const generateCase = (profile: DetectiveProfile, seed: string, content: G
       cluePayloads.push({
         id: '',
         family: 'identity',
-        text: traitClueTexts[trait] ?? `Eu observei ${traitLabels[category].toLowerCase()}: ${traitValueLabels[trait]?.toLowerCase() ?? trait.replaceAll('-', ' ')}.`,
+        text: rng.pick(traitClueVariants[trait] ?? [traitClueTexts[trait] ?? `Eu observei ${traitLabels[category].toLowerCase()}: ${traitValueLabels[trait]?.toLowerCase() ?? trait.replaceAll('-', ' ')}.`]),
         targetTraitCategory: category,
         targetTraitValue: trait
       });
@@ -220,7 +278,7 @@ export const generateCase = (profile: DetectiveProfile, seed: string, content: G
   const definition: CaseDefinition = {
     id: `DSP-${seed}`,
     seed,
-    generationVersion: 3,
+    generationVersion: 5,
     contentVersion: content.contentVersion,
     caseType,
     rankId: rank.id as RankId,

@@ -212,7 +212,7 @@ Example:
 ```json
 {
   "generationVersion": 1,
-  "contentVersion": 3,
+  "contentVersion": 5,
   "seed": "DSP-1-..."
 }
 ```
@@ -1052,6 +1052,10 @@ Exactly one destination must remain.
 At least one geographic clue in each route city must remain compatible with multiple displayed candidates. A second, more specific factual clue may be decisive, as in the original manual examples. Difficulty comes from clue order, specificity and the choice between spending time or travelling with partial confidence; generated text must never enumerate competing candidate clues as an artificial `A or B` statement.
 
 Every useful geographic clue must eliminate at least one displayed candidate. A clue whose compatible set equals the complete `DEPART` list is invalid on the correct trail; generic statements such as crossing an international border provide no information in this world-spanning route and are reserved for neither normal nor broad clue slots. Broad reports use meaningful region, hemisphere, latitude or relative-direction information. The city-specific currency, landmark, cuisine and physical-geography reports remain the more decisive layer.
+
+Every city provides one curated fact in each of thirteen implemented semantic families: currency, landmark, culture, flag, language, history, geography/activity, fauna/flora, food, government, commodity/export, book topic and sought artifact. This restores the classic systematic breadth without adding investigation locations. Selection is deterministic by seed and weighted by rank/difficulty; a selected fact must eliminate at least one displayed destination and the complete geographic clue set must still leave exactly the correct target.
+
+Flag clues preserve the classic mixture of broad color reports and stronger symbol reports: shared colors may leave multiple candidates, while a sun, leaf, lion, crescent, wheel or cross may identify fewer. An eligible flag receives a deterministic 40% preference check, but is used only when the remaining clue plan can still satisfy solvability. No category, including a distinctive one, bypasses the intersection validator.
 
 ---
 

@@ -12,7 +12,11 @@ describe('CaseGenerator', () => {
 
   it('gera rotas, opções e provas sempre solucionáveis', () => {
     const profile = createProfile('Bia');
-    for (let index = 0; index < 100; index += 1) {
+    const flagTexts = new Set(content.cities.flatMap((city) => city.facts.filter((fact) => fact.id.endsWith('-fact-flag')).map((fact) => fact.text)));
+    const geographicCategoryByText = new Map(content.cities.flatMap((city) => city.facts.map((fact) => [fact.text, fact.category] as const)));
+    const generatedCategories = new Set<string>();
+    let generatedFlagClues = 0;
+    for (let index = 0; index < 200; index += 1) {
       const definition = generateCase(profile, `solvable-${index}`, content);
       expect(validateCase(definition, content)).toEqual([]);
       expect(definition.route).toHaveLength(4);
@@ -31,11 +35,16 @@ describe('CaseGenerator', () => {
         const city = definition.cities[definition.route[routeIndex]!]!;
         const target = definition.route[routeIndex + 1]!;
         const geographicClues = city.places.filter((place) => place.clue.family === 'geographic');
+        generatedFlagClues += geographicClues.filter((place) => flagTexts.has(place.clue.text)).length;
+        for (const place of geographicClues) {
+          const generatedCategory = geographicCategoryByText.get(place.clue.text);
+          if (generatedCategory) generatedCategories.add(generatedCategory);
+        }
         expect(geographicClues.length).toBeGreaterThanOrEqual(2);
         expect(geographicClues.length).toBeLessThanOrEqual(3);
         expect(geographicClues.some((place) => (place.clue.compatibleCityIds?.length ?? 0) >= 2)).toBe(true);
         expect(geographicClues.every((place) => (place.clue.compatibleCityIds?.length ?? 0) < city.travelCandidates.length)).toBe(true);
-        expect(city.places.filter((place) => place.clue.family === 'identity').every((place) => /^(Eu|Notei|Ouvi|Lembro)\b/.test(place.clue.text))).toBe(true);
+        expect(city.places.filter((place) => place.clue.family === 'identity').every((place) => /^(Eu|Notei|Ouvi|Lembro|Pelo que)\b/.test(place.clue.text))).toBe(true);
         expect(city.places.every((place) => !/revel/i.test(place.clue.text))).toBe(true);
         expect(city.places.every((place) => !/fronteira internacional/i.test(place.clue.text))).toBe(true);
         expect(city.places.some((place) => place.clue.text.includes(' ficou entre '))).toBe(false);
@@ -48,6 +57,8 @@ describe('CaseGenerator', () => {
       const item = content.stolenItems.find((candidate) => candidate.id === definition.stolenItemId)!;
       expect(item.compatibleCityIds?.includes(start.id) || item.compatibleRegionIds?.includes(start.region)).toBe(true);
     }
+    expect(generatedFlagClues).toBeGreaterThan(0);
+    expect(generatedCategories).toEqual(new Set(content.cities[0]!.facts.map((fact) => fact.category)));
   });
 
   it('reserva Deolane para o décimo quarto e último caso', () => {

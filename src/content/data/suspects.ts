@@ -71,3 +71,38 @@ export const traitClueTexts: Record<string, string> = {
   picape: 'Eu vi a pessoa partir em uma picape.',
   cupe: 'Eu vi a pessoa partir em um cupê.'
 };
+
+const alternateTraitClueTexts: Record<string, string> = {
+  feminino: 'Pelo que pude observar, era uma mulher.',
+  masculino: 'Pelo que pude observar, era um homem.',
+  'loiro-liso': 'Eu me lembro do cabelo loiro, bem liso.',
+  'preto-cacheado': 'Eu me lembro do cabelo preto e cacheado.',
+  'preto-liso': 'Eu me lembro do cabelo preto e liso.',
+  castanho: 'Eu me lembro de que o cabelo era castanho.',
+  calvo: 'Eu reparei que quase não possuía cabelo.',
+  preto: 'Eu me lembro de que o cabelo era preto.',
+  raspado: 'Eu reparei no cabelo cortado bem rente à cabeça.',
+  'alta-sociedade': 'Eu ouvi comentários sobre recepções muito exclusivas.',
+  colecionismo: 'Eu ouvi uma conversa sobre peças raras de uma coleção.',
+  apostas: 'Eu ouvi planos para uma noite nas mesas de jogo.',
+  musica: 'Eu ouvi comentários de quem entende muito de música.',
+  festas: 'Eu ouvi planos para frequentar outra grande festa.',
+  'joias-exageradas': 'Eu reparei em joias grandes demais para passar despercebidas.',
+  'olhar-intenso': 'Eu não esqueci aquele olhar muito intenso.',
+  'pinta-no-rosto': 'Eu vi uma pinta bem visível no rosto.',
+  'sorriso-presuncoso': 'Eu reconheceria de novo aquele sorriso presunçoso.',
+  'nariz-grande': 'Eu reparei num nariz excepcionalmente grande.',
+  'bigode-grande': 'Eu vi um bigode grande e muito marcante.',
+  'oculos-escuros': 'Eu reparei que usava óculos escuros o tempo todo.',
+  'carro-de-luxo': 'Eu anotei que fugiu num carro de luxo.',
+  moto: 'Eu anotei que fugiu numa motocicleta.',
+  limusine: 'Eu anotei que fugiu numa limusine.',
+  conversivel: 'Eu anotei que fugiu num conversível.',
+  furgao: 'Eu anotei que fugiu num furgão.',
+  picape: 'Eu anotei que fugiu numa picape.',
+  cupe: 'Eu anotei que fugiu num cupê.'
+};
+
+export const traitClueVariants: Readonly<Record<string, readonly string[]>> = Object.fromEntries(
+  Object.entries(traitClueTexts).map(([trait, text]) => [trait, [text, alternateTraitClueTexts[trait]!]])
+);
