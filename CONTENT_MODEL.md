@@ -649,7 +649,9 @@ interface Place {
 
   backgroundAssetId: AssetId;
 
-  iconAssetId?: AssetId;
+  iconAssetId: AssetId;
+
+  iconAtlasIndex: number;
 
   tags?: string[];
 }
@@ -1750,7 +1752,9 @@ Illustrative only:
 
   "identityCluesAllowed": true,
 
-  "backgroundAssetId": "place-bank"
+  "backgroundAssetId": "place-bank",
+  "iconAssetId": "place-icon-atlas",
+  "iconAtlasIndex": 1
 }
 ```
 

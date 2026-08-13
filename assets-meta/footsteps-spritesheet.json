@@ -1,0 +1,14 @@
+{
+  "assetId": "footsteps-spritesheet",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "be5f9b6154181368d65075e14d219be2a3dc3bbaee02fb0b1716165deb7a4079",
+  "referenceAssets": [
+    "public/assets/animations/travel-airplane-spritesheet.png",
+    "public/assets/icons/icon-search.png"
+  ],
+  "generatedAt": "2026-08-13T20:21:32.378Z",
+  "originalOutputSha256": "5c5c818876a0209529c77575942f71caff6fbce7d0bda3e50cf8844010c7ad23",
+  "finalOutputSha256": "b7d23de51472a0984fa1493bbca4c8d4e501d85ae4a5869fba8b5d90f9a8a3af",
+  "postprocessVersion": 1
+}

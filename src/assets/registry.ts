@@ -50,7 +50,9 @@ const staticAssets: Record<string, string> = {
   'capture-dramatic-spritesheet': 'assets/animations/capture-dramatic-spritesheet.png',
   'escape-spritesheet': 'assets/animations/escape-spritesheet.png',
   'henchman-run-spritesheet': 'assets/animations/henchman-run-spritesheet.png',
-  'henchman-sneak-spritesheet': 'assets/animations/henchman-sneak-spritesheet.png'
+  'henchman-sneak-spritesheet': 'assets/animations/henchman-sneak-spritesheet.png',
+  'place-icon-atlas': 'assets/icons/place-icon-atlas.png',
+  'footsteps-spritesheet': 'assets/animations/footsteps-spritesheet.png'
 };
 
 for (const city of cities) staticAssets[city.artworkAssetId] = `assets/cities/${city.id}.png`;

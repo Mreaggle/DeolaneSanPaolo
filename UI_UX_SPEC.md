@@ -858,7 +858,7 @@ Do not display all twelve global place types.
 
 Only the three generated locations are shown.
 
-Each entry includes a small bitmap thumbnail derived from that location's canonical background. Selecting an entry locks controls and shows a short trail of footprints toward the chosen location before the existing clock/investigation resolution begins. This transition is presentation-only and adds no simulated hours.
+Each entry includes a small dedicated bitmap icon showing a concise exterior view of that building or location. It must not crop or reuse the witness/interior background. Selecting an entry locks controls and plays the canonical eight-frame shoeprint spritesheet, placing alternating prints toward the chosen location before the existing clock/investigation resolution begins. This transition is presentation-only and adds no simulated hours.
 
 ---
 

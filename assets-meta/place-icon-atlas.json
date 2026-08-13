@@ -1,0 +1,15 @@
+{
+  "assetId": "place-icon-atlas",
+  "model": "gpt-image-2",
+  "promptVersion": 1,
+  "promptSha256": "02b07347a99ad0cfdb91fe5812eeea70a9c317cf79eaa9a41437591f8226a96a",
+  "referenceAssets": [
+    "public/assets/icons/icon-search.png",
+    "public/assets/places/bank.png",
+    "public/assets/places/hotel.png"
+  ],
+  "generatedAt": "2026-08-13T20:21:02.377Z",
+  "originalOutputSha256": "73fbacdfd9284f1847a060ba421903c8caadfde9465d23aee46e7ecc1354a106",
+  "finalOutputSha256": "a7b7b76008cbb37afdf52f9cb193b20b16a81e5dcf60592cce3c93e4f0ca29e1",
+  "postprocessVersion": 1
+}

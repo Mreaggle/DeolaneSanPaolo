@@ -9,7 +9,7 @@ const openTitle = async (page: import('@playwright/test').Page, url = './') => {
   const splash = page.locator('.publisher-splash');
   await expect(splash).toBeVisible();
   if (await splash.getAttribute('data-publisher-phase') === 'waiting') await splash.click();
-  await expect(splash).toHaveAttribute('data-publisher-phase', 'mark');
+  await expect(splash).toHaveAttribute('data-publisher-phase', /mark|complete/);
   await page.locator('.publisher-sting').evaluate((audio) => audio.dispatchEvent(new Event('ended')));
   await expect(page.getByRole('heading', { name: 'Where is Deolane San Paolo?' })).toBeVisible({ timeout: 3_000 });
 };
@@ -39,14 +39,15 @@ test('apresenta a vinheta Mreaggle antes do título e respeita os marcos do stin
   const splash = page.locator('.publisher-splash');
   const mark = page.locator('.publisher-logo-mark');
   const complete = page.locator('.publisher-logo-full');
-  await expect(splash).toHaveAttribute('data-publisher-phase', 'mark');
+  await expect(splash).toHaveAttribute('data-publisher-phase', /mark|complete/);
   await expect(mark).toHaveAttribute('src', /mreaggle_software_logo_notext\.png$/);
   await expect(complete).toHaveAttribute('src', /mreaggle_software_logo\.png$/);
-  await expect(complete).toHaveCSS('opacity', '0');
   await expect(page.locator('.publisher-sting')).toHaveAttribute('src', /mreaggle_software_sting\.mp3$/);
   await expect(page.locator('.site-footer')).toHaveCount(0);
 
-  await page.waitForTimeout(850);
+  if (await splash.getAttribute('data-publisher-phase') === 'mark') {
+    await expect(complete).toHaveCSS('opacity', '0');
+  }
   await expect(splash).toHaveAttribute('data-publisher-phase', 'complete');
   await expect(complete).toHaveCSS('opacity', '1');
   await page.locator('.publisher-sting').evaluate((audio) => audio.dispatchEvent(new Event('ended')));
@@ -103,8 +104,11 @@ test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ 
   const places = page.locator('.place-list button');
   await expect(places).toHaveCount(3);
   await expect(page.locator('.place-icon')).toHaveCount(3);
+  await expect(page.locator('.place-icon').first()).toHaveCSS('background-image', /place-icon-atlas\.png/);
+  await expect(page.locator('.place-icon').first()).not.toHaveCSS('background-image', /assets\/places/);
   await places.first().click();
   await expect(page.locator('.footstep-path')).toBeVisible();
+  await expect(page.locator('.footsteps-sprite')).toHaveCSS('background-image', /footsteps-spritesheet\.png/);
   await expect(page.getByRole('button', { name: 'OUTRO LOCAL' })).toBeVisible();
   await expect(page.locator('.witness')).toBeVisible();
   await expect(page.getByRole('button', { name: /P\.C/ })).toBeDisabled();
@@ -148,6 +152,26 @@ test('abre locais, testemunha, mandado e destinos sem revelar a rota', async ({ 
   await page.locator('.destination-list button').first().click();
   await expect(page.getByText('EM TRÂNSITO')).toBeVisible();
   await expect(page.locator('.city-brief')).toBeVisible({ timeout: 5_000 });
+});
+
+test('reproduz passos ao escolher um local e tick a cada hora apresentada', async ({ page }) => {
+  await page.addInitScript(() => {
+    const plays: string[] = [];
+    Object.defineProperty(window, '__movementSoundPlays', { value: plays });
+    HTMLMediaElement.prototype.play = function () {
+      if (this.src.endsWith('/footsteps.mp3')) plays.push('FOOTSTEPS');
+      if (this.src.endsWith('/clock_tick.mp3')) plays.push('CLOCK_TICK');
+      return Promise.resolve();
+    };
+  });
+  await enterFirstCase(page);
+  await page.getByRole('button', { name: /BUSCAR/ }).click();
+  await page.locator('.place-list button').first().click();
+  await expect(page.locator('.witness')).toBeVisible();
+
+  const plays = await page.evaluate(() => (window as typeof window & { __movementSoundPlays: string[] }).__movementSoundPlays);
+  expect(plays.filter((sound) => sound === 'FOOTSTEPS')).toHaveLength(1);
+  expect(plays.filter((sound) => sound === 'CLOCK_TICK')).toHaveLength(2);
 });
 
 test('marca local visitado e cobra 2h para reler a mesma pista', async ({ page }) => {

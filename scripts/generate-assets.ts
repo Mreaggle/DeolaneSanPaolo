@@ -51,6 +51,8 @@ const referencesFor = (asset: AssetEntry): string[] => {
   if (asset.id === 'warrant-computer-panel') return [resolve(root, 'public/assets/narrative/warrant-computer-panel.png')];
   if (asset.id === 'henchman-run-spritesheet' || asset.id === 'henchman-sneak-spritesheet') return [resolve(root, 'public/assets/animations/henchman-run-spritesheet.png'), resolve(root, 'public/assets/animations/capture-spritesheet.png')];
   if (asset.id === 'capture-dramatic-spritesheet') return [resolve(root, 'public/assets/animations/capture-spritesheet.png'), resolve(root, 'public/assets/animations/escape-spritesheet.png')];
+  if (asset.id === 'place-icon-atlas') return [resolve(root, 'public/assets/icons/icon-search.png'), resolve(root, 'public/assets/places/bank.png'), resolve(root, 'public/assets/places/hotel.png')];
+  if (asset.id === 'footsteps-spritesheet') return [resolve(root, 'public/assets/animations/travel-airplane-spritesheet.png'), resolve(root, 'public/assets/icons/icon-search.png')];
   if (asset.id === 'title-background') return [resolve(rawDir, 'title-background-base.png'), resolve(rawDir, 'suspect-deolane-san-paolo-dossier.png'), ref('cities/rio_de_janeiro.png')];
   if (asset.id === 'suspect-deolane-san-paolo-dossier') return [ref('profiles/carmen_sandiego.png'), ref('profiles/lady_agatha_wayland.png'), ref('profiles/len_red_bulk.png')];
   if (asset.category === 'suspect-encounter') {
@@ -86,6 +88,8 @@ const promptFor = (asset: AssetEntry): string => {
   if (asset.id === 'henchman-run-spritesheet') return `${styleLock} Create exactly eight equal square frames in one horizontal row showing the same original comic T.C.C. henchman running to the right. Black-and-white striped prison shirt, dark cropped trousers, small black eye mask, soft cap, black shoes and a bouncing brown money sack. Full-body side-view run cycle, stable scale and anchor, readable limb motion and a few dust pixels. Flat chroma green #00FF00 background. ${negatives}`;
   if (asset.id === 'henchman-sneak-spritesheet') return `${styleLock} Create exactly eight equal square frames in one horizontal row showing the same original comic T.C.C. henchman moving cautiously to the right on tiptoe as if balancing along a high parapet. Preserve his black-and-white striped prison shirt, dark cropped trousers, small black eye mask, soft cap and black shoes. Keep him facing and looking right, knees bent and arms extended sideways, moving slightly up and down with each careful step. No money sack. Stable full-body scale and foot anchor. Flat chroma green #00FF00 background. ${negatives}`;
   if (asset.id === 'capture-dramatic-spritesheet') return `${styleLock} Create exactly four equal square cells in one horizontal row. Cell 1: an original disguised criminal running right, pose A, wearing a black brimmed hat and long black trench coat, face hidden except the eyes. Cell 2: the same criminal running right, pose B, identical clothing and scale. Cell 3: one standalone fictional Brazilian federal agent in a blue period uniform running right. Cell 4: a complete escort pair facing and walking left, with the captured criminal's hands raised and an agent immediately behind guiding the prisoner with a safely carried shoulder or holstered weapon. Stable full-body scale and foot anchor, no overlap between cells. Flat chroma green #00FF00 background. ${negatives}`;
+  if (asset.id === 'place-icon-atlas') return `${styleLock} Create exactly twelve exterior-view location icons in a strict four-column by three-row grid. In reading order: airport, bank, foreign ministry, harbor, hotel, library, marketplace, museum, palace, riverfront, sports club, stock exchange. Each concise icon shows the building or location from outside, never its interior, with stable scale and no people, labels or separators. Flat chroma green #00FF00 background. ${negatives}`;
+  if (asset.id === 'footsteps-spritesheet') return `${styleLock} Create exactly eight equal square frames in one horizontal row. Show a cumulative diagonal trail of alternating shoeprints from lower-left to upper-right: frame one has one print and each next frame adds exactly one print while retaining all earlier prints. Shoe soles with toe and heel, no dots, paws, bare feet, people or floor texture. Flat chroma green #00FF00 background. ${negatives}`;
   if (asset.category.startsWith('suspect')) return suspectPrompt(asset);
   if (asset.id === 'title-background') return `${styleLock} EDIT THE FIRST INPUT, which is an original title background owned by this project. Preserve its complete 640:400 composition: the woman on the left, globe, Rio de Janeiro silhouettes, blue night palette, and quiet dark right half for browser-rendered title text. Change only the woman's facial and identity details to match the SECOND input: make her lips extremely enormous and covered in vivid saturated bright-red lipstick, retain straight blonde hair, intensify the heavy makeup, keep giant gold earrings, thick necklace and enormous centered gold pendant. Her bright-red lips must remain unmistakable after reduction to 640x400. Do not add any text or UI. Edge-to-edge opaque art. ${negatives}`;
   if (asset.category === 'city-scene') return `${styleLock} Create an original vertical world-detective-game city scene: ${asset.purpose} Show two or three unmistakable local architecture/geography cues, foreground activity, middle-ground landmark, distant skyline, daytime unless the subject demands otherwise. Edge-to-edge opaque scene, no people close-up. ${negatives}`;
@@ -163,12 +167,36 @@ const postprocess = async (asset: AssetEntry, rawPath: string, prompt: string, r
   const raw = await readFile(rawPath);
   if (asset.transparency === 'transparent') {
     const transparent = await removeChroma(raw);
-    const spriteCellCount = asset.id === 'henchman-run-spritesheet' || asset.id === 'henchman-sneak-spritesheet'
+    const spriteCellCount = asset.id === 'henchman-run-spritesheet' || asset.id === 'henchman-sneak-spritesheet' || asset.id === 'footsteps-spritesheet'
       ? 8
       : asset.id === 'capture-dramatic-spritesheet'
         ? 4
         : 0;
-    if (spriteCellCount) {
+    if (asset.id === 'place-icon-atlas') {
+      const metadata = await sharp(transparent).metadata();
+      const sourceWidth = metadata.width!;
+      const sourceHeight = metadata.height!;
+      const sourceCellWidth = Math.floor(sourceWidth / 4);
+      const sourceCellHeight = Math.floor(sourceHeight / 3);
+      const cells = await Promise.all(Array.from({ length: 12 }, async (_, index) => {
+        const column = index % 4;
+        const row = Math.floor(index / 4);
+        const extractedCell = await sharp(transparent)
+          .extract({ left: column * sourceCellWidth, top: row * sourceCellHeight, width: column === 3 ? sourceWidth - column * sourceCellWidth : sourceCellWidth, height: row === 2 ? sourceHeight - row * sourceCellHeight : sourceCellHeight })
+          .png()
+          .toBuffer();
+        const slice = await sharp(extractedCell)
+          .trim({ background: { r: 0, g: 0, b: 0, alpha: 0 }, threshold: 2 })
+          .resize(60, 60, { fit: 'contain', kernel: sharp.kernel.nearest, background: { r: 0, g: 0, b: 0, alpha: 0 } })
+          .png()
+          .toBuffer();
+        return { input: slice, left: column * 64 + 2, top: row * 64 + 2 };
+      }));
+      await sharp({ create: { width: 256, height: 192, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+        .composite(cells)
+        .png({ palette: true, colours: 64, dither: 0 })
+        .toFile(outputPath);
+    } else if (spriteCellCount) {
       const metadata = await sharp(transparent).metadata();
       const sourceWidth = metadata.width!;
       const sourceHeight = metadata.height!;
@@ -180,11 +208,14 @@ const postprocess = async (asset: AssetEntry, rawPath: string, prompt: string, r
           .png()
           .toBuffer();
         const extracted = await sharp(slice)
-          .trim({ background: { r: 0, g: 0, b: 0, alpha: 0 }, threshold: 2 })
-          .resize(outputCellWidth - 4, asset.height - 4, { fit: 'contain', kernel: sharp.kernel.nearest, background: { r: 0, g: 0, b: 0, alpha: 0 } })
+          .resize(
+            asset.id === 'footsteps-spritesheet' ? outputCellWidth : outputCellWidth - 4,
+            asset.id === 'footsteps-spritesheet' ? asset.height : asset.height - 4,
+            { fit: asset.id === 'footsteps-spritesheet' ? 'fill' : 'contain', kernel: sharp.kernel.nearest, background: { r: 0, g: 0, b: 0, alpha: 0 } }
+          )
           .png()
           .toBuffer();
-        return { input: extracted, left: index * outputCellWidth + 2, top: 2 };
+        return { input: extracted, left: index * outputCellWidth + (asset.id === 'footsteps-spritesheet' ? 0 : 2), top: asset.id === 'footsteps-spritesheet' ? 0 : 2 };
       }));
       await sharp({ create: { width: asset.width, height: asset.height, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
         .composite(frames)

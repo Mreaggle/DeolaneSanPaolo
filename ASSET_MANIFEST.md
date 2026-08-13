@@ -57,10 +57,10 @@ Those elements belong to the code/UI layer and must not silently turn into baked
 
 ## 3. Asset count summary
 
-**Total assets in this manifest: 166**
+**Total assets in this manifest: 168**
 
 ### Category breakdown
-- `animation-sheet`: **7**
+- `animation-sheet`: **8**
 - `badge`: **5**
 - `city-scene`: **30**
 - `emblem`: **2**
@@ -69,7 +69,7 @@ Those elements belong to the code/UI layer and must not silently turn into baked
 - `stolen-item`: **20**
 - `suspect-dossier`: **10**
 - `suspect-encounter`: **10**
-- `ui-icon`: **14**
+- `ui-icon`: **15**
 - `witness-sprite`: **36**
 
 
@@ -405,6 +405,8 @@ Each catalog row contains:
 | 160 | `henchman-run-spritesheet` | `public/assets/animations/henchman-run-spritesheet.png` | `animation-sheet` | Eight-frame side-view run cycle for a striped T.C.C. henchman crossing the city scene when the trail is close. | `512x64` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
 | 163 | `henchman-sneak-spritesheet` | `public/assets/animations/henchman-sneak-spritesheet.png` | `animation-sheet` | Eight-frame side-view tiptoe cycle for the same striped T.C.C. henchman balancing across a high parapet. | `512x64` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
 | 164 | `capture-dramatic-spritesheet` | `public/assets/animations/capture-dramatic-spritesheet.png` | `animation-sheet` | Four-cell dramatic arrest strip: two running poses for the disguised culprit, one pursuing federal agent and one right-to-left prisoner escort pair. | `256x64` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
+| 167 | `place-icon-atlas` | `public/assets/icons/place-icon-atlas.png` | `ui-icon` | Twelve-cell exterior-view atlas for airport, bank, foreign ministry, harbor, hotel, library, marketplace, museum, palace, riverfront, sports club and stock exchange investigation buttons. | `256x192` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
+| 168 | `footsteps-spritesheet` | `public/assets/animations/footsteps-spritesheet.png` | `animation-sheet` | Eight cumulative frames placing alternating shoeprints along the short approach-to-location path. | `512x64` | `transparent` | `GLOBAL_SHARED` | `IMPLEMENTED` |
 
 ---
 
